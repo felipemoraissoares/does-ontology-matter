@@ -53,6 +53,23 @@ def _criar_provedor(exp: dict):
     raise ValueError(f"Provedor desconhecido: {tipo!r}. Use 'openai_compat' ou 'mock'.")
 
 
+def _push_resultado(repo_dir: str, exp_id: str, saida: str) -> None:
+    """git add + commit + push após um experimento concluído."""
+    import subprocess
+    cmds = [
+        f'git -C "{repo_dir}" add -A',
+        f'git -C "{repo_dir}" commit -m "auto: {exp_id}"',
+        f'git -C "{repo_dir}" push',
+    ]
+    for cmd in cmds:
+        r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        ok = r.returncode == 0 or "nothing to commit" in (r.stdout + r.stderr)
+        if not ok:
+            print(f"    AVISO push ({cmd[:40]}...): {r.stderr.strip()[:200]}", file=sys.stderr)
+        elif "push" in cmd and r.returncode == 0:
+            print(f"    Push OK: {exp_id}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Executa o pipeline de extração de triplas Text2KG."
@@ -80,6 +97,16 @@ def main():
              "Permite retomar uma execução interrompida.",
     )
     parser.add_argument(
+        "--auto_push", action="store_true",
+        help="Faz git add + commit + push após cada experimento concluído. "
+             "Requer GITHUB_TOKEN configurado no remote origin.",
+    )
+    parser.add_argument(
+        "--push_repo_dir", default=None,
+        help="Diretório raiz do repositório git para --auto_push. "
+             "Padrão: detecta automaticamente a partir do caminho do manifesto.",
+    )
+    parser.add_argument(
         "--verbose", action="store_true",
         help="Imprime progresso linha a linha.",
     )
@@ -94,6 +121,11 @@ def main():
 
     if isinstance(experimentos, dict):
         experimentos = [experimentos]
+
+    # Detecta diretório do repo para auto_push
+    push_repo_dir = args.push_repo_dir
+    if args.auto_push and push_repo_dir is None:
+        push_repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
     from t2kg.pipeline.executar import executar
 
@@ -142,6 +174,9 @@ def main():
             ontologia_parceira_id=exp.get("ontologia_parceira_id"),
         )
         print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
+
+        if args.auto_push:
+            _push_resultado(push_repo_dir, exp_id, exp["saida"])
 
     print("\nConcluído.")
 
