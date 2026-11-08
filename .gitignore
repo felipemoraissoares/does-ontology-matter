@@ -1,0 +1,28 @@
+# Credenciais e configuração local
+.env
+*.env
+
+# Resultados (exceto amostras pequenas)
+resultados/
+!resultados/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.egg
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Notebooks (checkpoints)
+.ipynb_checkpoints/
+
+# Arquivos temporários
+*.tmp
+scripts/temp_*.json

@@ -1,0 +1,12 @@
+{
+  "_nota": "Config corrigido: tikgen_alpaca_config.json original aponta para caminhos antigos que não existem no repo atual.",
+  "onto_list": ["1_movie", "2_music", "3_sport", "4_book", "5_military", "6_computer", "7_space", "8_politics", "9_nature", "10_culture"],
+  "path_patterns": {
+    "sys": "Text2KGBench/data/wikidata_tekgen/baselines/Alpaca-LoRA-13B/llm_responses/ont_$$onto$$_lora-13b_responses_v2.jsonl",
+    "gt": "Text2KGBench/data/wikidata_tekgen/ground_truth/ont_$$onto$$_ground_truth.jsonl",
+    "selected_ids": "Text2KGBench/data/wikidata_tekgen/manually_verified_sentences/selected_ont_$$onto$$.txt",
+    "onto": "Text2KGBench/data/wikidata_tekgen/ontologies/$$onto$$_ontology.json",
+    "output": "resultados/reproducao/tekgen_alpaca/$$onto$$_metricas.jsonl"
+  },
+  "avg_out_file": "resultados/reproducao/tekgen_alpaca/avg_metricas.jsonl"
+}
