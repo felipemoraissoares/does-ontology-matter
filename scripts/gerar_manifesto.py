@@ -29,6 +29,10 @@ PILOTO_ONTOS_TEKGEN = ["1_movie", "2_music"]
 PILOTO_FRASES_MAX = 200
 PILOTO_FRASES_SEED = 42
 
+# Commit fixo do Text2KGBench para reprodutibilidade
+BENCH_URL    = "https://github.com/cenguix/Text2KGBench.git"
+BENCH_COMMIT = "50a3d255371b8817cdff70fd88459ac82b339cfe"
+
 TEKGEN_ONTOS = [
     "1_movie", "2_music", "3_sport", "4_book", "5_military",
     "6_computer", "7_space", "8_politics", "9_nature", "10_culture",
@@ -69,6 +73,8 @@ def entrada(
     git: str,
     onto_parceira_id: str = None,
 ) -> dict:
+    # Sempre usa "/" para garantir portabilidade Linux/Windows
+    saida = f"{saida_base}/{exp_id}.jsonl"
     e = {
         "id": exp_id,
         "dataset": dataset,
@@ -85,7 +91,9 @@ def entrada(
         "seed": 42,
         "max_tokens": 512,
         "git_hash": git,
-        "saida": os.path.join(saida_base, f"{exp_id}.jsonl"),
+        "bench_url": BENCH_URL,
+        "bench_commit": BENCH_COMMIT,
+        "saida": saida,
     }
     if onto_parceira_id is not None:
         e["ontologia_parceira_id"] = onto_parceira_id
@@ -245,7 +253,8 @@ if __name__ == "__main__":
     args = p.parse_args()
 
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    saida_resultados = os.path.join("resultados", "7b")  # relativo à raiz do repo
+    saida_resultados = "resultados/7b"      # relativo à raiz do repo, sempre "/"
+    saida_piloto     = "resultados/piloto"  # separado para caber na exceção do .gitignore
 
     pares_path = os.path.join(root, "configs", "pipeline", "pares_c5.json")
     with open(pares_path, encoding="utf-8") as f:
@@ -260,7 +269,7 @@ if __name__ == "__main__":
         TEKGEN_ONTOS, WEBNLG_ONTOS, pares, args.modelo, args.url, saida_resultados, git
     )
     exp_sens = gerar_sensibilidade(pares, args.modelo, args.url, saida_resultados, git)
-    exp_piloto = gerar_piloto(args.modelo, args.url, saida_resultados, git)
+    exp_piloto = gerar_piloto(args.modelo, args.url, saida_piloto, git)
 
     full_path = os.path.join(args.saida_dir, "manifesto_7b_full.json")
     sens_path = os.path.join(args.saida_dir, "manifesto_7b_sensibilidade.json")
