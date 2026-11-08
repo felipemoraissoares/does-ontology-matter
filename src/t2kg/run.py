@@ -108,7 +108,7 @@ def main():
             frases_max=args.frases_max,
             verbose=args.verbose,
         )
-        print(f"    {n} frase(s) processada(s)  →  {exp['saida']}")
+        print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
 
     print("\nConcluído.")
 
