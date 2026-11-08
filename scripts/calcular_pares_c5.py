@@ -132,45 +132,59 @@ def analisar_dataset(dataset: str, ontos: list, modelo: SentenceTransformer) -> 
             se = sim_embedding_bidirecional(dados[a]["embs"], dados[b]["embs"])
             sim[(a, b)] = sim[(b, a)] = {"overlap": ov, "sim_emb": se}
 
-    # 3. Para cada ontologia, acha vizinho (max sim_emb) e incongruente (min sim_emb)
-    # Exclui a própria ontologia
+    # 3. Para cada ontologia, acha vizinho (max sim_emb), incongruente (min) e incongruente_2 (2nd min)
     pares = {}
     contagem_parceiro = Counter()
 
     for o in ontos:
-        candidatos = {c: sim[(o, c)] for c in ontos if c != o}
-        vizinho = max(candidatos, key=lambda c: candidatos[c]["sim_emb"])
-        incongruente = min(candidatos, key=lambda c: candidatos[c]["sim_emb"])
-        pares[o] = {"vizinho": vizinho, "incongruente": incongruente}
+        candidatos = sorted(
+            (c for c in ontos if c != o),
+            key=lambda c: sim[(o, c)]["sim_emb"]
+        )
+        vizinho     = max((c for c in ontos if c != o), key=lambda c: sim[(o, c)]["sim_emb"])
+        incongruente   = candidatos[0]
+        incongruente_2 = candidatos[1] if len(candidatos) > 1 else None
+        pares[o] = {
+            "vizinho": vizinho,
+            "incongruente": incongruente,
+            "incongruente_2": incongruente_2,
+        }
         contagem_parceiro[vizinho] += 1
         contagem_parceiro[incongruente] += 1
 
-    # 4. Tabela completa
-    print(f"\n{'Ontologia alvo':<30} {'#R':>3} {'#C':>3} {'#Tok':>5}  "
-          f"{'Vizinho':<30} {'OvJ%':>5} {'SimE':>5} {'#R':>3} {'#C':>3} {'#Tok':>5}  "
-          f"{'Incongruente':<30} {'OvJ%':>5} {'SimE':>5} {'#R':>3} {'#C':>3} {'#Tok':>5}")
-    print("-" * 160)
+    # 4. Tabela completa (vizinho e incongruente; inclui dif_tokens)
+    print(f"\n{'Alvo':<30} {'#Tok':>5}  "
+          f"{'Vizinho':<30} {'OvJ%':>5} {'SimE':>5} {'#Tok':>5} {'dTok':>5}  "
+          f"{'Incongruente':<30} {'OvJ%':>5} {'SimE':>5} {'#Tok':>5} {'dTok':>5}  "
+          f"{'Incongruente_2':<30} {'SimE':>5}")
+    print("-" * 185)
     for o in ontos:
         d = dados[o]
         viz = pares[o]["vizinho"]
         inc = pares[o]["incongruente"]
+        inc2 = pares[o]["incongruente_2"]
         dv = dados[viz]; di = dados[inc]
         sv = sim[(o, viz)]; si = sim[(o, inc)]
+        dif_v = dv["n_tokens"] - d["n_tokens"]
+        dif_i = di["n_tokens"] - d["n_tokens"]
+        inc2_str = inc2 if inc2 else "-"
+        inc2_sime = f"{sim[(o, inc2)]['sim_emb']:.3f}" if inc2 else "  -  "
         print(
-            f"{o:<30} {d['n_rels']:>3} {d['n_concs']:>3} {d['n_tokens']:>5}  "
-            f"{viz:<30} {sv['overlap']*100:>5.1f} {sv['sim_emb']:>5.3f} {dv['n_rels']:>3} {dv['n_concs']:>3} {dv['n_tokens']:>5}  "
-            f"{inc:<30} {si['overlap']*100:>5.1f} {si['sim_emb']:>5.3f} {di['n_rels']:>3} {di['n_concs']:>3} {di['n_tokens']:>5}"
+            f"{o:<30} {d['n_tokens']:>5}  "
+            f"{viz:<30} {sv['overlap']*100:>5.1f} {sv['sim_emb']:>5.3f} {dv['n_tokens']:>5} {dif_v:>+5}  "
+            f"{inc:<30} {si['overlap']*100:>5.1f} {si['sim_emb']:>5.3f} {di['n_tokens']:>5} {dif_i:>+5}  "
+            f"{inc2_str:<30} {inc2_sime:>5}"
         )
 
     # 5. Avisa sobre ontologias muito populares como parceira
-    print(f"\n--- Frequência como parceira (vizinho + incongruente) ---")
+    print(f"\n--- Frequencia como parceira (vizinho + incongruente) ---")
     for onto_p, cnt in contagem_parceiro.most_common(5):
         if cnt >= 3:
             print(f"  AVISO: {onto_p} aparece como parceira de {cnt} ontologias")
         else:
             print(f"  {onto_p}: {cnt}x")
 
-    # 6. Tabela intuitiva anterior vs. critério objetivo (vizinho)
+    # 6. Resumo de pares escolhidos
     print(f"\n--- Pares vizinho escolhidos ---")
     for o in ontos:
         viz = pares[o]["vizinho"]
@@ -178,6 +192,21 @@ def analisar_dataset(dataset: str, ontos: list, modelo: SentenceTransformer) -> 
         print(f"  {o} -> {viz}  (OvJ={sv['overlap']*100:.1f}%, SimE={sv['sim_emb']:.3f})")
 
     return pares, dados, sim
+
+
+def _entrada_par(o: str, parceira: str, dados: dict, sim: dict) -> dict:
+    if parceira is None:
+        return None
+    d = dados[o]; dp = dados[parceira]; s = sim[(o, parceira)]
+    return {
+        "id": parceira,
+        "sim_emb": round(s["sim_emb"], 4),
+        "overlap_jaccard": round(s["overlap"], 4),
+        "n_tokens_parceira": dp["n_tokens"],
+        "dif_tokens": dp["n_tokens"] - d["n_tokens"],
+        "n_rels": dp["n_rels"],
+        "n_concs": dp["n_concs"],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -190,13 +219,23 @@ if __name__ == "__main__":
     pares_tkg, dados_tkg, sim_tkg = analisar_dataset("tekgen", TEKGEN_ONTOS, modelo)
     pares_web, dados_web, sim_web = analisar_dataset("webnlg", WEBNLG_ONTOS, modelo)
 
-    # Salva resultado em JSON para referência
+    def serializar(pares, dados, sim):
+        out = {}
+        for o, p in pares.items():
+            out[o] = {
+                "n_tokens_alvo": dados[o]["n_tokens"],
+                "n_rels_alvo": dados[o]["n_rels"],
+                "n_concs_alvo": dados[o]["n_concs"],
+                "vizinho":        _entrada_par(o, p["vizinho"], dados, sim),
+                "incongruente":   _entrada_par(o, p["incongruente"], dados, sim),
+                "incongruente_2": _entrada_par(o, p["incongruente_2"], dados, sim),
+            }
+        return out
+
     resultado = {
         "modelo_embeddings": MODELO_EMBS,
-        "tekgen": {o: {"vizinho": p["vizinho"], "incongruente": p["incongruente"]}
-                   for o, p in pares_tkg.items()},
-        "webnlg": {o: {"vizinho": p["vizinho"], "incongruente": p["incongruente"]}
-                   for o, p in pares_web.items()},
+        "tekgen": serializar(pares_tkg, dados_tkg, sim_tkg),
+        "webnlg": serializar(pares_web, dados_web, sim_web),
     }
     saida = os.path.join(os.path.dirname(__file__), "..", "configs", "pipeline", "pares_c5.json")
     with open(saida, "w", encoding="utf-8") as f:

@@ -2,122 +2,934 @@
   "modelo_embeddings": "all-MiniLM-L6-v2",
   "tekgen": {
     "1_movie": {
-      "vizinho": "4_book",
-      "incongruente": "9_nature"
+      "n_tokens_alvo": 193,
+      "n_rels_alvo": 15,
+      "n_concs_alvo": 12,
+      "vizinho": {
+        "id": "4_book",
+        "sim_emb": 0.5911,
+        "overlap_jaccard": 0.1739,
+        "n_tokens_parceira": 202,
+        "dif_tokens": 9,
+        "n_rels": 12,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "9_nature",
+        "sim_emb": 0.254,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": -1,
+        "n_rels": 13,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "7_space",
+        "sim_emb": 0.2649,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -47,
+        "n_rels": 7,
+        "n_concs": 15
+      }
     },
     "2_music": {
-      "vizinho": "4_book",
-      "incongruente": "7_space"
+      "n_tokens_alvo": 180,
+      "n_rels_alvo": 13,
+      "n_concs_alvo": 13,
+      "vizinho": {
+        "id": "4_book",
+        "sim_emb": 0.542,
+        "overlap_jaccard": 0.1364,
+        "n_tokens_parceira": 202,
+        "dif_tokens": 22,
+        "n_rels": 12,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "7_space",
+        "sim_emb": 0.2434,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -34,
+        "n_rels": 7,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "5_military",
+        "sim_emb": 0.2521,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 154,
+        "dif_tokens": -26,
+        "n_rels": 9,
+        "n_concs": 13
+      }
     },
     "3_sport": {
-      "vizinho": "1_movie",
-      "incongruente": "9_nature"
+      "n_tokens_alvo": 215,
+      "n_rels_alvo": 11,
+      "n_concs_alvo": 20,
+      "vizinho": {
+        "id": "1_movie",
+        "sim_emb": 0.4058,
+        "overlap_jaccard": 0.0417,
+        "n_tokens_parceira": 193,
+        "dif_tokens": -22,
+        "n_rels": 15,
+        "n_concs": 12
+      },
+      "incongruente": {
+        "id": "9_nature",
+        "sim_emb": 0.2508,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": -23,
+        "n_rels": 13,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "7_space",
+        "sim_emb": 0.2724,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -69,
+        "n_rels": 7,
+        "n_concs": 15
+      }
     },
     "4_book": {
-      "vizinho": "1_movie",
-      "incongruente": "9_nature"
+      "n_tokens_alvo": 202,
+      "n_rels_alvo": 12,
+      "n_concs_alvo": 20,
+      "vizinho": {
+        "id": "1_movie",
+        "sim_emb": 0.5911,
+        "overlap_jaccard": 0.1739,
+        "n_tokens_parceira": 193,
+        "dif_tokens": -9,
+        "n_rels": 15,
+        "n_concs": 12
+      },
+      "incongruente": {
+        "id": "9_nature",
+        "sim_emb": 0.2513,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": -10,
+        "n_rels": 13,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "7_space",
+        "sim_emb": 0.2717,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -56,
+        "n_rels": 7,
+        "n_concs": 15
+      }
     },
     "5_military": {
-      "vizinho": "8_politics",
-      "incongruente": "7_space"
+      "n_tokens_alvo": 154,
+      "n_rels_alvo": 9,
+      "n_concs_alvo": 13,
+      "vizinho": {
+        "id": "8_politics",
+        "sim_emb": 0.3398,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 153,
+        "dif_tokens": -1,
+        "n_rels": 9,
+        "n_concs": 13
+      },
+      "incongruente": {
+        "id": "7_space",
+        "sim_emb": 0.2234,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -8,
+        "n_rels": 7,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "9_nature",
+        "sim_emb": 0.2332,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": 38,
+        "n_rels": 13,
+        "n_concs": 14
+      }
     },
     "6_computer": {
-      "vizinho": "4_book",
-      "incongruente": "7_space"
+      "n_tokens_alvo": 108,
+      "n_rels_alvo": 4,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "4_book",
+        "sim_emb": 0.3836,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 202,
+        "dif_tokens": 94,
+        "n_rels": 12,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "7_space",
+        "sim_emb": 0.1873,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": 38,
+        "n_rels": 7,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "9_nature",
+        "sim_emb": 0.2261,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": 84,
+        "n_rels": 13,
+        "n_concs": 14
+      }
     },
     "7_space": {
-      "vizinho": "3_sport",
-      "incongruente": "6_computer"
+      "n_tokens_alvo": 146,
+      "n_rels_alvo": 7,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "3_sport",
+        "sim_emb": 0.2724,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 215,
+        "dif_tokens": 69,
+        "n_rels": 11,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "6_computer",
+        "sim_emb": 0.1873,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 108,
+        "dif_tokens": -38,
+        "n_rels": 4,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "5_military",
+        "sim_emb": 0.2234,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 154,
+        "dif_tokens": 8,
+        "n_rels": 9,
+        "n_concs": 13
+      }
     },
     "8_politics": {
-      "vizinho": "1_movie",
-      "incongruente": "7_space"
+      "n_tokens_alvo": 153,
+      "n_rels_alvo": 9,
+      "n_concs_alvo": 13,
+      "vizinho": {
+        "id": "1_movie",
+        "sim_emb": 0.3768,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 193,
+        "dif_tokens": 40,
+        "n_rels": 15,
+        "n_concs": 12
+      },
+      "incongruente": {
+        "id": "7_space",
+        "sim_emb": 0.2265,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": -7,
+        "n_rels": 7,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "9_nature",
+        "sim_emb": 0.2342,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": 39,
+        "n_rels": 13,
+        "n_concs": 14
+      }
     },
     "9_nature": {
-      "vizinho": "1_movie",
-      "incongruente": "6_computer"
+      "n_tokens_alvo": 192,
+      "n_rels_alvo": 13,
+      "n_concs_alvo": 14,
+      "vizinho": {
+        "id": "1_movie",
+        "sim_emb": 0.254,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 193,
+        "dif_tokens": 1,
+        "n_rels": 15,
+        "n_concs": 12
+      },
+      "incongruente": {
+        "id": "6_computer",
+        "sim_emb": 0.2261,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 108,
+        "dif_tokens": -84,
+        "n_rels": 4,
+        "n_concs": 15
+      },
+      "incongruente_2": {
+        "id": "5_military",
+        "sim_emb": 0.2332,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 154,
+        "dif_tokens": -38,
+        "n_rels": 9,
+        "n_concs": 13
+      }
     },
     "10_culture": {
-      "vizinho": "4_book",
-      "incongruente": "9_nature"
+      "n_tokens_alvo": 143,
+      "n_rels_alvo": 8,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "4_book",
+        "sim_emb": 0.376,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 202,
+        "dif_tokens": 59,
+        "n_rels": 12,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "9_nature",
+        "sim_emb": 0.2397,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 192,
+        "dif_tokens": 49,
+        "n_rels": 13,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "7_space",
+        "sim_emb": 0.2442,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 146,
+        "dif_tokens": 3,
+        "n_rels": 7,
+        "n_concs": 15
+      }
     }
   },
   "webnlg": {
     "1_university": {
-      "vizinho": "12_monument",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 435,
+      "n_rels_alvo": 46,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "12_monument",
+        "sim_emb": 0.6488,
+        "overlap_jaccard": 0.1803,
+        "n_tokens_parceira": 271,
+        "dif_tokens": -164,
+        "n_rels": 26,
+        "n_concs": 14
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3564,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -180,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "2_musicalwork",
+        "sim_emb": 0.4126,
+        "overlap_jaccard": 0.0253,
+        "n_tokens_parceira": 347,
+        "dif_tokens": -88,
+        "n_rels": 35,
+        "n_concs": 15
+      }
     },
     "2_musicalwork": {
-      "vizinho": "17_artist",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 347,
+      "n_rels_alvo": 35,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "17_artist",
+        "sim_emb": 0.6627,
+        "overlap_jaccard": 0.2131,
+        "n_tokens_parceira": 399,
+        "dif_tokens": 52,
+        "n_rels": 39,
+        "n_concs": 20
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3739,
+        "overlap_jaccard": 0.0164,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -92,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "1_university",
+        "sim_emb": 0.4126,
+        "overlap_jaccard": 0.0253,
+        "n_tokens_parceira": 435,
+        "dif_tokens": 88,
+        "n_rels": 46,
+        "n_concs": 15
+      }
     },
     "3_airport": {
-      "vizinho": "16_city",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 375,
+      "n_rels_alvo": 39,
+      "n_concs_alvo": 14,
+      "vizinho": {
+        "id": "16_city",
+        "sim_emb": 0.6626,
+        "overlap_jaccard": 0.24,
+        "n_tokens_parceira": 235,
+        "dif_tokens": -140,
+        "n_rels": 23,
+        "n_concs": 11
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3363,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -120,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.432,
+        "overlap_jaccard": 0.0364,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -184,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "4_building": {
-      "vizinho": "15_sportsteam",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 367,
+      "n_rels_alvo": 38,
+      "n_concs_alvo": 14,
+      "vizinho": {
+        "id": "15_sportsteam",
+        "sim_emb": 0.6501,
+        "overlap_jaccard": 0.2157,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -112,
+        "n_rels": 24,
+        "n_concs": 14
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.404,
+        "overlap_jaccard": 0.0317,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -112,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4436,
+        "overlap_jaccard": 0.037,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -176,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "5_athlete": {
-      "vizinho": "15_sportsteam",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 371,
+      "n_rels_alvo": 37,
+      "n_concs_alvo": 17,
+      "vizinho": {
+        "id": "15_sportsteam",
+        "sim_emb": 0.68,
+        "overlap_jaccard": 0.22,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -116,
+        "n_rels": 24,
+        "n_concs": 14
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.4491,
+        "overlap_jaccard": 0.0492,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -116,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4615,
+        "overlap_jaccard": 0.0377,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -180,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "6_politician": {
-      "vizinho": "18_scientist",
-      "incongruente": "10_comicscharacter"
+      "n_tokens_alvo": 403,
+      "n_rels_alvo": 40,
+      "n_concs_alvo": 19,
+      "vizinho": {
+        "id": "18_scientist",
+        "sim_emb": 0.6727,
+        "overlap_jaccard": 0.2254,
+        "n_tokens_parceira": 443,
+        "dif_tokens": 40,
+        "n_rels": 47,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4702,
+        "overlap_jaccard": 0.0545,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -212,
+        "n_rels": 18,
+        "n_concs": 10
+      },
+      "incongruente_2": {
+        "id": "2_musicalwork",
+        "sim_emb": 0.4753,
+        "overlap_jaccard": 0.0417,
+        "n_tokens_parceira": 347,
+        "dif_tokens": -56,
+        "n_rels": 35,
+        "n_concs": 15
+      }
     },
     "7_company": {
-      "vizinho": "16_city",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 271,
+      "n_rels_alvo": 28,
+      "n_concs_alvo": 10,
+      "vizinho": {
+        "id": "16_city",
+        "sim_emb": 0.6732,
+        "overlap_jaccard": 0.2439,
+        "n_tokens_parceira": 235,
+        "dif_tokens": -36,
+        "n_rels": 23,
+        "n_concs": 11
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3563,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -16,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4661,
+        "overlap_jaccard": 0.0455,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -80,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "8_celestialbody": {
-      "vizinho": "18_scientist",
-      "incongruente": "3_airport"
+      "n_tokens_alvo": 255,
+      "n_rels_alvo": 27,
+      "n_concs_alvo": 8,
+      "vizinho": {
+        "id": "18_scientist",
+        "sim_emb": 0.4966,
+        "overlap_jaccard": 0.0882,
+        "n_tokens_parceira": 443,
+        "dif_tokens": 188,
+        "n_rels": 47,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "3_airport",
+        "sim_emb": 0.3363,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 375,
+        "dif_tokens": 120,
+        "n_rels": 39,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "7_company",
+        "sim_emb": 0.3563,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 271,
+        "dif_tokens": 16,
+        "n_rels": 28,
+        "n_concs": 10
+      }
     },
     "9_astronaut": {
-      "vizinho": "6_politician",
-      "incongruente": "12_monument"
+      "n_tokens_alvo": 375,
+      "n_rels_alvo": 38,
+      "n_concs_alvo": 16,
+      "vizinho": {
+        "id": "6_politician",
+        "sim_emb": 0.6074,
+        "overlap_jaccard": 0.1471,
+        "n_tokens_parceira": 403,
+        "dif_tokens": 28,
+        "n_rels": 40,
+        "n_concs": 19
+      },
+      "incongruente": {
+        "id": "12_monument",
+        "sim_emb": 0.4374,
+        "overlap_jaccard": 0.0159,
+        "n_tokens_parceira": 271,
+        "dif_tokens": -104,
+        "n_rels": 26,
+        "n_concs": 14
+      },
+      "incongruente_2": {
+        "id": "3_airport",
+        "sim_emb": 0.4405,
+        "overlap_jaccard": 0.0267,
+        "n_tokens_parceira": 375,
+        "dif_tokens": 0,
+        "n_rels": 39,
+        "n_concs": 14
+      }
     },
     "10_comicscharacter": {
-      "vizinho": "19_film",
-      "incongruente": "16_city"
+      "n_tokens_alvo": 191,
+      "n_rels_alvo": 18,
+      "n_concs_alvo": 10,
+      "vizinho": {
+        "id": "19_film",
+        "sim_emb": 0.603,
+        "overlap_jaccard": 0.1273,
+        "n_tokens_parceira": 431,
+        "dif_tokens": 240,
+        "n_rels": 44,
+        "n_concs": 18
+      },
+      "incongruente": {
+        "id": "16_city",
+        "sim_emb": 0.382,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 235,
+        "dif_tokens": 44,
+        "n_rels": 23,
+        "n_concs": 11
+      },
+      "incongruente_2": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3973,
+        "overlap_jaccard": 0.0465,
+        "n_tokens_parceira": 255,
+        "dif_tokens": 64,
+        "n_rels": 27,
+        "n_concs": 8
+      }
     },
     "11_meanoftransportation": {
-      "vizinho": "7_company",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 631,
+      "n_rels_alvo": 68,
+      "n_concs_alvo": 20,
+      "vizinho": {
+        "id": "7_company",
+        "sim_emb": 0.632,
+        "overlap_jaccard": 0.1707,
+        "n_tokens_parceira": 271,
+        "dif_tokens": -360,
+        "n_rels": 28,
+        "n_concs": 10
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3964,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -376,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "9_astronaut",
+        "sim_emb": 0.4868,
+        "overlap_jaccard": 0.0495,
+        "n_tokens_parceira": 375,
+        "dif_tokens": -256,
+        "n_rels": 38,
+        "n_concs": 16
+      }
     },
     "12_monument": {
-      "vizinho": "1_university",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 271,
+      "n_rels_alvo": 26,
+      "n_concs_alvo": 14,
+      "vizinho": {
+        "id": "1_university",
+        "sim_emb": 0.6488,
+        "overlap_jaccard": 0.1803,
+        "n_tokens_parceira": 435,
+        "dif_tokens": 164,
+        "n_rels": 46,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3655,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -16,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "9_astronaut",
+        "sim_emb": 0.4374,
+        "overlap_jaccard": 0.0159,
+        "n_tokens_parceira": 375,
+        "dif_tokens": 104,
+        "n_rels": 38,
+        "n_concs": 16
+      }
     },
     "13_food": {
-      "vizinho": "16_city",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 247,
+      "n_rels_alvo": 24,
+      "n_concs_alvo": 12,
+      "vizinho": {
+        "id": "16_city",
+        "sim_emb": 0.5798,
+        "overlap_jaccard": 0.2051,
+        "n_tokens_parceira": 235,
+        "dif_tokens": -12,
+        "n_rels": 23,
+        "n_concs": 11
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.371,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": 8,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "19_film",
+        "sim_emb": 0.4166,
+        "overlap_jaccard": 0.0149,
+        "n_tokens_parceira": 431,
+        "dif_tokens": 184,
+        "n_rels": 44,
+        "n_concs": 18
+      }
     },
     "14_writtenwork": {
-      "vizinho": "6_politician",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 399,
+      "n_rels_alvo": 44,
+      "n_concs_alvo": 10,
+      "vizinho": {
+        "id": "6_politician",
+        "sim_emb": 0.596,
+        "overlap_jaccard": 0.1507,
+        "n_tokens_parceira": 403,
+        "dif_tokens": 4,
+        "n_rels": 40,
+        "n_concs": 19
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.4335,
+        "overlap_jaccard": 0.0597,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -144,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4733,
+        "overlap_jaccard": 0.0508,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -208,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "15_sportsteam": {
-      "vizinho": "5_athlete",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 255,
+      "n_rels_alvo": 24,
+      "n_concs_alvo": 14,
+      "vizinho": {
+        "id": "5_athlete",
+        "sim_emb": 0.68,
+        "overlap_jaccard": 0.22,
+        "n_tokens_parceira": 371,
+        "dif_tokens": 116,
+        "n_rels": 37,
+        "n_concs": 17
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3673,
+        "overlap_jaccard": 0.02,
+        "n_tokens_parceira": 255,
+        "dif_tokens": 0,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "2_musicalwork",
+        "sim_emb": 0.4841,
+        "overlap_jaccard": 0.0727,
+        "n_tokens_parceira": 347,
+        "dif_tokens": 92,
+        "n_rels": 35,
+        "n_concs": 15
+      }
     },
     "16_city": {
-      "vizinho": "18_scientist",
-      "incongruente": "8_celestialbody"
+      "n_tokens_alvo": 235,
+      "n_rels_alvo": 23,
+      "n_concs_alvo": 11,
+      "vizinho": {
+        "id": "18_scientist",
+        "sim_emb": 0.7169,
+        "overlap_jaccard": 0.25,
+        "n_tokens_parceira": 443,
+        "dif_tokens": 208,
+        "n_rels": 47,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.3703,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 255,
+        "dif_tokens": 20,
+        "n_rels": 27,
+        "n_concs": 8
+      },
+      "incongruente_2": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.382,
+        "overlap_jaccard": 0.0,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -44,
+        "n_rels": 18,
+        "n_concs": 10
+      }
     },
     "17_artist": {
-      "vizinho": "18_scientist",
-      "incongruente": "10_comicscharacter"
+      "n_tokens_alvo": 399,
+      "n_rels_alvo": 39,
+      "n_concs_alvo": 20,
+      "vizinho": {
+        "id": "18_scientist",
+        "sim_emb": 0.6882,
+        "overlap_jaccard": 0.2647,
+        "n_tokens_parceira": 443,
+        "dif_tokens": 44,
+        "n_rels": 47,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4754,
+        "overlap_jaccard": 0.0556,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -208,
+        "n_rels": 18,
+        "n_concs": 10
+      },
+      "incongruente_2": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.489,
+        "overlap_jaccard": 0.082,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -144,
+        "n_rels": 27,
+        "n_concs": 8
+      }
     },
     "18_scientist": {
-      "vizinho": "16_city",
-      "incongruente": "10_comicscharacter"
+      "n_tokens_alvo": 443,
+      "n_rels_alvo": 47,
+      "n_concs_alvo": 15,
+      "vizinho": {
+        "id": "16_city",
+        "sim_emb": 0.7169,
+        "overlap_jaccard": 0.25,
+        "n_tokens_parceira": 235,
+        "dif_tokens": -208,
+        "n_rels": 23,
+        "n_concs": 11
+      },
+      "incongruente": {
+        "id": "10_comicscharacter",
+        "sim_emb": 0.4689,
+        "overlap_jaccard": 0.0484,
+        "n_tokens_parceira": 191,
+        "dif_tokens": -252,
+        "n_rels": 18,
+        "n_concs": 10
+      },
+      "incongruente_2": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.4966,
+        "overlap_jaccard": 0.0882,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -188,
+        "n_rels": 27,
+        "n_concs": 8
+      }
     },
     "19_film": {
-      "vizinho": "2_musicalwork",
-      "incongruente": "13_food"
+      "n_tokens_alvo": 431,
+      "n_rels_alvo": 44,
+      "n_concs_alvo": 18,
+      "vizinho": {
+        "id": "2_musicalwork",
+        "sim_emb": 0.6068,
+        "overlap_jaccard": 0.1449,
+        "n_tokens_parceira": 347,
+        "dif_tokens": -84,
+        "n_rels": 35,
+        "n_concs": 15
+      },
+      "incongruente": {
+        "id": "13_food",
+        "sim_emb": 0.4166,
+        "overlap_jaccard": 0.0149,
+        "n_tokens_parceira": 247,
+        "dif_tokens": -184,
+        "n_rels": 24,
+        "n_concs": 12
+      },
+      "incongruente_2": {
+        "id": "8_celestialbody",
+        "sim_emb": 0.44,
+        "overlap_jaccard": 0.0758,
+        "n_tokens_parceira": 255,
+        "dif_tokens": -176,
+        "n_rels": 27,
+        "n_concs": 8
+      }
     }
   }
 }

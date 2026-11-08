@@ -1,4 +1,4 @@
-# Decisões metodológicas — Fase 1
+# Decisões metodológicas — Fases 1 e 2
 
 Decisões aprovadas que orientam a implementação e o design experimental.
 Cada decisão substitui as propostas anteriores onde houver conflito.
@@ -40,14 +40,14 @@ C5 avalia o efeito de fornecer uma **ontologia errada** em formato JSON. Dois n�
 
 | Condição | Ontologia fornecida | Objetivo |
 |---|---|---|
-| **C5_vizinho** (nível 1) | Ontologia de domínio **vizinho/relacionado** | Mede se o modelo segue a ontologia quando o vocabulário é semanticamente próximo |
-| **C5_incongruente** (nível 2) | Ontologia de domínio **incompatível** | Mede se o modelo ignora ou se guia pela ontologia quando o vocabulário é radicalmente diferente |
+| **C5_vizinho** (nível 1) | Parceira com **alta similaridade de esquema** (vizinho no espaço de relações) | Mede se o modelo segue a ontologia quando o vocabulário é semanticamente próximo |
+| **C5_incongruente** (nível 2) | Parceira com **baixa similaridade de esquema** (incongruente no espaço de relações) | Mede se o modelo ignora ou se guia pela ontologia quando o vocabulário é radicalmente diferente |
 
 **Justificativa:** comparar C5_vizinho vs C5_incongruente permite separar dois efeitos:
 (a) o modelo lê e aplica as relações do JSON fornecido; ou (b) o modelo ignora a ontologia
 e extrai relações pelo senso comum. Se as métricas de conformidade forem semelhantes nos
 dois níveis, o modelo ignora o JSON. Se C5_vizinho tiver conformidade maior, o vocabulário
-vizinho "atrai" o modelo.
+com alta similaridade de esquema "atrai" o modelo.
 
 **Implementação:** campo opcional `ontologia_parceira_id` no manifesto especifica qual
 ontologia usar no JSON do prompt. A ontologia alvo (campo `ontologia_id`) segue sendo
@@ -67,54 +67,53 @@ Resultado salvo em `configs/pipeline/pares_c5.json`. Script reprodutível: `scri
 
 ### Tabela de pares C5 — TekGen (Wikidata)
 
-Colunas: alvo (#R relações, #C conceitos, #Tok tokens no bloco JSON), par vizinho/incongruente com métricas.
+Colunas: `#Tok` = tokens no bloco JSON (proxy de tamanho do contexto); `dTok` = tokens da parceira menos tokens do alvo (covariável na análise estatística); `Inc2` = 2ª parceira com menor SimE (usada na análise de sensibilidade D-10).
 
-| Alvo | #R | #C | #Tok | Vizinho | OvJ% | SimE | #R | #C | #Tok | Incongruente | OvJ% | SimE | #R | #C | #Tok |
-|---|--:|--:|--:|---|--:|--:|--:|--:|--:|---|--:|--:|--:|--:|--:|
-| 1_movie      | 15 | 12 | 193 | 4_book        | 17.4 | 0.591 | 12 | 20 | 202 | 9_nature     |  0.0 | 0.254 | 13 | 14 | 192 |
-| 2_music      | 13 | 13 | 180 | 4_book        | 13.6 | 0.542 | 12 | 20 | 202 | 7_space      |  0.0 | 0.243 |  7 | 15 | 146 |
-| 3_sport      | 11 | 20 | 215 | 1_movie       |  4.2 | 0.406 | 15 | 12 | 193 | 9_nature     |  0.0 | 0.251 | 13 | 14 | 192 |
-| 4_book       | 12 | 20 | 202 | 1_movie       | 17.4 | 0.591 | 15 | 12 | 193 | 9_nature     |  0.0 | 0.251 | 13 | 14 | 192 |
-| 5_military   |  9 | 13 | 154 | 8_politics    |  0.0 | 0.340 |  9 | 13 | 153 | 7_space      |  0.0 | 0.223 |  7 | 15 | 146 |
-| 6_computer   |  4 | 15 | 108 | 4_book        |  0.0 | 0.384 | 12 | 20 | 202 | 7_space      |  0.0 | 0.187 |  7 | 15 | 146 |
-| 7_space      |  7 | 15 | 146 | 3_sport       |  0.0 | 0.272 | 11 | 20 | 215 | 6_computer   |  0.0 | 0.187 |  4 | 15 | 108 |
-| 8_politics   |  9 | 13 | 153 | 1_movie       |  0.0 | 0.377 | 15 | 12 | 193 | 7_space      |  0.0 | 0.226 |  7 | 15 | 146 |
-| 9_nature     | 13 | 14 | 192 | 1_movie       |  0.0 | 0.254 | 15 | 12 | 193 | 6_computer   |  0.0 | 0.226 |  4 | 15 | 108 |
-| 10_culture   |  8 | 15 | 143 | 4_book        |  0.0 | 0.376 | 12 | 20 | 202 | 9_nature     |  0.0 | 0.240 | 13 | 14 | 192 |
+| Alvo | #Tok | Vizinho | OvJ% | SimE | #Tok | dTok | Incongruente | OvJ% | SimE | #Tok | dTok | Inc2 | SimE2 |
+|---|--:|---|--:|--:|--:|--:|---|--:|--:|--:|--:|---|--:|
+| 1_movie      | 193 | 4_book        | 17.4 | 0.591 | 202 |  +9 | 9_nature     |  0.0 | 0.254 | 192 |  -1 | 7_space     | 0.265 |
+| 2_music      | 180 | 4_book        | 13.6 | 0.542 | 202 | +22 | 7_space      |  0.0 | 0.243 | 146 | -34 | 5_military  | 0.252 |
+| 3_sport      | 215 | 1_movie       |  4.2 | 0.406 | 193 | -22 | 9_nature     |  0.0 | 0.251 | 192 | -23 | 7_space     | 0.272 |
+| 4_book       | 202 | 1_movie       | 17.4 | 0.591 | 193 |  -9 | 9_nature     |  0.0 | 0.251 | 192 | -10 | 7_space     | 0.272 |
+| 5_military   | 154 | 8_politics    |  0.0 | 0.340 | 153 |  -1 | 7_space      |  0.0 | 0.223 | 146 |  -8 | 9_nature    | 0.233 |
+| 6_computer   | 108 | 4_book        |  0.0 | 0.384 | 202 | +94 | 7_space      |  0.0 | 0.187 | 146 | +38 | 9_nature    | 0.226 |
+| 7_space      | 146 | 3_sport       |  0.0 | 0.272 | 215 | +69 | 6_computer   |  0.0 | 0.187 | 108 | -38 | 5_military  | 0.223 |
+| 8_politics   | 153 | 1_movie       |  0.0 | 0.377 | 193 | +40 | 7_space      |  0.0 | 0.226 | 146 |  -7 | 9_nature    | 0.234 |
+| 9_nature     | 192 | 1_movie       |  0.0 | 0.254 | 193 |  +1 | 6_computer   |  0.0 | 0.226 | 108 | -84 | 5_military  | 0.233 |
+| 10_culture   | 143 | 4_book        |  0.0 | 0.376 | 202 | +59 | 9_nature     |  0.0 | 0.240 | 192 | +49 | 7_space     | 0.244 |
 
 **Aviso TekGen:** 1_movie, 4_book, 7_space e 9_nature aparecem como parceira de 4 ontologias cada.
-Isso é esperado em um dataset pequeno (10 ontologias) e não compromete o critério — cada par é
-determinado unicamente pelo máximo/mínimo de SimE para cada alvo.
+Esperado em dataset pequeno (10 ontologias); cada par é determinado unicamente pelo máximo/mínimo de SimE para cada alvo.
 
 ### Tabela de pares C5 — DBpedia (WebNLG)
 
-| Alvo | #R | #C | #Tok | Vizinho | OvJ% | SimE | #R | #C | #Tok | Incongruente | OvJ% | SimE | #R | #C | #Tok |
-|---|--:|--:|--:|---|--:|--:|--:|--:|--:|---|--:|--:|--:|--:|--:|
-| 1_university          | 46 | 15 | 435 | 12_monument          | 18.0 | 0.649 | 26 | 14 | 271 | 8_celestialbody      |  0.0 | 0.356 | 27 |  8 | 255 |
-| 2_musicalwork         | 35 | 15 | 347 | 17_artist            | 21.3 | 0.663 | 39 | 20 | 399 | 8_celestialbody      |  1.6 | 0.374 | 27 |  8 | 255 |
-| 3_airport             | 39 | 14 | 375 | 16_city              | 24.0 | 0.663 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.336 | 27 |  8 | 255 |
-| 4_building            | 38 | 14 | 367 | 15_sportsteam        | 21.6 | 0.650 | 24 | 14 | 255 | 8_celestialbody      |  3.2 | 0.404 | 27 |  8 | 255 |
-| 5_athlete             | 37 | 17 | 371 | 15_sportsteam        | 22.0 | 0.680 | 24 | 14 | 255 | 8_celestialbody      |  4.9 | 0.449 | 27 |  8 | 255 |
-| 6_politician          | 40 | 19 | 403 | 18_scientist         | 22.5 | 0.673 | 47 | 15 | 443 | 10_comicscharacter   |  5.5 | 0.470 | 18 | 10 | 191 |
-| 7_company             | 28 | 10 | 271 | 16_city              | 24.4 | 0.673 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.356 | 27 |  8 | 255 |
-| 8_celestialbody       | 27 |  8 | 255 | 18_scientist         |  8.8 | 0.497 | 47 | 15 | 443 | 3_airport            |  0.0 | 0.336 | 39 | 14 | 375 |
-| 9_astronaut           | 38 | 16 | 375 | 6_politician         | 14.7 | 0.607 | 40 | 19 | 403 | 12_monument          |  1.6 | 0.437 | 26 | 14 | 271 |
-| 10_comicscharacter    | 18 | 10 | 191 | 19_film              | 12.7 | 0.603 | 44 | 18 | 431 | 16_city              |  0.0 | 0.382 | 23 | 11 | 235 |
-| 11_meanoftransportation | 68 | 20 | 631 | 7_company           | 17.1 | 0.632 | 28 | 10 | 271 | 8_celestialbody      |  0.0 | 0.396 | 27 |  8 | 255 |
-| 12_monument           | 26 | 14 | 271 | 1_university         | 18.0 | 0.649 | 46 | 15 | 435 | 8_celestialbody      |  0.0 | 0.366 | 27 |  8 | 255 |
-| 13_food               | 24 | 12 | 247 | 16_city              | 20.5 | 0.580 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.371 | 27 |  8 | 255 |
-| 14_writtenwork        | 44 | 10 | 399 | 6_politician         | 15.1 | 0.596 | 40 | 19 | 403 | 8_celestialbody      |  6.0 | 0.434 | 27 |  8 | 255 |
-| 15_sportsteam         | 24 | 14 | 255 | 5_athlete            | 22.0 | 0.680 | 37 | 17 | 371 | 8_celestialbody      |  2.0 | 0.367 | 27 |  8 | 255 |
-| 16_city               | 23 | 11 | 235 | 18_scientist         | 25.0 | 0.717 | 47 | 15 | 443 | 8_celestialbody      |  0.0 | 0.370 | 27 |  8 | 255 |
-| 17_artist             | 39 | 20 | 399 | 18_scientist         | 26.5 | 0.688 | 47 | 15 | 443 | 10_comicscharacter   |  5.6 | 0.475 | 18 | 10 | 191 |
-| 18_scientist          | 47 | 15 | 443 | 16_city              | 25.0 | 0.717 | 23 | 11 | 235 | 10_comicscharacter   |  4.8 | 0.469 | 18 | 10 | 191 |
-| 19_film               | 44 | 18 | 431 | 2_musicalwork        | 14.5 | 0.607 | 35 | 15 | 347 | 13_food              |  1.5 | 0.417 | 24 | 12 | 247 |
+| Alvo | #Tok | Vizinho | OvJ% | SimE | #Tok | dTok | Incongruente | OvJ% | SimE | #Tok | dTok | Inc2 | SimE2 |
+|---|--:|---|--:|--:|--:|--:|---|--:|--:|--:|--:|---|--:|
+| 1_university          | 435 | 12_monument          | 18.0 | 0.649 | 271 | -164 | 8_celestialbody    |  0.0 | 0.356 | 255 | -180 | 2_musicalwork     | 0.413 |
+| 2_musicalwork         | 347 | 17_artist            | 21.3 | 0.663 | 399 |  +52 | 8_celestialbody    |  1.6 | 0.374 | 255 |  -92 | 1_university      | 0.413 |
+| 3_airport             | 375 | 16_city              | 24.0 | 0.663 | 235 | -140 | 8_celestialbody    |  0.0 | 0.336 | 255 | -120 | 10_comicscharacter| 0.432 |
+| 4_building            | 367 | 15_sportsteam        | 21.6 | 0.650 | 255 | -112 | 8_celestialbody    |  3.2 | 0.404 | 255 | -112 | 10_comicscharacter| 0.444 |
+| 5_athlete             | 371 | 15_sportsteam        | 22.0 | 0.680 | 255 | -116 | 8_celestialbody    |  4.9 | 0.449 | 255 | -116 | 10_comicscharacter| 0.461 |
+| 6_politician          | 403 | 18_scientist         | 22.5 | 0.673 | 443 |  +40 | 10_comicscharacter |  5.5 | 0.470 | 191 | -212 | 2_musicalwork     | 0.475 |
+| 7_company             | 271 | 16_city              | 24.4 | 0.673 | 235 |  -36 | 8_celestialbody    |  0.0 | 0.356 | 255 |  -16 | 10_comicscharacter| 0.466 |
+| 8_celestialbody       | 255 | 18_scientist         |  8.8 | 0.497 | 443 | +188 | 3_airport          |  0.0 | 0.336 | 375 | +120 | 7_company         | 0.356 |
+| 9_astronaut           | 375 | 6_politician         | 14.7 | 0.607 | 403 |  +28 | 12_monument        |  1.6 | 0.437 | 271 | -104 | 3_airport         | 0.440 |
+| 10_comicscharacter    | 191 | 19_film              | 12.7 | 0.603 | 431 | +240 | 16_city            |  0.0 | 0.382 | 235 |  +44 | 8_celestialbody   | 0.397 |
+| 11_meanoftransport.   | 631 | 7_company            | 17.1 | 0.632 | 271 | -360 | 8_celestialbody    |  0.0 | 0.396 | 255 | -376 | 9_astronaut       | 0.487 |
+| 12_monument           | 271 | 1_university         | 18.0 | 0.649 | 435 | +164 | 8_celestialbody    |  0.0 | 0.366 | 255 |  -16 | 9_astronaut       | 0.437 |
+| 13_food               | 247 | 16_city              | 20.5 | 0.580 | 235 |  -12 | 8_celestialbody    |  0.0 | 0.371 | 255 |   +8 | 19_film           | 0.417 |
+| 14_writtenwork        | 399 | 6_politician         | 15.1 | 0.596 | 403 |   +4 | 8_celestialbody    |  6.0 | 0.434 | 255 | -144 | 10_comicscharacter| 0.473 |
+| 15_sportsteam         | 255 | 5_athlete            | 22.0 | 0.680 | 371 | +116 | 8_celestialbody    |  2.0 | 0.367 | 255 |   +0 | 2_musicalwork     | 0.484 |
+| 16_city               | 235 | 18_scientist         | 25.0 | 0.717 | 443 | +208 | 8_celestialbody    |  0.0 | 0.370 | 255 |  +20 | 10_comicscharacter| 0.382 |
+| 17_artist             | 399 | 18_scientist         | 26.5 | 0.688 | 443 |  +44 | 10_comicscharacter |  5.6 | 0.475 | 191 | -208 | 8_celestialbody   | 0.489 |
+| 18_scientist          | 443 | 16_city              | 25.0 | 0.717 | 235 | -208 | 10_comicscharacter |  4.8 | 0.469 | 191 | -252 | 8_celestialbody   | 0.497 |
+| 19_film               | 431 | 2_musicalwork        | 14.5 | 0.607 | 347 |  -84 | 13_food            |  1.5 | 0.417 | 247 | -184 | 8_celestialbody   | 0.440 |
 
-**Aviso WebNLG:** 8_celestialbody é o incongruente de 12/19 ontologias — resultado esperado, pois seu
-vocabulário astronômico (apoapsis, perihelion, orbitalPeriod...) é maximalmente dissimilar do vocabulário
-de domínios humanos/sociais. 16_city e 18_scientist são vizinho de 5 e 4 ontologias respectivamente,
-pois suas relações (birthPlace, country, leader...) cobrem um espectro semântico amplo.
-Esses padrões são coerentes com a estrutura semântica do dataset e não configuram viés metodológico.
+**Aviso WebNLG:** 8_celestialbody é o incongruente de 12/19 ontologias — resultado esperado dado seu
+vocabulário astronômico (apoapsis, perihelion, orbitalPeriod...) ser maximalmente dissimilar de
+domínios humanos/sociais. Os padrões são coerentes com a estrutura semântica do dataset e não
+configuram viés metodológico. Para 6_politician, 17_artist e 18_scientist o incongruente é
+10_comicscharacter (SimE ≈ 0.47), não 8_celestialbody, o que reforça a robustez do critério.
 
 ---
 
@@ -257,3 +256,95 @@ A métrica quantifica essa falha de formato separadamente das métricas de recup
 distinguir dois tipos de erro: (a) relação errada (capturado por F1) e (b) formato errado
 mas relação correta (capturado por avg_fmt_error). O piloto com 7B determinará se o problema
 persiste em modelos maiores e se justifica intervenção adicional no prompt.
+
+---
+
+## D-08: Diferença de tokens como covariável na análise de C5
+
+**Status:** APROVADA (Fase 2)
+
+### Decisão
+
+A diferença de tokens entre o bloco de ontologia da parceira e o bloco do alvo (`dTok = #Tok_parceira - #Tok_alvo`)
+é registrada em `configs/pipeline/pares_c5.json` para cada par C5_vizinho e C5_incongruente e será
+incluída como **covariável contínua** na análise estatística dos efeitos de C5.
+
+### Justificativa
+
+Mudar de ontologia alvo para ontologia parceira altera o tamanho do contexto de ontologia injetado no
+prompt. Se a parceira tiver significativamente mais ou menos tokens que o alvo (ex.: 11_meanoftransportation
+tem 631 tokens vs. 271 da vizinha 7_company, dTok=-360), parte do efeito observado em F1 e conformidade
+pode ser atribuído ao tamanho do contexto, não à similaridade de esquema. Incluir dTok como covariável
+permite estimar o efeito de similaridade líquido desse confundidor.
+
+**Implementação:** campo `dif_tokens` disponível em `configs/pipeline/pares_c5.json` para cada par.
+
+---
+
+## D-09: SimE como variável contínua na análise de C5
+
+**Status:** APROVADA (Fase 2)
+
+### Decisão
+
+Além da comparação discreta entre níveis (C5_vizinho vs. C5_incongruente), a análise reportará
+o **efeito de SimE como variável contínua** sobre F1, conformidade ontológica e taxa de alucinação,
+usando regressão linear com ontologia como efeito aleatório (modelo misto).
+
+### Justificativa
+
+A dicotomia vizinho/incongruente colapsa uma variação contínua de similaridade de esquema
+(0.187 a 0.717 no TekGen; 0.336 a 0.717 no WebNLG) em dois grupos. A análise contínua
+captura o gradiente e permite verificar linearidade — se o efeito for monotônico, fortalece
+a interpretação causal; se for não-linear (ex.: limiar), gera hipóteses sobre o mecanismo
+de atenção do modelo. Os dois níveis de C5 funcionam como casos extremos no eixo contínuo
+de SimE, tornando as duas análises complementares.
+
+**Dados:** os valores de SimE para cada par são exportados em `configs/pipeline/pares_c5.json`
+(campo `sim_emb` em cada sub-objeto de vizinho/incongruente).
+
+---
+
+## D-10: Análise de sensibilidade — C5_incongruente com segunda parceira
+
+**Status:** APROVADA (Fase 2, amostra pequena)
+
+### Decisão
+
+Em uma **amostra de 5 ontologias** (3 WebNLG onde incongruente=8_celestialbody + 2 TekGen onde
+incongruente=9_nature ou 7_space), executar C5_incongruente também com a **segunda parceira
+com menor SimE** (`incongruente_2`, registrado em `configs/pipeline/pares_c5.json`).
+
+As ontologias alvo sugeridas para a amostra de sensibilidade são:
+- WebNLG: 3_airport (Inc2=10_comicscharacter, SimE=0.432), 5_athlete (Inc2=10_comicscharacter, SimE=0.461), 16_city (Inc2=10_comicscharacter, SimE=0.382)
+- TekGen: 1_movie (Inc2=7_space, SimE=0.265), 5_military (Inc2=9_nature, SimE=0.233)
+
+### Justificativa
+
+A análise primária usa 8_celestialbody como incongruente para 12/19 ontologias WebNLG.
+Se os resultados de conformidade ou F1 forem consistentes com os obtidos usando Inc2,
+o efeito não depende do outlier astronômico e é generalizável. A análise de sensibilidade
+é pré-registrada aqui antes de qualquer execução.
+
+**Critério de robustez:** diferença absoluta de conformidade entre Inc1 e Inc2 < 0.05 para
+ao menos 4 das 5 ontologias testadas.
+
+---
+
+## D-11: Terminologia — "similaridade de esquema"
+
+**Status:** APROVADA (Fase 2)
+
+### Decisão
+
+O critério de seleção de parceiras C5 é chamado de **"similaridade de esquema"** em toda a
+documentação, dissertação e comunicações. A palavra "domínio" é reservada para o dataset
+inteiro (ex.: "domínio de filmes") e não descreve o critério de seleção dos pares.
+
+### Justificativa
+
+"Similaridade de domínio" é ambíguo — domínio pode referir-se à área temática (filmes, música)
+ou ao campo `domain` de uma propriedade OWL. "Similaridade de esquema" é mais preciso: o critério
+mede a sobreposição semântica entre os **vocabulários de relação** das ontologias (seus esquemas),
+não a afinidade temática julgada por um humano. O critério é calculável, reprodutível e agnóstico
+a julgamento editorial — nomear como "similaridade de esquema" torna isso explícito.
