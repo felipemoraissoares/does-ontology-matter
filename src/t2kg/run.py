@@ -107,6 +107,7 @@ def main():
             temperatura=exp.get("temperatura", 0.0),
             frases_max=args.frases_max,
             verbose=args.verbose,
+            ontologia_parceira_id=exp.get("ontologia_parceira_id"),
         )
         print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
 

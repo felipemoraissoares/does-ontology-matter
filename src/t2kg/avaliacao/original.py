@@ -160,7 +160,7 @@ def carregar_config(caminho_config: str) -> Dict:
 # Função principal de avaliação
 # ---------------------------------------------------------------------------
 
-def avaliar(config: Dict, diretorio_base: str = "") -> Dict:
+def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) -> Dict:
     """
     Executa a avaliação completa para todas as ontologias definidas na config.
 
@@ -171,6 +171,10 @@ def avaliar(config: Dict, diretorio_base: str = "") -> Dict:
         equivalente com chaves 'onto_list' e 'avg_out_file'.
     diretorio_base : str
         Prefixo adicionado a todos os caminhos relativos.
+    modo_amostra : bool
+        False (padrão): denominador = len(gabarito) — idêntico ao benchmark publicado.
+        True: denominador = frases efetivamente na saída do sistema — correto para amostras
+              parciais (frases_max < total). Usar sempre que a saída não cubrir o GT completo.
 
     Retorna
     -------
@@ -260,9 +264,14 @@ def avaliar(config: Dict, diretorio_base: str = "") -> Dict:
 
         salvar_jsonl(metricas_por_frase, output_path)
 
-        total = len(gabarito)
+        # Denominador: frases efetivamente avaliadas (modo_amostra) ou GT completo (benchmark)
+        total = len(metricas_por_frase) if modo_amostra else len(gabarito)
+        if total == 0:
+            total = 1  # evita divisão por zero em ontologias sem saída
+
         media = {
             "onto": onto_id, "type": "all_test_cases",
+            "modo_amostra": modo_amostra,
             "avg_precision": f"{tp/total:.2f}",
             "avg_recall": f"{tr_/total:.2f}",
             "avg_f1": f"{tf1/total:.2f}",
@@ -295,6 +304,7 @@ def avaliar(config: Dict, diretorio_base: str = "") -> Dict:
     n_onto = len(config["onto_list"])
     global_metricas = {
         "id": "global", "type": "global",
+        "modo_amostra": modo_amostra,
         "avg_precision": f"{gp/n_onto:.2f}",
         "avg_recall": f"{gr/n_onto:.2f}",
         "avg_f1": f"{gf1/n_onto:.2f}",

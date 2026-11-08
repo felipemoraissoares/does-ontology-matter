@@ -7,6 +7,7 @@
 
 import json
 import os
+from collections import Counter
 from typing import Dict, List, Optional
 
 from ..parser import parsear_resposta
@@ -14,6 +15,8 @@ from .dados import carregar_frases
 from .ontologias import carregar_ontologia, formatar_contexto
 from .prompts import montar_prompt
 from .provedores.base import ProvedorBase
+
+_K_RELS = 3  # número de relações para C3
 
 
 def _ids_ja_processados(caminho_saida: str) -> set:
@@ -50,6 +53,7 @@ def executar(
     temperatura: float = 0.0,
     frases_max: Optional[int] = None,
     verbose: bool = False,
+    ontologia_parceira_id: Optional[str] = None,
 ) -> int:
     """
     Executa a extração de triplas para uma (ontologia, condição) e salva em JSONL.
@@ -67,7 +71,7 @@ def executar(
     ontologia_id : str
         ex.: "1_movie"
     condicao : str
-        C0 | C1 | C1_oneshot_original | C3 | C5
+        C0 | C1 | C1_oneshot_original | C3 | C5 | C5_vizinho | C5_incongruente
     provedor : ProvedorBase
         Instância do provedor de inferência.
     saida : str
@@ -76,10 +80,33 @@ def executar(
         Limita o total de frases processadas (inclui checkpoint).
     verbose : bool
         Imprime progresso.
+    ontologia_parceira_id : str | None
+        Para C5_vizinho/C5_incongruente: ID da ontologia cujo JSON será fornecido ao modelo.
+        Se None em C5_vizinho/C5_incongruente, usa a própria ontologia alvo.
     """
     frases = carregar_frases(bench_dir, dataset, split, ontologia_id)
     ontologia = carregar_ontologia(bench_dir, dataset, ontologia_id)
-    contexto = formatar_contexto(ontologia, condicao)
+
+    # Para C5_vizinho/C5_incongruente carrega a ontologia parceira
+    ontologia_parceira = None
+    if condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
+        ontologia_parceira = carregar_ontologia(bench_dir, dataset, ontologia_parceira_id)
+
+    # Para C3: calcula top-k relações a partir do gabarito completo
+    top_k_rels = None
+    if condicao == "C3":
+        cont: Counter = Counter()
+        for frase in frases:
+            for t in frase.get("gt_triples", []):
+                rel = t[1].replace(" ", "_") if isinstance(t, list) else t.get("rel", "").replace(" ", "_")
+                cont[rel] += 1
+        top_k_rels = [r for r, _ in cont.most_common(_K_RELS)]
+
+    contexto = formatar_contexto(
+        ontologia, condicao,
+        top_k_rels=top_k_rels,
+        ontologia_parceira=ontologia_parceira,
+    )
 
     ja_prontos = _ids_ja_processados(saida)
     processados = 0

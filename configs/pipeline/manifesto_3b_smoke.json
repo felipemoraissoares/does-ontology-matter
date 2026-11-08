@@ -1,0 +1,38 @@
+[
+  {
+    "id": "tekgen_1_movie_C0_qwen25_3b_ollama",
+    "dataset": "tekgen",
+    "split": "test",
+    "ontologia_id": "1_movie",
+    "condicao": "C0",
+    "modelo": "qwen2.5:3b",
+    "quantizacao": "Q4_K_M",
+    "chat_template": "qwen2",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:11434/v1",
+    "api_key": "ollama",
+    "temperatura": 0,
+    "seed": 42,
+    "max_tokens": 256,
+    "git_hash": "6c5fc715d6da5a7d55e769f5fa828ae5ae1a45cd",
+    "saida": "resultados/smoke3b/tekgen_1_movie_C0_qwen25_3b.jsonl"
+  },
+  {
+    "id": "tekgen_1_movie_C1_qwen25_3b_ollama",
+    "dataset": "tekgen",
+    "split": "test",
+    "ontologia_id": "1_movie",
+    "condicao": "C1",
+    "modelo": "qwen2.5:3b",
+    "quantizacao": "Q4_K_M",
+    "chat_template": "qwen2",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:11434/v1",
+    "api_key": "ollama",
+    "temperatura": 0,
+    "seed": 42,
+    "max_tokens": 256,
+    "git_hash": "6c5fc715d6da5a7d55e769f5fa828ae5ae1a45cd",
+    "saida": "resultados/smoke3b/tekgen_1_movie_C1_qwen25_3b.jsonl"
+  }
+]

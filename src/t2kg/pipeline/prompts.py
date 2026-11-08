@@ -51,7 +51,7 @@ def montar_prompt(
     sentenca : str
         Sentença de teste.
     condicao : str
-        C0 | C1 | C1_oneshot_original | C3 | C5
+        C0 | C1 | C1_oneshot_original | C3 | C5 | C5_vizinho | C5_incongruente
     contexto_ontologia : str | None
         Bloco de contexto retornado por `formatar_contexto()`.
         None para C0.
@@ -63,7 +63,8 @@ def montar_prompt(
     if condicao == "C0":
         return (
             f"{_INSTRUCAO_C0}\n\n"
-            f"Test Sentence: {sentenca}"
+            f"Test Sentence: {sentenca}\n"
+            f"Test Output: "
         )
 
     if condicao == "C3":
@@ -71,15 +72,17 @@ def montar_prompt(
             f"{_INSTRUCAO_C3}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
-            f"Test Sentence: {sentenca}"
+            f"Test Sentence: {sentenca}\n"
+            f"Test Output: "
         )
 
-    if condicao == "C5":
+    if condicao in ("C5", "C5_vizinho", "C5_incongruente"):
         return (
             f"{_INSTRUCAO_C5}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
-            f"Test Sentence: {sentenca}"
+            f"Test Sentence: {sentenca}\n"
+            f"Test Output: "
         )
 
     # C1 — zero-shot com ontologia completa
@@ -88,7 +91,8 @@ def montar_prompt(
             f"{_INSTRUCAO_COM_ONT}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
-            f"Test Sentence: {sentenca}"
+            f"Test Sentence: {sentenca}\n"
+            f"Test Output: "
         )
 
     # C1_oneshot_original — replica o formato exato do benchmark

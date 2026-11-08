@@ -211,3 +211,97 @@ class TestExecutar:
                 provedor=ProvedorMock(), saida=saida, frases_max=3,
             )
             assert n == 3, f"Falhou para condição {cond}"
+
+    @SKIP_SEM_BENCH
+    def test_c3_top_k_incluido_no_prompt(self, tmp_path):
+        """C3 com k=3: prompt deve conter as top-3 relações com domain/range."""
+        from t2kg.pipeline.prompts import montar_prompt
+        from t2kg.pipeline.ontologias import formatar_contexto, carregar_ontologia
+        from collections import Counter
+
+        ont = carregar_ontologia(BENCH, "tekgen", "1_movie")
+        frases = carregar_frases(BENCH, "tekgen", "test", "1_movie")
+        cont: Counter = Counter()
+        for frase in frases:
+            for t in frase.get("gt_triples", []):
+                cont[t["rel"].replace(" ", "_")] += 1
+        top3 = [r for r, _ in cont.most_common(3)]
+
+        ctx = formatar_contexto(ont, "C3", top_k_rels=top3)
+        assert "Relations:" in ctx
+        # deve incluir domain/range (parênteses)
+        assert "(" in ctx
+        # deve conter as relações corretas
+        for rel in top3:
+            assert rel in ctx
+
+    @SKIP_SEM_BENCH
+    def test_c5_vizinho_usa_ontologia_parceira(self, tmp_path):
+        """C5_vizinho deve serializar a ontologia parceira, não a alvo."""
+        ont_alvo = carregar_ontologia(BENCH, "tekgen", "1_movie")
+        ont_parceira = carregar_ontologia(BENCH, "tekgen", "2_music")
+        ctx = formatar_contexto(ont_alvo, "C5_vizinho", ontologia_parceira=ont_parceira)
+        parsed = json.loads(ctx)
+        # O JSON fornecido deve ser da ontologia de música, não de filme
+        assert parsed.get("title") == ont_parceira.get("title")
+        assert parsed.get("title") != ont_alvo.get("title")
+
+
+# ---------------------------------------------------------------------------
+# avaliacao/original.py — modo_amostra
+# ---------------------------------------------------------------------------
+
+class TestModoAmostra:
+    def test_modo_amostra_corrige_denominador(self, tmp_path):
+        """
+        Dados sintéticos: 10 frases no GT, 5 processadas com triples=[].
+        Com triples=[],  calcular_conformidade_ontologica retorna 1.0 por frase.
+        modo_amostra=False: 5*1.0 / 10 = 0.50 (denominador = total GT)
+        modo_amostra=True:  5*1.0 / 5  = 1.00 (denominador = frases processadas)
+        """
+        from t2kg.avaliacao.original import avaliar
+
+        # Ontologia mínima sem relações (qualquer tripla seria inconformante)
+        ont_data = {"title": "Teste", "concepts": [{"qid": "Q1", "label": "X"}], "relations": []}
+        ont_path = str(tmp_path / "ont.json")
+        with open(ont_path, "w", encoding="utf-8") as f:
+            json.dump(ont_data, f)
+
+        # GT: 10 frases com 1 tripla cada
+        gt_path = str(tmp_path / "gt.jsonl")
+        with open(gt_path, "w", encoding="utf-8") as f:
+            for i in range(10):
+                f.write(json.dumps({"id": f"s{i}", "sent": f"Frase {i}.",
+                                    "triples": [{"sub": "A", "rel": "rel", "obj": "B"}]}) + "\n")
+
+        # Sistema: só as 5 primeiras frases, todas com triples=[] → conf=1.0 cada
+        sys_path = str(tmp_path / "sys.jsonl")
+        with open(sys_path, "w", encoding="utf-8") as f:
+            for i in range(5):
+                f.write(json.dumps({"id": f"s{i}", "sent": f"Frase {i}.",
+                                    "response": "", "triples": []}) + "\n")
+
+        def _config(avg_name):
+            return {
+                "onto_list": [{
+                    "id": "test_onto",
+                    "sys": sys_path,
+                    "gt": gt_path,
+                    "onto": ont_path,
+                    "output": str(tmp_path / "output.jsonl"),
+                }],
+                "avg_out_file": str(tmp_path / avg_name),
+            }
+
+        # Modo benchmark: denominador = 10 (total GT) → 5*1.0/10 = 0.50
+        res_full = avaliar(_config("avg_full.jsonl"), modo_amostra=False)
+        conf_full = float(res_full["por_ontologia"]["test_onto"]["avg_onto_conf"])
+
+        # Modo amostra: denominador = 5 (processadas) → 5*1.0/5 = 1.00
+        res_sample = avaliar(_config("avg_sample.jsonl"), modo_amostra=True)
+        conf_sample = float(res_sample["por_ontologia"]["test_onto"]["avg_onto_conf"])
+
+        assert conf_full == 0.50, f"Esperado 0.50 (modo benchmark), obtido {conf_full}"
+        assert conf_sample == 1.0, f"Esperado 1.0 (modo amostra), obtido {conf_sample}"
+        assert res_full["global"]["modo_amostra"] is False
+        assert res_sample["global"]["modo_amostra"] is True
