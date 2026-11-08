@@ -11,7 +11,7 @@ Cada decisão substitui as propostas anteriores onde houver conflito.
 
 ### Decisão
 
-C3 fornece ao modelo as **3 relações mais frequentes no conjunto de teste** (ground truth),
+C3 fornece ao modelo as **3 relações mais frequentes no conjunto de treino** (vide D-06),
 acompanhadas de seus conceitos de domínio e alcance. Formato idêntico ao C1 mas sem
 listar conceitos nem usar exemplo.
 
@@ -53,44 +53,68 @@ vizinho "atrai" o modelo.
 ontologia usar no JSON do prompt. A ontologia alvo (campo `ontologia_id`) segue sendo
 usada para o gabarito.
 
+### Critério objetivo de seleção de pares (pré-registrado)
+
+Os pares C5 são determinados por dois critérios computados sobre os labels de relação de cada
+par de ontologias dentro do mesmo dataset:
+
+1. **Overlap Jaccard (OvJ):** `|labels(A) ∩ labels(B)| / |labels(A) ∪ labels(B)|` sobre labels normalizados (camelCase → espaços, underscores → espaços, minúsculas).
+2. **Similaridade de embeddings bidirecional (SimE):** para cada label em A, max-cosseno com todos os labels de B; repete B→A; retorna a média das duas médias. Modelo: `all-MiniLM-L6-v2` (mesmo usado na projeção de embeddings do experimento).
+
+**Decisão:** vizinho = parceira com maior SimE; incongruente = parceira com menor SimE.
+
+Resultado salvo em `configs/pipeline/pares_c5.json`. Script reprodutível: `scripts/calcular_pares_c5.py`.
+
 ### Tabela de pares C5 — TekGen (Wikidata)
 
-| Ontologia alvo | C5_vizinho | Justificativa vizinho | C5_incongruente | Justificativa incongruente |
-|---|---|---|---|---|
-| 1_movie | 2_music | Ambas são obras de entretenimento com atores/músicos, datas de publicação, prêmios e gêneros | 7_space | Exploração espacial tem estrutura e vocabulário radicalmente distintos de filmes |
-| 2_music | 1_movie | Artistas e obras criativas compartilham relações similares (publicação, gênero, prêmios) | 5_military | Militares, conflitos e hierarquias são opostos semânticos da música |
-| 3_sport | 8_politics | Ambas têm organizações, membros, cargos e eventos competitivos | 9_nature | Taxonomias biológicas e rios não têm relação com esportes |
-| 4_book | 1_movie | Obras criativas (livros→filmes) compartilham autor/diretor, gênero, editora/produtora | 7_space | Missões espaciais e planetas nada têm em comum com literatura |
-| 5_military | 8_politics | Governança e forças militares coexistem no mesmo domínio histórico-político | 9_nature | Ecologia e taxonomia são opostos semânticos do militarismo |
-| 6_computer | 7_space | Tecnologia de hardware/software compartilha vocabulário com agências e sistemas de missão | 9_nature | Ciências biológicas têm vocabulário ortogonal ao de TI |
-| 7_space | 6_computer | Missões espaciais usam sistemas computacionais; agências lembram empresas de tech | 10_culture | Culturas, línguas e tradições são completamente opostos a astronomia |
-| 8_politics | 5_military | Política e militarismo são domínios entrelaçados historicamente | 9_nature | Ecologia e taxons não têm correspondência em vocabulário político |
-| 9_nature | 7_space | Ciências naturais (taxonomia, biomas) compartilham vocabulário científico com astronomia | 1_movie | Filmes, diretores e atores são completamente alheios à biologia |
-| 10_culture | 2_music | Música é uma das expressões centrais de cultura e tradição | 7_space | Exploração espacial é semanticamente distante de cultura e tradições |
+Colunas: alvo (#R relações, #C conceitos, #Tok tokens no bloco JSON), par vizinho/incongruente com métricas.
+
+| Alvo | #R | #C | #Tok | Vizinho | OvJ% | SimE | #R | #C | #Tok | Incongruente | OvJ% | SimE | #R | #C | #Tok |
+|---|--:|--:|--:|---|--:|--:|--:|--:|--:|---|--:|--:|--:|--:|--:|
+| 1_movie      | 15 | 12 | 193 | 4_book        | 17.4 | 0.591 | 12 | 20 | 202 | 9_nature     |  0.0 | 0.254 | 13 | 14 | 192 |
+| 2_music      | 13 | 13 | 180 | 4_book        | 13.6 | 0.542 | 12 | 20 | 202 | 7_space      |  0.0 | 0.243 |  7 | 15 | 146 |
+| 3_sport      | 11 | 20 | 215 | 1_movie       |  4.2 | 0.406 | 15 | 12 | 193 | 9_nature     |  0.0 | 0.251 | 13 | 14 | 192 |
+| 4_book       | 12 | 20 | 202 | 1_movie       | 17.4 | 0.591 | 15 | 12 | 193 | 9_nature     |  0.0 | 0.251 | 13 | 14 | 192 |
+| 5_military   |  9 | 13 | 154 | 8_politics    |  0.0 | 0.340 |  9 | 13 | 153 | 7_space      |  0.0 | 0.223 |  7 | 15 | 146 |
+| 6_computer   |  4 | 15 | 108 | 4_book        |  0.0 | 0.384 | 12 | 20 | 202 | 7_space      |  0.0 | 0.187 |  7 | 15 | 146 |
+| 7_space      |  7 | 15 | 146 | 3_sport       |  0.0 | 0.272 | 11 | 20 | 215 | 6_computer   |  0.0 | 0.187 |  4 | 15 | 108 |
+| 8_politics   |  9 | 13 | 153 | 1_movie       |  0.0 | 0.377 | 15 | 12 | 193 | 7_space      |  0.0 | 0.226 |  7 | 15 | 146 |
+| 9_nature     | 13 | 14 | 192 | 1_movie       |  0.0 | 0.254 | 15 | 12 | 193 | 6_computer   |  0.0 | 0.226 |  4 | 15 | 108 |
+| 10_culture   |  8 | 15 | 143 | 4_book        |  0.0 | 0.376 | 12 | 20 | 202 | 9_nature     |  0.0 | 0.240 | 13 | 14 | 192 |
+
+**Aviso TekGen:** 1_movie, 4_book, 7_space e 9_nature aparecem como parceira de 4 ontologias cada.
+Isso é esperado em um dataset pequeno (10 ontologias) e não compromete o critério — cada par é
+determinado unicamente pelo máximo/mínimo de SimE para cada alvo.
 
 ### Tabela de pares C5 — DBpedia (WebNLG)
 
-| Ontologia alvo | C5_vizinho | Justificativa vizinho | C5_incongruente | Justificativa incongruente |
-|---|---|---|---|---|
-| 1_university | 7_company | Ambas são organizações com localização, fundação e afiliações | 8_celestialbody | Corpos celestes nada têm em comum com instituições de ensino |
-| 2_musicalwork | 19_film | Obras criativas com gênero, distribuidora/gravadora, duração | 3_airport | Infraestrutura de transporte é oposto semântico de obras musicais |
-| 3_airport | 11_meanoftransportation | Transporte e infraestrutura compartilham builder, length, type | 2_musicalwork | Obras musicais têm vocabulário completamente distinto de aeroportos |
-| 4_building | 12_monument | Ambas são estruturas físicas com localização, designer, data | 8_celestialbody | Corpos celestes não têm relação com construções |
-| 5_athlete | 15_sportsteam | Atletas e times compartilham liga, clube e competições | 8_celestialbody | Astronomia é semanticamente distante de esportes |
-| 6_politician | 9_astronaut | Profissionais notáveis com birthPlace, deathPlace, cargo | 11_meanoftransportation | Meios de transporte são opostos a carreiras políticas |
-| 7_company | 1_university | Organizações com fundação, localização e afiliações | 8_celestialbody | Corpos celestes nada têm em comum com empresas |
-| 8_celestialbody | 9_astronaut | Corpos celestes e astronautas compartilham o domínio espacial | 13_food | Culinária e ingredientes nada têm em comum com astronomia |
-| 9_astronaut | 18_scientist | Profissionais científicos com birthPlace, birthDate, knownFor | 13_food | Gastronomia é semanticamente distante de carreiras científicas |
-| 10_comicscharacter | 19_film | Personagens ficcionais de mídia (quadrinhos/filmes) | 3_airport | Infraestrutura aeroportuária é oposta a personagens de quadrinhos |
-| 11_meanoftransportation | 3_airport | Transporte compartilha builder, type, comprimento | 9_astronaut | Carreiras de astronautas são distantes de meios de transporte |
-| 12_monument | 4_building | Estruturas físicas com localização, designer, inauguração | 9_astronaut | Carreiras espaciais não têm relação com monumentos |
-| 13_food | 16_city | Ambas têm atributos country e étnicos (ethnicGroup, language) | 8_celestialbody | Astronomia é semanticamente distante de gastronomia |
-| 14_writtenwork | 2_musicalwork | Obras criativas com país, língua, gênero | 8_celestialbody | Corpos celestes nada têm em comum com literatura |
-| 15_sportsteam | 5_athlete | Times e atletas compartilham liga, local e membros | 8_celestialbody | Astronomia é distante de esportes |
-| 16_city | 1_university | Ambas têm isPartOf, country, ethnicGroup — entidades geográfico-culturais | 8_celestialbody | Corpos celestes são opostos a cidades |
-| 17_artist | 2_musicalwork | Artistas musicais e obras musicais compartilham gênero e gravadora | 3_airport | Infraestrutura aeroportuária é semanticamente distante de artistas |
-| 18_scientist | 9_astronaut | Profissionais científicos com birthPlace, birthDate, knownFor | 13_food | Gastronomia é distante de carreiras científicas |
-| 19_film | 2_musicalwork | Obras criativas com atores/músicos, gênero, distribuidora | 3_airport | Infraestrutura aeroportuária é oposta a filmes |
+| Alvo | #R | #C | #Tok | Vizinho | OvJ% | SimE | #R | #C | #Tok | Incongruente | OvJ% | SimE | #R | #C | #Tok |
+|---|--:|--:|--:|---|--:|--:|--:|--:|--:|---|--:|--:|--:|--:|--:|
+| 1_university          | 46 | 15 | 435 | 12_monument          | 18.0 | 0.649 | 26 | 14 | 271 | 8_celestialbody      |  0.0 | 0.356 | 27 |  8 | 255 |
+| 2_musicalwork         | 35 | 15 | 347 | 17_artist            | 21.3 | 0.663 | 39 | 20 | 399 | 8_celestialbody      |  1.6 | 0.374 | 27 |  8 | 255 |
+| 3_airport             | 39 | 14 | 375 | 16_city              | 24.0 | 0.663 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.336 | 27 |  8 | 255 |
+| 4_building            | 38 | 14 | 367 | 15_sportsteam        | 21.6 | 0.650 | 24 | 14 | 255 | 8_celestialbody      |  3.2 | 0.404 | 27 |  8 | 255 |
+| 5_athlete             | 37 | 17 | 371 | 15_sportsteam        | 22.0 | 0.680 | 24 | 14 | 255 | 8_celestialbody      |  4.9 | 0.449 | 27 |  8 | 255 |
+| 6_politician          | 40 | 19 | 403 | 18_scientist         | 22.5 | 0.673 | 47 | 15 | 443 | 10_comicscharacter   |  5.5 | 0.470 | 18 | 10 | 191 |
+| 7_company             | 28 | 10 | 271 | 16_city              | 24.4 | 0.673 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.356 | 27 |  8 | 255 |
+| 8_celestialbody       | 27 |  8 | 255 | 18_scientist         |  8.8 | 0.497 | 47 | 15 | 443 | 3_airport            |  0.0 | 0.336 | 39 | 14 | 375 |
+| 9_astronaut           | 38 | 16 | 375 | 6_politician         | 14.7 | 0.607 | 40 | 19 | 403 | 12_monument          |  1.6 | 0.437 | 26 | 14 | 271 |
+| 10_comicscharacter    | 18 | 10 | 191 | 19_film              | 12.7 | 0.603 | 44 | 18 | 431 | 16_city              |  0.0 | 0.382 | 23 | 11 | 235 |
+| 11_meanoftransportation | 68 | 20 | 631 | 7_company           | 17.1 | 0.632 | 28 | 10 | 271 | 8_celestialbody      |  0.0 | 0.396 | 27 |  8 | 255 |
+| 12_monument           | 26 | 14 | 271 | 1_university         | 18.0 | 0.649 | 46 | 15 | 435 | 8_celestialbody      |  0.0 | 0.366 | 27 |  8 | 255 |
+| 13_food               | 24 | 12 | 247 | 16_city              | 20.5 | 0.580 | 23 | 11 | 235 | 8_celestialbody      |  0.0 | 0.371 | 27 |  8 | 255 |
+| 14_writtenwork        | 44 | 10 | 399 | 6_politician         | 15.1 | 0.596 | 40 | 19 | 403 | 8_celestialbody      |  6.0 | 0.434 | 27 |  8 | 255 |
+| 15_sportsteam         | 24 | 14 | 255 | 5_athlete            | 22.0 | 0.680 | 37 | 17 | 371 | 8_celestialbody      |  2.0 | 0.367 | 27 |  8 | 255 |
+| 16_city               | 23 | 11 | 235 | 18_scientist         | 25.0 | 0.717 | 47 | 15 | 443 | 8_celestialbody      |  0.0 | 0.370 | 27 |  8 | 255 |
+| 17_artist             | 39 | 20 | 399 | 18_scientist         | 26.5 | 0.688 | 47 | 15 | 443 | 10_comicscharacter   |  5.6 | 0.475 | 18 | 10 | 191 |
+| 18_scientist          | 47 | 15 | 443 | 16_city              | 25.0 | 0.717 | 23 | 11 | 235 | 10_comicscharacter   |  4.8 | 0.469 | 18 | 10 | 191 |
+| 19_film               | 44 | 18 | 431 | 2_musicalwork        | 14.5 | 0.607 | 35 | 15 | 347 | 13_food              |  1.5 | 0.417 | 24 | 12 | 247 |
+
+**Aviso WebNLG:** 8_celestialbody é o incongruente de 12/19 ontologias — resultado esperado, pois seu
+vocabulário astronômico (apoapsis, perihelion, orbitalPeriod...) é maximalmente dissimilar do vocabulário
+de domínios humanos/sociais. 16_city e 18_scientist são vizinho de 5 e 4 ontologias respectivamente,
+pois suas relações (birthPlace, country, leader...) cobrem um espectro semântico amplo.
+Esses padrões são coerentes com a estrutura semântica do dataset e não configuram viés metodológico.
 
 ---
 
@@ -200,3 +224,36 @@ Em runs de desenvolvimento com `frases_max=5`, isso produziria conformidade ~0.0
 dividindo pelas frases de fato avaliadas.
 
 O campo `"modo_amostra"` é registrado no JSONL de médias para garantir rastreabilidade.
+
+---
+
+## D-07: Métrica auxiliar — taxa de erro de formato (avg_fmt_error)
+
+**Status:** APROVADA
+
+### Decisão
+
+Além das métricas do benchmark original, o avaliador computa a **taxa de erro de formato**:
+fração de triplas extraídas cujo sujeito **ou** objeto contém o nome de uma classe da
+ontologia como prefixo ou valor literal.
+
+**Padrões detectados (case-insensitive, por entidade `e` e classe `cls`):**
+1. `e == cls` — entidade é exatamente o label do conceito, ex.: `"film"`
+2. `e.startswith(cls + ":")` — prefixo com dois-pontos, ex.: `"film:Bleach: Hell Verse"`
+3. `e.startswith(cls + " ")` — prefixo com espaço, ex.: `'film "Keyboard Cat"'`
+
+A métrica conta por **tripla** (1 se ao menos uma entidade falha, 0 caso contrário) —
+não duplo-conta triplas onde ambas as entidades contêm erro.
+
+**Implementação:** `calcular_taxa_erro_formato(ontologia, triplas)` em `avaliacao/original.py`.
+Integrada ao loop de `avaliar()` via acumuladores `tef`/`stef`/`gef`; saída como campo
+`"avg_fmt_error"` nos JSONLs de resultado por ontologia e global.
+
+### Justificativa
+
+O piloto com qwen2.5:3b em C1 mostrou que o modelo antepõe o tipo de classe às entidades
+(ex.: `"film:Bleach: Hell Verse"`), causando P/R/F1=0 mesmo quando a relação está correta.
+A métrica quantifica essa falha de formato separadamente das métricas de recuperação, permitindo
+distinguir dois tipos de erro: (a) relação errada (capturado por F1) e (b) formato errado
+mas relação correta (capturado por avg_fmt_error). O piloto com 7B determinará se o problema
+persiste em modelos maiores e se justifica intervenção adicional no prompt.

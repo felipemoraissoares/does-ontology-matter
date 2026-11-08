@@ -1,0 +1,123 @@
+{
+  "modelo_embeddings": "all-MiniLM-L6-v2",
+  "tekgen": {
+    "1_movie": {
+      "vizinho": "4_book",
+      "incongruente": "9_nature"
+    },
+    "2_music": {
+      "vizinho": "4_book",
+      "incongruente": "7_space"
+    },
+    "3_sport": {
+      "vizinho": "1_movie",
+      "incongruente": "9_nature"
+    },
+    "4_book": {
+      "vizinho": "1_movie",
+      "incongruente": "9_nature"
+    },
+    "5_military": {
+      "vizinho": "8_politics",
+      "incongruente": "7_space"
+    },
+    "6_computer": {
+      "vizinho": "4_book",
+      "incongruente": "7_space"
+    },
+    "7_space": {
+      "vizinho": "3_sport",
+      "incongruente": "6_computer"
+    },
+    "8_politics": {
+      "vizinho": "1_movie",
+      "incongruente": "7_space"
+    },
+    "9_nature": {
+      "vizinho": "1_movie",
+      "incongruente": "6_computer"
+    },
+    "10_culture": {
+      "vizinho": "4_book",
+      "incongruente": "9_nature"
+    }
+  },
+  "webnlg": {
+    "1_university": {
+      "vizinho": "12_monument",
+      "incongruente": "8_celestialbody"
+    },
+    "2_musicalwork": {
+      "vizinho": "17_artist",
+      "incongruente": "8_celestialbody"
+    },
+    "3_airport": {
+      "vizinho": "16_city",
+      "incongruente": "8_celestialbody"
+    },
+    "4_building": {
+      "vizinho": "15_sportsteam",
+      "incongruente": "8_celestialbody"
+    },
+    "5_athlete": {
+      "vizinho": "15_sportsteam",
+      "incongruente": "8_celestialbody"
+    },
+    "6_politician": {
+      "vizinho": "18_scientist",
+      "incongruente": "10_comicscharacter"
+    },
+    "7_company": {
+      "vizinho": "16_city",
+      "incongruente": "8_celestialbody"
+    },
+    "8_celestialbody": {
+      "vizinho": "18_scientist",
+      "incongruente": "3_airport"
+    },
+    "9_astronaut": {
+      "vizinho": "6_politician",
+      "incongruente": "12_monument"
+    },
+    "10_comicscharacter": {
+      "vizinho": "19_film",
+      "incongruente": "16_city"
+    },
+    "11_meanoftransportation": {
+      "vizinho": "7_company",
+      "incongruente": "8_celestialbody"
+    },
+    "12_monument": {
+      "vizinho": "1_university",
+      "incongruente": "8_celestialbody"
+    },
+    "13_food": {
+      "vizinho": "16_city",
+      "incongruente": "8_celestialbody"
+    },
+    "14_writtenwork": {
+      "vizinho": "6_politician",
+      "incongruente": "8_celestialbody"
+    },
+    "15_sportsteam": {
+      "vizinho": "5_athlete",
+      "incongruente": "8_celestialbody"
+    },
+    "16_city": {
+      "vizinho": "18_scientist",
+      "incongruente": "8_celestialbody"
+    },
+    "17_artist": {
+      "vizinho": "18_scientist",
+      "incongruente": "10_comicscharacter"
+    },
+    "18_scientist": {
+      "vizinho": "16_city",
+      "incongruente": "10_comicscharacter"
+    },
+    "19_film": {
+      "vizinho": "2_musicalwork",
+      "incongruente": "13_food"
+    }
+  }
+}

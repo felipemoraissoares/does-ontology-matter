@@ -23,6 +23,7 @@ from t2kg.avaliacao.original import (
     normalizar_tripla,
     calcular_conformidade_ontologica,
     calcular_alucinacao_sujeito_objeto,
+    calcular_taxa_erro_formato,
     limpar_entidade,
     avaliar,
 )
@@ -151,6 +152,57 @@ class TestAlucinacaoSubjetoObjeto:
         entity = "01 January 1962"
         normalizado = limpar_entidade(ps, entity)
         assert "01januar" not in normalizado
+
+
+class TestTaxaErroFormato:
+    """Testa calcular_taxa_erro_formato com ontologia fictícia."""
+
+    def _ont(self, labels):
+        return {"concepts": [{"label": l} for l in labels], "relations": []}
+
+    def test_triplas_vazias_retorna_zero(self):
+        ont = self._ont(["film", "human"])
+        assert calcular_taxa_erro_formato(ont, []) == 0.0
+
+    def test_sujeito_exatamente_classe(self):
+        # "film" é label de conceito → erro
+        ont = self._ont(["film", "human"])
+        triplas = [["film", "director", "Noriyuki Abe"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_sujeito_com_prefixo_dois_pontos(self):
+        # "film:Bleach: Hell Verse" → começa com "film:" → erro
+        ont = self._ont(["film", "human"])
+        triplas = [["film:Bleach: Hell Verse", "director", "human:Noriyuki Abe"]]
+        # ambos sujeito e objeto são erros; mas a métrica conta por tripla (1 se qualquer)
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_sujeito_com_prefixo_espaco(self):
+        # 'film "Keyboard Cat"' → começa com "film " → erro
+        ont = self._ont(["film"])
+        triplas = [['film "Keyboard Cat"', "genre", "Animation"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_entidade_correta_sem_erro(self):
+        ont = self._ont(["film", "human"])
+        triplas = [["Bleach: Hell Verse", "director", "Noriyuki Abe"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 0.0
+
+    def test_mix_erros_e_corretos(self):
+        ont = self._ont(["film", "human"])
+        triplas = [
+            ["Bleach: Hell Verse", "director", "Noriyuki Abe"],   # correto
+            ["film", "genre", "Animation"],                        # erro (sujeito = classe)
+            ["film:Another Film", "director", "Some Director"],    # erro (prefixo com :)
+        ]
+        # 2 de 3 triplas com erro → 2/3
+        assert abs(calcular_taxa_erro_formato(ont, triplas) - 2/3) < 1e-9
+
+    def test_case_insensitive(self):
+        # "Film" (capitalizado) deve ser detectado como classe "film"
+        ont = self._ont(["film"])
+        triplas = [["Film:Bleach", "director", "someone"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
 
 
 # ---------------------------------------------------------------------------

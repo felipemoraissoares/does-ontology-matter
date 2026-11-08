@@ -88,6 +88,37 @@ def calcular_alucinacao_sujeito_objeto(
     return num_sub / len(triplas), num_obj / len(triplas)
 
 
+def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
+    """
+    Taxa de erro de formato: fração de triplas cujo sujeito OU objeto contém
+    o nome de uma classe da ontologia como prefixo ou valor literal.
+
+    Padrões detectados (case-insensitive sobre o label):
+      1. Entidade é exatamente o label do conceito, ex.: "film"
+      2. Entidade começa com "{label}:", ex.: "film:Bleach: Hell Verse"
+      3. Entidade começa com "{label} ", ex.: 'film "Keyboard Cat"'
+
+    Triplas vazias retornam 0.0.
+    """
+    if not triplas:
+        return 0.0
+    classes = {c["label"].lower() for c in ontologia.get("concepts", [])}
+    erros = 0
+    for tr in triplas:
+        tripla_tem_erro = False
+        for entidade in (tr[0], tr[2]):
+            e = entidade.lower().strip()
+            for cls in classes:
+                if e == cls or e.startswith(cls + ":") or e.startswith(cls + " "):
+                    tripla_tem_erro = True
+                    break
+            if tripla_tem_erro:
+                break
+        if tripla_tem_erro:
+            erros += 1
+    return erros / len(triplas)
+
+
 def calcular_conformidade_ontologica(ontologia: Dict, triplas: List) -> Tuple[float, float]:
     """
     Conformidade = fração das triplas do sistema cuja relação (tr[1]) está
@@ -187,7 +218,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
     if os.path.exists(avg_path):
         os.remove(avg_path)
 
-    gp = gr = gf1 = gc = grh = gsh = goh = 0.0
+    gp = gr = gf1 = gc = grh = gsh = goh = gef = 0.0
     resultados_por_onto = {}
 
     for onto in config["onto_list"]:
@@ -208,8 +239,8 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             if os.path.exists(sid_path):
                 ids_selecionados = ler_jsonl(sid_path, como_json=False)
 
-        tp = tr_ = tf1 = tc = trh = tsh = toh = 0.0
-        stp = str_ = stf1 = stc = strh = stsh = stoh = 0.0
+        tp = tr_ = tf1 = tc = trh = tsh = toh = tef = 0.0
+        stp = str_ = stf1 = stc = strh = stsh = stoh = stef = 0.0
         metricas_por_frase = []
 
         for sent_id in gabarito:
@@ -239,6 +270,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             precision, recall, f1 = calcular_precisao_recall_f1(gt_norm, sys_norm)
             conformidade, rel_hal = calcular_conformidade_ontologica(ontologia, sys_triplas)
             sub_hal, obj_hal = calcular_alucinacao_sujeito_objeto(ps, ontologia, frase, sys_triplas)
+            erro_formato = calcular_taxa_erro_formato(ontologia, sys_triplas)
 
             metricas_por_frase.append({
                 "id": sent_id,
@@ -249,6 +281,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
                 "rel_halluc": f"{rel_hal:.2f}",
                 "sub_halluc": f"{sub_hal:.2f}",
                 "obj_halluc": f"{obj_hal:.2f}",
+                "fmt_error": f"{erro_formato:.2f}",
                 "llm_triples": sys_triplas,
                 "filtered_llm_triples": fil_triplas,
                 "gt_triples": gt_triplas,
@@ -257,10 +290,12 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
 
             tp += precision; tr_ += recall; tf1 += f1
             tc += conformidade; trh += rel_hal; tsh += sub_hal; toh += obj_hal
+            tef += erro_formato
 
             if sent_id in ids_selecionados:
                 stp += precision; str_ += recall; stf1 += f1
                 stc += conformidade; strh += rel_hal; stsh += sub_hal; stoh += obj_hal
+                stef += erro_formato
 
         salvar_jsonl(metricas_por_frase, output_path)
 
@@ -279,11 +314,13 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             "avg_sub_halluc": f"{tsh/total:.2f}",
             "avg_rel_halluc": f"{trh/total:.2f}",
             "avg_obj_halluc": f"{toh/total:.2f}",
+            "avg_fmt_error": f"{tef/total:.2f}",
         }
         acrescentar_jsonl(media, avg_path)
 
         gp += tp/total; gr += tr_/total; gf1 += tf1/total
         gc += tc/total; grh += trh/total; gsh += tsh/total; goh += toh/total
+        gef += tef/total
 
         resultados_por_onto[onto_id] = media
 
@@ -298,6 +335,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
                 "avg_sub_halluc": f"{stsh/total_sel:.2f}",
                 "avg_rel_halluc": f"{strh/total_sel:.2f}",
                 "avg_obj_halluc": f"{stoh/total_sel:.2f}",
+                "avg_fmt_error": f"{stef/total_sel:.2f}",
             }
             acrescentar_jsonl(media_sel, avg_path)
 
@@ -312,6 +350,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
         "avg_sub_halluc": f"{gsh/n_onto:.2f}",
         "avg_rel_halluc": f"{grh/n_onto:.2f}",
         "avg_obj_halluc": f"{goh/n_onto:.2f}",
+        "avg_fmt_error": f"{gef/n_onto:.2f}",
         "onto_list": config["onto_list"],
     }
     acrescentar_jsonl(global_metricas, avg_path)
