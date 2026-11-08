@@ -2,9 +2,13 @@
 .env
 *.env
 
-# Resultados (exceto amostras pequenas)
+# Resultados (exceto piloto e testes)
 resultados/
 !resultados/.gitkeep
+!resultados/piloto/
+!resultados/piloto/**
+!resultados/tests/
+!resultados/tests/**
 
 # Python
 __pycache__/

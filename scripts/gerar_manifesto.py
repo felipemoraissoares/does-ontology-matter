@@ -50,7 +50,7 @@ SENSIBILIDADE_ONTOS = {
 def git_hash() -> str:
     try:
         return subprocess.check_output(
-            ["D:\\Programas\\Git\\cmd\\git.exe", "rev-parse", "HEAD"],
+            ["git", "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
         ).decode().strip()
     except Exception:
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     args = p.parse_args()
 
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    saida_resultados = os.path.join(root, "resultados", "7b")
+    saida_resultados = os.path.join("resultados", "7b")  # relativo à raiz do repo
 
     pares_path = os.path.join(root, "configs", "pipeline", "pares_c5.json")
     with open(pares_path, encoding="utf-8") as f:

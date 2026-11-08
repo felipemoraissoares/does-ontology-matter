@@ -14,8 +14,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_1_movie_c1_qwen25_7b_instruct_awq",
@@ -32,8 +32,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_1_movie_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -50,8 +50,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_1_movie_c3_qwen25_7b_instruct_awq",
@@ -68,8 +68,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_1_movie_c5_vizinho_qwen25_7b_instruct_awq",
@@ -86,8 +86,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "4_book"
   },
   {
@@ -105,8 +105,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_1_movie_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "9_nature"
   },
   {
@@ -124,8 +124,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_2_music_c1_qwen25_7b_instruct_awq",
@@ -142,8 +142,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_2_music_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -160,8 +160,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_2_music_c3_qwen25_7b_instruct_awq",
@@ -178,8 +178,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_2_music_c5_vizinho_qwen25_7b_instruct_awq",
@@ -196,8 +196,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "4_book"
   },
   {
@@ -215,8 +215,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_2_music_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_2_music_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_space"
   },
   {
@@ -234,8 +234,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_3_sport_c1_qwen25_7b_instruct_awq",
@@ -252,8 +252,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_3_sport_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -270,8 +270,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_3_sport_c3_qwen25_7b_instruct_awq",
@@ -288,8 +288,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_3_sport_c5_vizinho_qwen25_7b_instruct_awq",
@@ -306,8 +306,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "1_movie"
   },
   {
@@ -325,8 +325,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_3_sport_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_3_sport_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "9_nature"
   },
   {
@@ -344,8 +344,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_4_book_c1_qwen25_7b_instruct_awq",
@@ -362,8 +362,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_4_book_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -380,8 +380,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_4_book_c3_qwen25_7b_instruct_awq",
@@ -398,8 +398,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_4_book_c5_vizinho_qwen25_7b_instruct_awq",
@@ -416,8 +416,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "1_movie"
   },
   {
@@ -435,8 +435,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_4_book_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_4_book_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "9_nature"
   },
   {
@@ -454,8 +454,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_5_military_c1_qwen25_7b_instruct_awq",
@@ -472,8 +472,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_5_military_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -490,8 +490,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_5_military_c3_qwen25_7b_instruct_awq",
@@ -508,8 +508,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_5_military_c5_vizinho_qwen25_7b_instruct_awq",
@@ -526,8 +526,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_politics"
   },
   {
@@ -545,8 +545,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_5_military_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_space"
   },
   {
@@ -564,8 +564,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_6_computer_c1_qwen25_7b_instruct_awq",
@@ -582,8 +582,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_6_computer_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -600,8 +600,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_6_computer_c3_qwen25_7b_instruct_awq",
@@ -618,8 +618,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_6_computer_c5_vizinho_qwen25_7b_instruct_awq",
@@ -636,8 +636,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "4_book"
   },
   {
@@ -655,8 +655,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_6_computer_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_6_computer_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_space"
   },
   {
@@ -674,8 +674,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_7_space_c1_qwen25_7b_instruct_awq",
@@ -692,8 +692,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_7_space_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -710,8 +710,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_7_space_c3_qwen25_7b_instruct_awq",
@@ -728,8 +728,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_7_space_c5_vizinho_qwen25_7b_instruct_awq",
@@ -746,8 +746,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "3_sport"
   },
   {
@@ -765,8 +765,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_7_space_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_7_space_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "6_computer"
   },
   {
@@ -784,8 +784,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_8_politics_c1_qwen25_7b_instruct_awq",
@@ -802,8 +802,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_8_politics_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -820,8 +820,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_8_politics_c3_qwen25_7b_instruct_awq",
@@ -838,8 +838,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_8_politics_c5_vizinho_qwen25_7b_instruct_awq",
@@ -856,8 +856,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "1_movie"
   },
   {
@@ -875,8 +875,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_8_politics_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_8_politics_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_space"
   },
   {
@@ -894,8 +894,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_9_nature_c1_qwen25_7b_instruct_awq",
@@ -912,8 +912,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_9_nature_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -930,8 +930,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_9_nature_c3_qwen25_7b_instruct_awq",
@@ -948,8 +948,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_9_nature_c5_vizinho_qwen25_7b_instruct_awq",
@@ -966,8 +966,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "1_movie"
   },
   {
@@ -985,8 +985,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_9_nature_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_9_nature_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "6_computer"
   },
   {
@@ -1004,8 +1004,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_10_culture_c1_qwen25_7b_instruct_awq",
@@ -1022,8 +1022,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_10_culture_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1040,8 +1040,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_10_culture_c3_qwen25_7b_instruct_awq",
@@ -1058,8 +1058,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "tkg_10_culture_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1076,8 +1076,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "4_book"
   },
   {
@@ -1095,8 +1095,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_10_culture_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\tkg_10_culture_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "9_nature"
   },
   {
@@ -1114,8 +1114,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_1_university_c1_qwen25_7b_instruct_awq",
@@ -1132,8 +1132,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_1_university_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1150,8 +1150,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_1_university_c3_qwen25_7b_instruct_awq",
@@ -1168,8 +1168,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_1_university_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1186,8 +1186,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "12_monument"
   },
   {
@@ -1205,8 +1205,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_1_university_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_1_university_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1224,8 +1224,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_2_musicalwork_c1_qwen25_7b_instruct_awq",
@@ -1242,8 +1242,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_2_musicalwork_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1260,8 +1260,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_2_musicalwork_c3_qwen25_7b_instruct_awq",
@@ -1278,8 +1278,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_2_musicalwork_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1296,8 +1296,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "17_artist"
   },
   {
@@ -1315,8 +1315,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_2_musicalwork_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_2_musicalwork_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1334,8 +1334,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_3_airport_c1_qwen25_7b_instruct_awq",
@@ -1352,8 +1352,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_3_airport_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1370,8 +1370,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_3_airport_c3_qwen25_7b_instruct_awq",
@@ -1388,8 +1388,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_3_airport_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1406,8 +1406,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "16_city"
   },
   {
@@ -1425,8 +1425,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_3_airport_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1444,8 +1444,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_4_building_c1_qwen25_7b_instruct_awq",
@@ -1462,8 +1462,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_4_building_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1480,8 +1480,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_4_building_c3_qwen25_7b_instruct_awq",
@@ -1498,8 +1498,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_4_building_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1516,8 +1516,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "15_sportsteam"
   },
   {
@@ -1535,8 +1535,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_4_building_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_4_building_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1554,8 +1554,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_5_athlete_c1_qwen25_7b_instruct_awq",
@@ -1572,8 +1572,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_5_athlete_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1590,8 +1590,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_5_athlete_c3_qwen25_7b_instruct_awq",
@@ -1608,8 +1608,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_5_athlete_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1626,8 +1626,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "15_sportsteam"
   },
   {
@@ -1645,8 +1645,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_5_athlete_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1664,8 +1664,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_6_politician_c1_qwen25_7b_instruct_awq",
@@ -1682,8 +1682,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_6_politician_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1700,8 +1700,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_6_politician_c3_qwen25_7b_instruct_awq",
@@ -1718,8 +1718,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_6_politician_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1736,8 +1736,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "18_scientist"
   },
   {
@@ -1755,8 +1755,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_6_politician_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_6_politician_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
   {
@@ -1774,8 +1774,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_7_company_c1_qwen25_7b_instruct_awq",
@@ -1792,8 +1792,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_7_company_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1810,8 +1810,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_7_company_c3_qwen25_7b_instruct_awq",
@@ -1828,8 +1828,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_7_company_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1846,8 +1846,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "16_city"
   },
   {
@@ -1865,8 +1865,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_7_company_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_7_company_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -1884,8 +1884,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_8_celestialbody_c1_qwen25_7b_instruct_awq",
@@ -1902,8 +1902,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_8_celestialbody_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -1920,8 +1920,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_8_celestialbody_c3_qwen25_7b_instruct_awq",
@@ -1938,8 +1938,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_8_celestialbody_c5_vizinho_qwen25_7b_instruct_awq",
@@ -1956,8 +1956,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "18_scientist"
   },
   {
@@ -1975,8 +1975,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_8_celestialbody_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_8_celestialbody_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "3_airport"
   },
   {
@@ -1994,8 +1994,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_9_astronaut_c1_qwen25_7b_instruct_awq",
@@ -2012,8 +2012,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_9_astronaut_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2030,8 +2030,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_9_astronaut_c3_qwen25_7b_instruct_awq",
@@ -2048,8 +2048,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_9_astronaut_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2066,8 +2066,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "6_politician"
   },
   {
@@ -2085,8 +2085,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_9_astronaut_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_9_astronaut_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "12_monument"
   },
   {
@@ -2104,8 +2104,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_10_comicscharacter_c1_qwen25_7b_instruct_awq",
@@ -2122,8 +2122,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_10_comicscharacter_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2140,8 +2140,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_10_comicscharacter_c3_qwen25_7b_instruct_awq",
@@ -2158,8 +2158,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_10_comicscharacter_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2176,8 +2176,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "19_film"
   },
   {
@@ -2195,8 +2195,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_10_comicscharacter_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_10_comicscharacter_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "16_city"
   },
   {
@@ -2214,8 +2214,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_11_meanoftransportation_c1_qwen25_7b_instruct_awq",
@@ -2232,8 +2232,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_11_meanoftransportation_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2250,8 +2250,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_11_meanoftransportation_c3_qwen25_7b_instruct_awq",
@@ -2268,8 +2268,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_11_meanoftransportation_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2286,8 +2286,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_company"
   },
   {
@@ -2305,8 +2305,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_11_meanoftransportation_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_11_meanoftransportation_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2324,8 +2324,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_12_monument_c1_qwen25_7b_instruct_awq",
@@ -2342,8 +2342,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_12_monument_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2360,8 +2360,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_12_monument_c3_qwen25_7b_instruct_awq",
@@ -2378,8 +2378,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_12_monument_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2396,8 +2396,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "1_university"
   },
   {
@@ -2415,8 +2415,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_12_monument_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_12_monument_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2434,8 +2434,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_13_food_c1_qwen25_7b_instruct_awq",
@@ -2452,8 +2452,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_13_food_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2470,8 +2470,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_13_food_c3_qwen25_7b_instruct_awq",
@@ -2488,8 +2488,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_13_food_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2506,8 +2506,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "16_city"
   },
   {
@@ -2525,8 +2525,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_13_food_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_13_food_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2544,8 +2544,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_14_writtenwork_c1_qwen25_7b_instruct_awq",
@@ -2562,8 +2562,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_14_writtenwork_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2580,8 +2580,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_14_writtenwork_c3_qwen25_7b_instruct_awq",
@@ -2598,8 +2598,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_14_writtenwork_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2616,8 +2616,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "6_politician"
   },
   {
@@ -2635,8 +2635,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_14_writtenwork_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_14_writtenwork_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2654,8 +2654,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_15_sportsteam_c1_qwen25_7b_instruct_awq",
@@ -2672,8 +2672,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_15_sportsteam_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2690,8 +2690,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_15_sportsteam_c3_qwen25_7b_instruct_awq",
@@ -2708,8 +2708,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_15_sportsteam_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2726,8 +2726,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "5_athlete"
   },
   {
@@ -2745,8 +2745,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_15_sportsteam_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_15_sportsteam_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2764,8 +2764,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_16_city_c1_qwen25_7b_instruct_awq",
@@ -2782,8 +2782,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_16_city_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2800,8 +2800,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_16_city_c3_qwen25_7b_instruct_awq",
@@ -2818,8 +2818,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_16_city_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2836,8 +2836,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "18_scientist"
   },
   {
@@ -2855,8 +2855,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_16_city_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "8_celestialbody"
   },
   {
@@ -2874,8 +2874,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_17_artist_c1_qwen25_7b_instruct_awq",
@@ -2892,8 +2892,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_17_artist_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -2910,8 +2910,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_17_artist_c3_qwen25_7b_instruct_awq",
@@ -2928,8 +2928,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_17_artist_c5_vizinho_qwen25_7b_instruct_awq",
@@ -2946,8 +2946,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "18_scientist"
   },
   {
@@ -2965,8 +2965,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_17_artist_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_17_artist_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
   {
@@ -2984,8 +2984,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_18_scientist_c1_qwen25_7b_instruct_awq",
@@ -3002,8 +3002,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_18_scientist_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -3020,8 +3020,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_18_scientist_c3_qwen25_7b_instruct_awq",
@@ -3038,8 +3038,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_18_scientist_c5_vizinho_qwen25_7b_instruct_awq",
@@ -3056,8 +3056,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "16_city"
   },
   {
@@ -3075,8 +3075,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_18_scientist_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_18_scientist_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
   {
@@ -3094,8 +3094,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c0_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c0_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_19_film_c1_qwen25_7b_instruct_awq",
@@ -3112,8 +3112,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c1_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c1_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_19_film_c1_oneshot_original_qwen25_7b_instruct_awq",
@@ -3130,8 +3130,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_19_film_c3_qwen25_7b_instruct_awq",
@@ -3148,8 +3148,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c3_qwen25_7b_instruct_awq.jsonl"
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c3_qwen25_7b_instruct_awq.jsonl"
   },
   {
     "id": "web_19_film_c5_vizinho_qwen25_7b_instruct_awq",
@@ -3166,8 +3166,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c5_vizinho_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "2_musicalwork"
   },
   {
@@ -3185,8 +3185,8 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
-    "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_19_film_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
+    "git_hash": "DESCONHECIDO",
+    "saida": "resultados\\7b\\web_19_film_c5_incongruente_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "13_food"
   }
 ]
