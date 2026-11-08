@@ -4,16 +4,20 @@
 #   C0  — sem ontologia
 #   C1  — conceitos + relações com domínio/range (zero-shot, sem exemplo)
 #   C1_oneshot_original — igual C1, mas com exemplo (fornecido por dados.py)
+#   C2  — ontologia induzida a partir de extração livre no treino (D-16)
 #   C3  — top-k relações mais frequentes no treino, com domínio/range
-#   C5  — JSON bruto da ontologia CORRETA
-#   C5_vizinho      — JSON bruto de ontologia de domínio vizinho (perturbação nível 1)
-#   C5_incongruente — JSON bruto de ontologia de domínio incompatível (perturbação nível 2)
+#   C5  — ontologia correta em formato texto (igual C1)
+#   C5_vizinho      — ontologia parceira vizinha em formato texto (perturbação nível 1)
+#   C5_incongruente — ontologia parceira incongruente em formato texto (perturbação nível 2)
 
 import json
 import os
 from typing import Dict, List, Optional
 
-CONDICOES = {"C0", "C1", "C1_oneshot_original", "C3", "C5", "C5_vizinho", "C5_incongruente"}
+CONDICOES = {"C0", "C1", "C1_oneshot_original", "C2", "C3", "C5", "C5_vizinho", "C5_incongruente"}
+
+# Diretório raiz do repo (dois níveis acima deste arquivo)
+_REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 
 def _caminhos_ontologia(bench_dir: str, dataset: str, ontologia_id: str) -> str:
@@ -58,6 +62,22 @@ def _formatar_conceitos(ontologia: Dict) -> str:
     return ", ".join(c["label"] for c in ontologia["concepts"]) + ","
 
 
+def carregar_ontologia_induzida(dataset: str, ontologia_id: str) -> Dict:
+    """
+    Carrega a ontologia induzida pela condição C2.
+    Espera o arquivo em configs/c2/{dataset}_{onto}_induced.json (gerado por induzir_c2.py).
+    Lança FileNotFoundError com mensagem clara se o arquivo não existir.
+    """
+    caminho = os.path.join(_REPO_DIR, "configs", "c2", f"{dataset}_{ontologia_id}_induced.json")
+    if not os.path.exists(caminho):
+        raise FileNotFoundError(
+            f"Ontologia induzida C2 não encontrada: {caminho}\n"
+            f"Execute: python scripts/induzir_c2.py --dataset {dataset} --onto {ontologia_id}"
+        )
+    with open(caminho, encoding="utf-8") as f:
+        return json.load(f)
+
+
 def formatar_contexto(
     ontologia: Dict,
     condicao: str,
@@ -73,19 +93,27 @@ def formatar_contexto(
     ontologia : Dict
         Ontologia alvo (sempre a correta para a sentença).
     condicao : str
-        C0 | C1 | C1_oneshot_original | C3 | C5 | C5_vizinho | C5_incongruente
+        C0 | C1 | C1_oneshot_original | C2 | C3 | C5 | C5_vizinho | C5_incongruente
     top_k_rels : list[str] | None
         Para C3: labels das k relações mais frequentes no treino (com _ no lugar de espaço).
         Se None, usa todas as relações (comportamento legado).
     ontologia_parceira : Dict | None
-        Para C5_vizinho / C5_incongruente: ontologia a fornecer ao modelo no lugar da correta.
-        Para C5: ignorado (usa a ontologia correta).
+        Para C2: ontologia induzida (pré-carregada). Para C5_vizinho/C5_incongruente:
+        ontologia parceira. Para C5: ignorado.
     """
     if condicao not in CONDICOES:
         raise ValueError(f"Condição desconhecida: {condicao!r}. Use: {CONDICOES}")
 
     if condicao == "C0":
         return None
+
+    if condicao == "C2":
+        # Usa ontologia induzida fornecida via ontologia_parceira.
+        # Apenas relações são definidas (sem conceitos nem domain/range).
+        if ontologia_parceira is None:
+            raise ValueError("C2 requer ontologia_parceira com a ontologia induzida (vide D-16).")
+        labels = ", ".join(r["label"].replace(" ", "_") for r in ontologia_parceira.get("relations", []))
+        return f"Relations: {labels}"
 
     if condicao in ("C1", "C1_oneshot_original"):
         conceitos = _formatar_conceitos(ontologia)

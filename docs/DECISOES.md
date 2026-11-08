@@ -354,6 +354,56 @@ a julgamento editorial — nomear como "similaridade de esquema" torna isso expl
 
 ---
 
+## D-16: Condição C2 — ontologia induzida a partir de extração livre no treino
+
+**Status:** APROVADA (Fase 2; execução no piloto Kaggle)
+
+### Decisão
+
+C2 fornece ao modelo uma **ontologia induzida**: o vocabulário de relações extraído pelo
+próprio modelo ao processar 50 frases de treino em modo livre (sem ontologia, equivalente
+a C0). As relações extraídas são agrupadas por similaridade semântica e cada grupo vira uma
+relação da ontologia induzida. O formato do contexto é idêntico ao C1 (texto, não JSON).
+
+### Protocolo de indução (pré-registrado)
+
+1. **Seleção de frases:** 50 frases do conjunto de treino por ontologia, amostradas com
+   `seed=42` (mesmo seed do piloto). Registradas para reprodutibilidade.
+2. **Extração livre:** o mesmo modelo (Qwen2.5-7B-Instruct-AWQ, temperatura 0) extrai
+   triplas das 50 frases SEM ontologia e SEM triplas anotadas — condição equivalente a C0.
+   As triplas anotadas do treino **não formam** o vocabulário de C2 (isso seria vazamento);
+   são usadas apenas para calibrar os limiares (ver abaixo).
+3. **Agrupamento:** os rótulos de relação livres são agrupados por embedding bidirecional
+   (all-MiniLM-L6-v2) com limiar provisório **0.80**. O rótulo mais frequente do grupo
+   vira o nome da relação na ontologia induzida.
+4. **Ontologia induzida:** lista de relações únicas com rótulos do modelo, sem domain/range
+   (estes são desconhecidos). Salva em `configs/c2/{dataset}_{onto}_induced.json`.
+
+### Calibração dos limiares (corre junto com o piloto Kaggle)
+
+Após a extração livre das 50 frases de treino:
+- Alinhar triplas livres com triplas anotadas pelo mesmo par (sujeito, objeto).
+- Gerar pares "mesma relação" (rótulo livre ↔ relação anotada que aparece no mesmo par)
+  e "relações diferentes".
+- Testar limiares de agrupamento: 0.70, 0.75, 0.80, 0.85, 0.90 — escolher o que maximiza
+  F1 da separação "mesma vs. diferente".
+- Testar limiares de projeção: mesmos valores — escolher o que maximiza **precisão**
+  (projetar errado é pior que não projetar).
+- Registrar: limiares definitivos, curva F1/precisão, e sensibilidade com o limiar vizinho.
+- Reportar % de relações projetadas por condição (C0, C2, C3).
+
+### Limiares provisórios
+
+| Parâmetro | Provisório | Definitivo |
+|---|---|---|
+| `threshold_agrupamento` | 0.80 | a calibrar no piloto |
+| `threshold_projecao` | 0.80 | a calibrar no piloto |
+
+**Implementação:** `scripts/induzir_c2.py` — extração + clustering. Resultado em
+`configs/c2/`. Condição C2 no pipeline usa o arquivo de ontologia induzida como contexto.
+
+---
+
 ## D-12: Distinção entre zero-shot e C1_oneshot_original
 
 **Status:** APROVADA
