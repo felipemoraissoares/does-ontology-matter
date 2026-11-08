@@ -239,10 +239,14 @@ Além das métricas do benchmark original, o avaliador computa a **taxa de erro 
 fração de triplas extraídas cujo sujeito **ou** objeto contém o nome de uma classe da
 ontologia como prefixo ou valor literal.
 
-**Padrões detectados (case-insensitive, por entidade `e` e classe `cls`):**
-1. `e == cls` — entidade é exatamente o label do conceito, ex.: `"film"`
+**Padrões detectados (após `entidade.lower().strip()` → `e`; classe como `cls`):**
+1. `e == cls` **e** `entidade` não contém nenhuma letra maiúscula — entidade é exatamente
+   o label do conceito em minúsculas, ex.: `"film"`. A restrição de maiúsculas evita
+   flagear entidades legítimas capitalizadas como `"Composer"` ou `"Book"` que existem
+   no GT do benchmark.
 2. `e.startswith(cls + ":")` — prefixo com dois-pontos, ex.: `"film:Bleach: Hell Verse"`
-3. `e.startswith(cls + " ")` — prefixo com espaço, ex.: `'film "Keyboard Cat"'`
+3. `e.startswith(cls + ' "')` ou `e.startswith(cls + " '")` — prefixo com espaço e aspas,
+   ex.: `'film "Keyboard Cat"'`. Restrição a aspas evita `"City of God"` com classe `"city"`.
 
 A métrica conta por **tripla** (1 se ao menos uma entidade falha, 0 caso contrário) —
 não duplo-conta triplas onde ambas as entidades contêm erro.

@@ -111,12 +111,13 @@ def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
         for entidade in (tr[0], tr[2]):
             e = entidade.lower().strip()
             for cls in classes:
-                if (
-                    e == cls
-                    or e.startswith(cls + ":")
-                    or e.startswith(cls + ' "')
-                    or e.startswith(cls + " '")
-                ):
+                # Padrão 1 (exact): só flageia quando a entidade original é inteiramente
+                # minúscula — o modelo literalmente usou o nome da classe como entidade.
+                # Entidades capitalizadas (ex.: "Composer", "Book") são nomes legítimos.
+                padrao1 = (e == cls and not any(c.isupper() for c in entidade))
+                padrao2 = e.startswith(cls + ":")
+                padrao3 = e.startswith(cls + ' "') or e.startswith(cls + " '")
+                if padrao1 or padrao2 or padrao3:
                     tripla_tem_erro = True
                     break
             if tripla_tem_erro:

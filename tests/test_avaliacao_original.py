@@ -164,11 +164,25 @@ class TestTaxaErroFormato:
         ont = self._ont(["film", "human"])
         assert calcular_taxa_erro_formato(ont, []) == 0.0
 
-    def test_sujeito_exatamente_classe(self):
-        # "film" é label de conceito → erro
+    def test_sujeito_exatamente_classe_minusculo(self):
+        # "film" (todo minúsculo) é o modelo usando o nome da classe — erro
         ont = self._ont(["film", "human"])
         triplas = [["film", "director", "Noriyuki Abe"]]
         assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_sem_falso_positivo_entidade_capitalizada(self):
+        # "Composer" é nome legítimo de entidade (ex.: obra musical), não erro de formato
+        ont = self._ont(["composer", "human"])
+        triplas = [["Composer", "genre", "Classical"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 0.0
+
+    def test_sem_falso_positivo_book_capitalizado(self):
+        # "Book" capitalizado não é erro; "book" minúsculo seria erro
+        ont = self._ont(["book", "author"])
+        triplas_ok = [["Book", "author", "Some Author"]]
+        triplas_err = [["book", "author", "Some Author"]]
+        assert calcular_taxa_erro_formato(ont, triplas_ok) == 0.0
+        assert calcular_taxa_erro_formato(ont, triplas_err) == 1.0
 
     def test_sujeito_com_prefixo_dois_pontos(self):
         # "film:Bleach: Hell Verse" → começa com "film:" → erro

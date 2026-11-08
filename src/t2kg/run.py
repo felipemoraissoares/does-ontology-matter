@@ -70,6 +70,16 @@ def main():
         help="Limite de frases por experimento (substitui frases_max do manifesto).",
     )
     parser.add_argument(
+        "--saida_base", default=None,
+        help="Substitui o diretório-base dos arquivos 'saida' do manifesto. "
+             "Útil para redirecionar resultados em ambientes remotos (Kaggle, Colab).",
+    )
+    parser.add_argument(
+        "--skip_existentes", action="store_true",
+        help="Pula experimentos cujo arquivo de saída já existe. "
+             "Permite retomar uma execução interrompida.",
+    )
+    parser.add_argument(
         "--verbose", action="store_true",
         help="Imprime progresso linha a linha.",
     )
@@ -89,6 +99,17 @@ def main():
 
     for exp in experimentos:
         exp_id = exp.get("id", "?")
+
+        # Redireciona saida se --saida_base fornecido
+        saida_original = exp["saida"]
+        if args.saida_base:
+            exp["saida"] = os.path.join(args.saida_base, os.path.basename(saida_original))
+
+        # Pula experimentos já concluídos se --skip_existentes
+        if args.skip_existentes and os.path.exists(exp["saida"]):
+            print(f"\n=== Experimento: {exp_id} [PULADO — saida existe] ===")
+            continue
+
         print(f"\n=== Experimento: {exp_id} ===")
         print(f"    dataset={exp['dataset']}  split={exp['split']}  "
               f"onto={exp['ontologia_id']}  cond={exp['condicao']}")
