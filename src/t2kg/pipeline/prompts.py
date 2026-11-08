@@ -7,12 +7,20 @@
 from typing import Optional
 
 
+# Instrução de entidade: evita que o modelo substitua entidades reais por classes da ontologia.
+# Aplicada a C0, C1, C3, C5*. NÃO aplicada a C1_oneshot_original (fidelidade ao benchmark).
+_INSTRUCAO_ENTIDADE = (
+    "Use as subject and object the exact entity names as written in the sentence, "
+    "never the ontology class names."
+)
+
 _INSTRUCAO_COM_ONT = (
     "Given the following ontology and sentence, please extract the triples "
     "from the sentence according to the relations in the ontology. "
-    "In the output, only include the triples in the given output format."
+    "In the output, only include the triples in the given output format. "
+    + _INSTRUCAO_ENTIDADE
 )
-# O benchmark usa "sentences" (plural) — mantido para C1_oneshot_original
+# O benchmark usa "sentences" (plural) — mantido para C1_oneshot_original; sem instrução de entidade.
 _INSTRUCAO_COM_ONT_BENCH = (
     "Given the following ontology and sentences, please extract the triples "
     "from the sentence according to the relations in the ontology. "
@@ -21,18 +29,21 @@ _INSTRUCAO_COM_ONT_BENCH = (
 _INSTRUCAO_C3 = (
     "Given the following sentence and list of relations, please extract the triples. "
     "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line."
+    "one triple per line. "
+    + _INSTRUCAO_ENTIDADE
 )
 _INSTRUCAO_C5 = (
     "Given the following ontology (in JSON format) and sentence, please extract "
     "the triples according to the relations defined in the ontology. "
     "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line."
+    "one triple per line. "
+    + _INSTRUCAO_ENTIDADE
 )
 _INSTRUCAO_C0 = (
     "Given the following sentence, please extract all relevant triples. "
     "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line."
+    "one triple per line. "
+    + _INSTRUCAO_ENTIDADE
 )
 
 

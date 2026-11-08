@@ -7,11 +7,10 @@
 
 import json
 import os
-from collections import Counter
 from typing import Dict, List, Optional
 
 from ..parser import parsear_resposta
-from .dados import carregar_frases
+from .dados import carregar_frases, carregar_frequencias_treino
 from .ontologias import carregar_ontologia, formatar_contexto
 from .prompts import montar_prompt
 from .provedores.base import ProvedorBase
@@ -92,15 +91,10 @@ def executar(
     if condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
         ontologia_parceira = carregar_ontologia(bench_dir, dataset, ontologia_parceira_id)
 
-    # Para C3: calcula top-k relações a partir do gabarito completo
+    # Para C3: top-k relações extraídas dos dados de TREINO (nunca do GT de teste)
     top_k_rels = None
     if condicao == "C3":
-        cont: Counter = Counter()
-        for frase in frases:
-            for t in frase.get("gt_triples", []):
-                rel = t[1].replace(" ", "_") if isinstance(t, list) else t.get("rel", "").replace(" ", "_")
-                cont[rel] += 1
-        top_k_rels = [r for r, _ in cont.most_common(_K_RELS)]
+        top_k_rels = carregar_frequencias_treino(bench_dir, dataset, ontologia_id, k=_K_RELS)
 
     contexto = formatar_contexto(
         ontologia, condicao,

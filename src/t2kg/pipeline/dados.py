@@ -6,10 +6,17 @@
 #   DBpedia test:   data/dbpedia_webnlg/ground_truth/ont_{onto}_ground_truth.jsonl
 #   Prompts TekGen: data/wikidata_tekgen/baselines/prompts/[unseen/]ont_{onto}[_unseen]_prompts.jsonl
 #   Prompts DBpedia:data/dbpedia_webnlg/baselines/prompts/ont_{onto}_prompts.jsonl
+#
+# Dados de treino (para cálculo de frequências sem vazamento):
+#   TekGen train:   data/wikidata_tekgen/train/ont_{onto}_train.jsonl
+#                   formato: um dict por linha, campo "rel_label"
+#   DBpedia train:  data/dbpedia_webnlg/train/ont_{onto}_train.jsonl
+#                   formato: um dict por linha, campo "triples" com lista de {"sub","rel","obj"}
 
 import json
 import os
 import re
+from collections import Counter
 from typing import List, Dict, Optional, Tuple
 
 
@@ -66,6 +73,48 @@ def _caminhos_prompts(bench_dir: str, dataset: str, split: str, ontologia_id: st
         bench_dir, "data", "dbpedia_webnlg", "baselines", "prompts",
         f"ont_{ontologia_id}_prompts.jsonl",
     )
+
+
+def _caminhos_treino(bench_dir: str, dataset: str, ontologia_id: str) -> str:
+    if dataset == "tekgen":
+        return os.path.join(
+            bench_dir, "data", "wikidata_tekgen",
+            "train", f"ont_{ontologia_id}_train.jsonl",
+        )
+    return os.path.join(
+        bench_dir, "data", "dbpedia_webnlg",
+        "train", f"ont_{ontologia_id}_train.jsonl",
+    )
+
+
+def carregar_frequencias_treino(
+    bench_dir: str, dataset: str, ontologia_id: str, k: int = 3
+) -> List[str]:
+    """
+    Retorna os k labels de relação mais frequentes nos dados de TREINO (nunca no GT de teste).
+
+    Usado exclusivamente para definir o contexto de C3 sem vazamento de informação do conjunto
+    de teste.
+
+    Formatos de treino:
+      TekGen: um dict por linha, campo "rel_label" (uma tripla por linha)
+      DBpedia: um dict por linha, campo "triples" com lista de {"sub","rel","obj"}
+    """
+    caminho = _caminhos_treino(bench_dir, dataset, ontologia_id)
+    cont: Counter = Counter()
+    with open(caminho, encoding="utf-8") as f:
+        for linha in f:
+            if not linha.strip():
+                continue
+            d = json.loads(linha)
+            if "rel_label" in d:
+                # TekGen: uma tripla por linha
+                cont[d["rel_label"].replace(" ", "_")] += 1
+            else:
+                # DBpedia: múltiplas triplas por linha
+                for t in d.get("triples", []):
+                    cont[t["rel"].replace(" ", "_")] += 1
+    return [r for r, _ in cont.most_common(k)]
 
 
 def carregar_frases(

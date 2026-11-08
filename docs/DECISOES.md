@@ -114,6 +114,73 @@ não o formato do prompt.
 
 ---
 
+## D-06: Fonte de dados para C3 k=3 — dados de treino, nunca GT de teste
+
+**Status:** APROVADA
+
+### Decisão
+
+As frequências de relação usadas para selecionar as k=3 relações da condição C3
+são calculadas exclusivamente sobre os **dados de treino** do benchmark
+(`data/{dataset}/train/ont_{onto}_train.jsonl`), nunca sobre o ground truth de teste.
+
+### Justificativa
+
+Usar o GT de teste para calcular quais relações incluir no contexto seria **vazamento de dados**:
+o pipeline teria acesso direto às respostas corretas antes de executar a inferência. O conjunto
+de treino é parte pública do benchmark, disponível antes do teste, e é a fonte correta para
+qualquer estatística derivada do corpus.
+
+**Diferença prática (1_movie TekGen):**
+| Fonte | Top-3 relações |
+|---|---|
+| GT de teste (errado) | publication_date, cast_member, director |
+| Dados de treino (correto) | director, screenwriter, genre |
+
+As distribuições diferem significativamente — `screenwriter` e `genre` lideram no treino
+mas não estão no top-3 do teste. Usar o treino é também mais realista: em produção, a
+distribuição de relações do conjunto de teste é desconhecida.
+
+**Implementação:** `dados.py` — função `carregar_frequencias_treino(bench_dir, dataset, ontologia_id, k)`.
+Teste: `test_c3_usa_dados_de_treino_nao_gt` verifica que o caminho construído contém
+`"train"` e não contém `"ground_truth"` nem `"/test/"`.
+
+---
+
+## D-05: Instrução de entidade — desvio controlado do prompt original
+
+**Status:** APROVADA
+
+### Decisão
+
+As condições C0, C1, C3, C5, C5_vizinho e C5_incongruente incluem a instrução adicional:
+
+> *"Use as subject and object the exact entity names as written in the sentence,
+> never the ontology class names."*
+
+A condição **C1_oneshot_original** **não inclui** esta instrução (máxima fidelidade ao prompt
+publicado no benchmark).
+
+### Justificativa
+
+Sem a instrução, o qwen2.5:3b (e possivelmente modelos maiores) substitui as entidades reais
+pelos nomes das classes da ontologia fornecida no contexto. Por exemplo, dado o contexto
+`director(film,human)`, o modelo gerava `director(film, Noriyuki Abe)` usando `"film"` como
+sujeito em vez do título real do filme. Isso causa P/R/F1=0 mesmo quando a relação está
+correta — um artefato de prompt que mascara a capacidade real do modelo.
+
+A instrução adicional é um **desvio controlado e documentado** do benchmark original. Ela
+não altera a estrutura do prompt (contexto, formato de saída, "Test Output:"), apenas esclarece
+o uso de nomes de entidades. O desvio é registrado aqui para transparência metodológica.
+
+**Efeito observado (qwen2.5:3b, 5 frases, C1 antes→depois):**
+- Antes: conformidade=0.80, P/R/F1=0.00, sujeitos = classes puras ("film")
+- Depois: conformidade=1.00, P/R/F1=0.00, sujeitos = classe+entidade ("film:Bleach: Hell Verse")
+- Problema residual: modelo ainda antepõe o tipo (`film:`, `human:`) — achado metodológico
+  registrado para análise na dissertação.
+
+---
+
 ## D-04: Modo de avaliação — benchmark vs. amostra
 
 **Status:** APROVADA

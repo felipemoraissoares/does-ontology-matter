@@ -147,6 +147,25 @@ class TestPrompts:
         p = montar_prompt("My sentence.", "C5", contexto_ontologia=ctx)
         assert "JSON" in p
 
+    def test_instrucao_entidade_presente_em_c0_c1_c3_c5(self):
+        """C0, C1, C3, C5 devem conter a instrução de não usar classes da ontologia."""
+        trecho = "exact entity names as written in the sentence"
+        ctx = "Ontology Relations: rel(X,Y)"
+        for cond, extra in [
+            ("C0", {}),
+            ("C1", {"contexto_ontologia": ctx}),
+            ("C3", {"contexto_ontologia": "Relations: rel(X,Y)"}),
+            ("C5", {"contexto_ontologia": '{"relations":[]}'}),
+        ]:
+            p = montar_prompt("My sentence.", cond, **extra)
+            assert trecho in p, f"Instrução de entidade ausente em {cond}"
+
+    def test_instrucao_entidade_ausente_em_c1_oneshot_original(self):
+        """C1_oneshot_original NÃO deve conter a instrução (fidelidade ao benchmark)."""
+        ctx = "Ontology Relations: rel(X,Y)"
+        p = montar_prompt("My sentence.", "C1_oneshot_original", contexto_ontologia=ctx)
+        assert "exact entity names" not in p
+
 
 # ---------------------------------------------------------------------------
 # executar.py — integração + checkpoint
@@ -213,25 +232,42 @@ class TestExecutar:
             assert n == 3, f"Falhou para condição {cond}"
 
     @SKIP_SEM_BENCH
+    def test_c3_usa_dados_de_treino_nao_gt(self, tmp_path):
+        """C3: a fonte das top-k relações deve ser o treino, nunca o GT de teste."""
+        from t2kg.pipeline.dados import _caminhos_treino, carregar_frequencias_treino
+
+        # Verifica que o caminho de treino não aponta para ground_truth nem /test/
+        path_tkg = _caminhos_treino(BENCH, "tekgen", "1_movie")
+        path_web = _caminhos_treino(BENCH, "webnlg", "1_university")
+        for path in (path_tkg, path_web):
+            norm = path.replace("\\", "/")
+            assert "train" in norm, f"Caminho não contém 'train': {path}"
+            assert "ground_truth" not in norm, f"Caminho contém 'ground_truth': {path}"
+            assert "/test/" not in norm, f"Caminho contém '/test/': {path}"
+
+        # Verifica que as relações retornadas são as do treino (diferentes do GT de teste)
+        top3_treino = carregar_frequencias_treino(BENCH, "tekgen", "1_movie", k=3)
+        assert isinstance(top3_treino, list)
+        assert len(top3_treino) == 3
+        # treino de 1_movie tem 'director','screenwriter','genre'; GT de teste tem 'publication_date','cast_member'
+        # screenwriter aparece no treino mas NÃO é top-3 no GT de teste
+        assert "screenwriter" in top3_treino, (
+            f"'screenwriter' deveria estar no top-3 do treino: {top3_treino}"
+        )
+
+    @SKIP_SEM_BENCH
     def test_c3_top_k_incluido_no_prompt(self, tmp_path):
-        """C3 com k=3: prompt deve conter as top-3 relações com domain/range."""
-        from t2kg.pipeline.prompts import montar_prompt
-        from t2kg.pipeline.ontologias import formatar_contexto, carregar_ontologia
-        from collections import Counter
+        """C3 com k=3 do TREINO: prompt deve conter as top-3 relações com domain/range."""
+        from t2kg.pipeline.dados import carregar_frequencias_treino
 
         ont = carregar_ontologia(BENCH, "tekgen", "1_movie")
-        frases = carregar_frases(BENCH, "tekgen", "test", "1_movie")
-        cont: Counter = Counter()
-        for frase in frases:
-            for t in frase.get("gt_triples", []):
-                cont[t["rel"].replace(" ", "_")] += 1
-        top3 = [r for r, _ in cont.most_common(3)]
+        top3 = carregar_frequencias_treino(BENCH, "tekgen", "1_movie", k=3)
 
         ctx = formatar_contexto(ont, "C3", top_k_rels=top3)
         assert "Relations:" in ctx
         # deve incluir domain/range (parênteses)
         assert "(" in ctx
-        # deve conter as relações corretas
+        # deve conter as relações do treino
         for rel in top3:
             assert rel in ctx
 
