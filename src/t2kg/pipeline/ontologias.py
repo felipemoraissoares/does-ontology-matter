@@ -111,6 +111,13 @@ def formatar_contexto(
         labels = ", ".join(r["label"].replace(" ", "_") for r in ontologia["relations"])
         return f"Relations: {labels}"
 
-    # C5* — JSON bruto; C5_vizinho/C5_incongruente usam a ontologia parceira
-    ont_json = ontologia_parceira if ontologia_parceira is not None else ontologia
-    return json.dumps(ont_json, ensure_ascii=False)
+    # C5* — mesmo formato texto de C1, mudando apenas o conteúdo da ontologia.
+    # C5_vizinho/C5_incongruente usam a ontologia parceira; C5 usa a ontologia alvo.
+    # Manter o mesmo formato isola o efeito do CONTEÚDO vs. o efeito de FORMAT.
+    ont_to_use = ontologia_parceira if ontologia_parceira is not None else ontologia
+    conceitos = _formatar_conceitos(ont_to_use)
+    relacoes = _formatar_relacoes_c1(ont_to_use)
+    return (
+        f"Ontology Concepts: {conceitos}\n"
+        f"Ontology Relations: {relacoes}"
+    )

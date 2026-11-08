@@ -7,6 +7,7 @@
 
 import json
 import os
+import random
 from typing import Dict, List, Optional
 
 from ..parser import parsear_resposta
@@ -51,6 +52,7 @@ def executar(
     max_tokens: int = 512,
     temperatura: float = 0.0,
     frases_max: Optional[int] = None,
+    frases_seed: Optional[int] = None,
     verbose: bool = False,
     ontologia_parceira_id: Optional[str] = None,
 ) -> int:
@@ -77,13 +79,23 @@ def executar(
         Caminho do arquivo JSONL de saída.
     frases_max : int | None
         Limita o total de frases processadas (inclui checkpoint).
+    frases_seed : int | None
+        Semente para embaralhar frases antes de aplicar frases_max.
+        Garante subsample reprodutível (estratificado por posição aleatória).
+        Se None, mantém a ordem original dos dados.
     verbose : bool
         Imprime progresso.
     ontologia_parceira_id : str | None
-        Para C5_vizinho/C5_incongruente: ID da ontologia cujo JSON será fornecido ao modelo.
-        Se None em C5_vizinho/C5_incongruente, usa a própria ontologia alvo.
+        Para C5_vizinho/C5_incongruente: ID da ontologia cujo conteúdo será
+        fornecido ao modelo. Se None, usa a própria ontologia alvo.
     """
     frases = carregar_frases(bench_dir, dataset, split, ontologia_id)
+
+    # Embaralhamento reprodutível para subsample estratificado (item E)
+    if frases_seed is not None:
+        rng = random.Random(frases_seed)
+        frases = list(frases)
+        rng.shuffle(frases)
     ontologia = carregar_ontologia(bench_dir, dataset, ontologia_id)
 
     # Para C5_vizinho/C5_incongruente carrega a ontologia parceira

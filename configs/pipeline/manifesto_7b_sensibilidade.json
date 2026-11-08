@@ -14,7 +14,7 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "2cdf2253d66de503d075b7e27a9ad337a6ed4040",
+    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
     "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_3_airport_c5_incongruente_2_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
@@ -33,7 +33,7 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "2cdf2253d66de503d075b7e27a9ad337a6ed4040",
+    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
     "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_5_athlete_c5_incongruente_2_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
@@ -52,7 +52,7 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "2cdf2253d66de503d075b7e27a9ad337a6ed4040",
+    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
     "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\web_16_city_c5_incongruente_2_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "10_comicscharacter"
   },
@@ -71,7 +71,7 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "2cdf2253d66de503d075b7e27a9ad337a6ed4040",
+    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
     "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_1_movie_c5_incongruente_2_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "7_space"
   },
@@ -90,7 +90,7 @@
     "temperatura": 0,
     "seed": 42,
     "max_tokens": 512,
-    "git_hash": "2cdf2253d66de503d075b7e27a9ad337a6ed4040",
+    "git_hash": "4586e49dc50418cf2cd43e4cf05a37365aaade8b",
     "saida": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\7b\\tkg_5_military_c5_incongruente_2_qwen25_7b_instruct_awq.jsonl",
     "ontologia_parceira_id": "9_nature"
   }

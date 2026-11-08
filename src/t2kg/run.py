@@ -67,7 +67,7 @@ def main():
     )
     parser.add_argument(
         "--frases_max", type=int, default=None,
-        help="Limite de frases por experimento (útil para testes rápidos).",
+        help="Limite de frases por experimento (substitui frases_max do manifesto).",
     )
     parser.add_argument(
         "--verbose", action="store_true",
@@ -95,6 +95,16 @@ def main():
 
         provedor = _criar_provedor(exp)
 
+        # frases_max: CLI tem precedência; fallback para o manifesto
+        frases_max_efetivo = args.frases_max if args.frases_max is not None else exp.get("frases_max")
+        frases_seed = exp.get("frases_seed")
+
+        if frases_max_efetivo is not None:
+            print(
+                f"    AVISO: frases_max={frases_max_efetivo} ativo — "
+                "use modo_amostra=True na avaliação (avaliar_resultados.py --auto_modo_amostra)."
+            )
+
         n = executar(
             bench_dir=args.bench_dir,
             dataset=exp["dataset"],
@@ -105,7 +115,8 @@ def main():
             saida=exp["saida"],
             max_tokens=exp.get("max_tokens", 512),
             temperatura=exp.get("temperatura", 0.0),
-            frases_max=args.frases_max,
+            frases_max=frases_max_efetivo,
+            frases_seed=frases_seed,
             verbose=args.verbose,
             ontologia_parceira_id=exp.get("ontologia_parceira_id"),
         )

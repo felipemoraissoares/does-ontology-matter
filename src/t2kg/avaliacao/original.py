@@ -96,7 +96,9 @@ def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
     Padrões detectados (case-insensitive sobre o label):
       1. Entidade é exatamente o label do conceito, ex.: "film"
       2. Entidade começa com "{label}:", ex.: "film:Bleach: Hell Verse"
-      3. Entidade começa com "{label} ", ex.: 'film "Keyboard Cat"'
+      3. Entidade começa com '{label} "', ex.: 'film "Keyboard Cat"'
+         (padrão 3 restrito a aspas para evitar falsos positivos em títulos
+          como "City of God" com ontologia que tem classe "city")
 
     Triplas vazias retornam 0.0.
     """
@@ -109,7 +111,12 @@ def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
         for entidade in (tr[0], tr[2]):
             e = entidade.lower().strip()
             for cls in classes:
-                if e == cls or e.startswith(cls + ":") or e.startswith(cls + " "):
+                if (
+                    e == cls
+                    or e.startswith(cls + ":")
+                    or e.startswith(cls + ' "')
+                    or e.startswith(cls + " '")
+                ):
                     tripla_tem_erro = True
                     break
             if tripla_tem_erro:

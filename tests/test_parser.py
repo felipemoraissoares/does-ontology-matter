@@ -106,3 +106,48 @@ class TestParserProsaIgnorada:
     def test_so_prosa(self):
         resp = "I cannot extract any triples from this sentence."
         assert parsear_resposta(resp) == []
+
+
+class TestParserCategoriaH:
+    """Categoria H: prefixos de resposta que o modelo adiciona antes das triplas."""
+
+    def test_test_output_prefix(self):
+        resp = "Test Output: director(Film A, Director B)"
+        assert parsear_resposta(resp) == [["Film A", "director", "Director B"]]
+
+    def test_output_prefix(self):
+        resp = "Output: screenwriter(Film A, Writer C)"
+        assert parsear_resposta(resp) == [["Film A", "screenwriter", "Writer C"]]
+
+    def test_answer_prefix(self):
+        resp = "Answer: genre(Film A, Action)"
+        assert parsear_resposta(resp) == [["Film A", "genre", "Action"]]
+
+    def test_prefix_case_insensitive(self):
+        resp = "OUTPUT: director(Film A, Director B)"
+        assert parsear_resposta(resp) == [["Film A", "director", "Director B"]]
+
+    def test_prefix_seguido_de_multiplas(self):
+        resp = "Test Output: director(Film A, Dir B)\nscreenwriter(Film A, Sc C)"
+        result = parsear_resposta(resp)
+        assert ["Film A", "director", "Dir B"] in result
+        assert ["Film A", "screenwriter", "Sc C"] in result
+
+
+class TestParserCategoriaG:
+    """Categoria G: tripla distribuída em múltiplas linhas."""
+
+    def test_tripla_em_duas_linhas(self):
+        resp = "director(Film A,\nDirector B)"
+        assert parsear_resposta(resp) == [["Film A", "director", "Director B"]]
+
+    def test_tripla_em_tres_linhas(self):
+        resp = "director(\n  Film A,\n  Director B\n)"
+        result = parsear_resposta(resp)
+        assert len(result) == 1
+        assert result[0][1] == "director"
+
+    def test_tripla_multilinhas_seguida_de_normal(self):
+        resp = "director(\n  Film A, Director B)\ngenre(Film A, Action)"
+        result = parsear_resposta(resp)
+        assert ["Film A", "genre", "Action"] in result

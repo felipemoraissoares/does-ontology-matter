@@ -7,9 +7,17 @@
 #   3. Aspas externas em sub/obj são removidas
 #   4. Triplas com objeto vazio são descartadas (rel(sub,) ou rel(sub))
 #   5. Linhas em prosa (sem parênteses) são ignoradas
+#   6. (Cat H) Prefixos "Test Output:", "Output:", "Answer:", "Triples:" removidos
+#   7. (Cat G) Triplas multi-linha (rel( \n sub, obj \n )) são reunidas
 
 import re
 from typing import List, Optional, Tuple
+
+# Prefixos que modelos de chat frequentemente antepõem ao conteúdo (Categoria H)
+_RE_PREFIXO_RESPOSTA = re.compile(
+    r"^(?:Test\s+Output|Output|Triples|Answer|Result)\s*:\s*",
+    re.IGNORECASE,
+)
 
 
 def parsear_resposta(resposta: str) -> List[List[str]]:
@@ -23,9 +31,14 @@ def parsear_resposta(resposta: str) -> List[List[str]]:
     # Remove escapes markdown: \_ → _  \( → (  \) → )
     texto = resposta.replace("\\_", "_").replace("\\(", "(").replace("\\)", ")")
 
+    # Categoria G: junta linhas de triplas incompletas (abertura sem fechamento)
+    texto = _juntar_triplas_multiplas_linhas(texto)
+
     triplas = []
     for linha in texto.splitlines():
         linha = linha.strip()
+        # Categoria H: remove prefixos "Test Output:", "Output:", etc.
+        linha = _RE_PREFIXO_RESPOSTA.sub("", linha).strip()
         # Remove prefixos de lista: "- ", "* ", "• ", "1. "
         linha = re.sub(r"^[-*•]\s+", "", linha)
         linha = re.sub(r"^\d+\.\s+", "", linha)
@@ -37,6 +50,33 @@ def parsear_resposta(resposta: str) -> List[List[str]]:
                 triplas.append(list(tripla))
 
     return triplas
+
+
+def _juntar_triplas_multiplas_linhas(texto: str) -> str:
+    """
+    Categoria G: detecta linhas com '(' mas sem ')' e junta com a(s) próxima(s)
+    até o parêntese fechar. Exemplo:
+      director(\\n  Film A,\\n  Person B\\n)  →  director(Film A, Person B)
+    """
+    linhas = texto.splitlines()
+    resultado: List[str] = []
+    buffer: Optional[str] = None
+
+    for linha in linhas:
+        if buffer is not None:
+            buffer += " " + linha.strip()
+            if ")" in buffer:
+                resultado.append(buffer)
+                buffer = None
+        elif "(" in linha and ")" not in linha:
+            buffer = linha
+        else:
+            resultado.append(linha)
+
+    if buffer is not None:
+        resultado.append(buffer)
+
+    return "\n".join(resultado)
 
 
 def _dividir_multiplas(linha: str) -> List[str]:

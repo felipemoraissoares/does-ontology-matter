@@ -92,11 +92,16 @@ class TestOntologias:
         assert "(film," not in ctx
 
     @SKIP_SEM_BENCH
-    def test_c5_e_json_valido(self):
+    def test_c5_mesmo_formato_que_c1(self):
+        """C5 deve usar o mesmo formato texto que C1 (Ontology Concepts + Ontology Relations)."""
         ont = carregar_ontologia(BENCH, "tekgen", "1_movie")
-        ctx = formatar_contexto(ont, "C5")
-        parsed = json.loads(ctx)
-        assert "relations" in parsed
+        ctx_c1 = formatar_contexto(ont, "C1")
+        ctx_c5 = formatar_contexto(ont, "C5")
+        # Mesmas chaves de formato
+        assert "Ontology Concepts:" in ctx_c5
+        assert "Ontology Relations:" in ctx_c5
+        # Mesmo conteúdo quando ontologia é a mesma
+        assert ctx_c1 == ctx_c5
 
     def test_condicao_invalida_levanta_erro(self):
         with pytest.raises(ValueError):
@@ -142,10 +147,18 @@ class TestPrompts:
         p = montar_prompt("My sentence.", "C3", contexto_ontologia=ctx)
         assert "Relations: director" in p
 
-    def test_c5_instrucao_json(self):
-        ctx = '{"relations": []}'
-        p = montar_prompt("My sentence.", "C5", contexto_ontologia=ctx)
-        assert "JSON" in p
+    def test_c5_mesma_instrucao_que_c1(self):
+        """C5 e C1 devem usar a mesma instrução base (formato texto, não JSON)."""
+        ctx = "Ontology Concepts: film,\nOntology Relations: director(film,human)"
+        p_c5 = montar_prompt("My sentence.", "C5", contexto_ontologia=ctx)
+        p_c1 = montar_prompt("My sentence.", "C1", contexto_ontologia=ctx)
+        # Ambos devem ter a instrução de entidade
+        assert "exact entity names" in p_c5
+        # C5 não deve referenciar JSON
+        assert "JSON" not in p_c5
+        # Ambos devem conter "ontology" na instrução
+        assert "ontology" in p_c5.lower()
+        assert "ontology" in p_c1.lower()
 
     def test_instrucao_entidade_presente_em_c0_c1_c3_c5(self):
         """C0, C1, C3, C5 devem conter a instrução de não usar classes da ontologia."""
@@ -272,15 +285,51 @@ class TestExecutar:
             assert rel in ctx
 
     @SKIP_SEM_BENCH
+    def test_c3_nao_abre_arquivo_de_teste_ou_gabarito(self, tmp_path):
+        """
+        Nenhum arquivo de teste, unseen ou ground_truth deve ser aberto
+        durante a construção do contexto C3 (leakagem de dados).
+        """
+        from unittest.mock import patch
+        from t2kg.pipeline.dados import carregar_frequencias_treino
+
+        arquivos_abertos = []
+        _open_original = open
+
+        def spy_open(path, *args, **kwargs):
+            arquivos_abertos.append(str(path).replace("\\", "/"))
+            return _open_original(path, *args, **kwargs)
+
+        with patch("builtins.open", side_effect=spy_open):
+            top3 = carregar_frequencias_treino(BENCH, "tekgen", "1_movie", k=3)
+
+        proibidos = ["ground_truth", "/test/", "unseen", "llm_responses"]
+        for p in arquivos_abertos:
+            for proibido in proibidos:
+                assert proibido not in p, (
+                    f"Arquivo proibido aberto durante C3: {p!r} contém '{proibido}'"
+                )
+
+        # Confirma que as relações são do treino, não do GT de teste
+        assert "screenwriter" in top3, (
+            f"'screenwriter' deveria estar no top-3 do treino: {top3}"
+        )
+        assert "publication_date" not in top3, (
+            f"'publication_date' é do GT de teste e não deveria aparecer no treino: {top3}"
+        )
+
+    @SKIP_SEM_BENCH
     def test_c5_vizinho_usa_ontologia_parceira(self, tmp_path):
-        """C5_vizinho deve serializar a ontologia parceira, não a alvo."""
+        """C5_vizinho deve usar o conteúdo da ontologia parceira (formato texto, igual C1)."""
         ont_alvo = carregar_ontologia(BENCH, "tekgen", "1_movie")
         ont_parceira = carregar_ontologia(BENCH, "tekgen", "2_music")
-        ctx = formatar_contexto(ont_alvo, "C5_vizinho", ontologia_parceira=ont_parceira)
-        parsed = json.loads(ctx)
-        # O JSON fornecido deve ser da ontologia de música, não de filme
-        assert parsed.get("title") == ont_parceira.get("title")
-        assert parsed.get("title") != ont_alvo.get("title")
+        ctx_vizinho = formatar_contexto(ont_alvo, "C5_vizinho", ontologia_parceira=ont_parceira)
+        ctx_parceira_c1 = formatar_contexto(ont_parceira, "C1")
+        # C5_vizinho com parceira deve ser igual a C1 da parceira
+        assert ctx_vizinho == ctx_parceira_c1
+        # C5_vizinho não deve ser igual a C1 do alvo
+        ctx_alvo_c1 = formatar_contexto(ont_alvo, "C1")
+        assert ctx_vizinho != ctx_alvo_c1
 
 
 # ---------------------------------------------------------------------------

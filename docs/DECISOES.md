@@ -16,8 +16,11 @@ acompanhadas de seus conceitos de domínio e alcance. Formato idêntico ao C1 ma
 listar conceitos nem usar exemplo.
 
 ```
-Relations: director(film,human), cast_member(film,human), publication_date(film,time)
+Relations: director(film,human), screenwriter(film,human), genre(film,genre)
 ```
+
+(Exemplo com as top-3 do **treino** para 1_movie TekGen: director, screenwriter, genre.
+Vide D-06 para a comparação com as top-3 do GT de teste, que são distintas.)
 
 **Justificativa:** k=3 isola o efeito de nomear as relações mais salientes sem revelar
 a estrutura completa da ontologia. A inclusão de domain/range fornece contexto mínimo
@@ -67,7 +70,7 @@ Resultado salvo em `configs/pipeline/pares_c5.json`. Script reprodutível: `scri
 
 ### Tabela de pares C5 — TekGen (Wikidata)
 
-Colunas: `#Tok` = tokens no bloco JSON (proxy de tamanho do contexto); `dTok` = tokens da parceira menos tokens do alvo (covariável na análise estatística); `Inc2` = 2ª parceira com menor SimE (usada na análise de sensibilidade D-10).
+Colunas: `#Tok` = tokens no bloco de texto formato C1/C5 (whitespace-split, proxy de tamanho do contexto; vide D-11); `dTok` = tokens da parceira menos tokens do alvo (covariável na análise estatística); `Inc2` = 2ª parceira com menor SimE (usada na análise de sensibilidade D-10).
 
 | Alvo | #Tok | Vizinho | OvJ% | SimE | #Tok | dTok | Incongruente | OvJ% | SimE | #Tok | dTok | Inc2 | SimE2 |
 |---|--:|---|--:|--:|--:|--:|---|--:|--:|--:|--:|---|--:|
@@ -348,3 +351,91 @@ ou ao campo `domain` de uma propriedade OWL. "Similaridade de esquema" é mais p
 mede a sobreposição semântica entre os **vocabulários de relação** das ontologias (seus esquemas),
 não a afinidade temática julgada por um humano. O critério é calculável, reprodutível e agnóstico
 a julgamento editorial — nomear como "similaridade de esquema" torna isso explícito.
+
+---
+
+## D-12: Distinção entre zero-shot e C1_oneshot_original
+
+**Status:** APROVADA
+
+### Decisão
+
+As condições C0, C1, C3, C5, C5_vizinho e C5_incongruente são rodadas em modo **zero-shot**
+(sem exemplo de entrada/saída no prompt). A condição **C1_oneshot_original** reproduz o prompt
+exato do benchmark original, que inclui um par de exemplo (`Input:` / `Output:`) antes da
+sentença de teste.
+
+### Justificativa
+
+O benchmark original (Mihindukulasooriya et al., ISWC 2023) usa um único par de exemplo no
+prompt de cada ontologia. Para isolar o efeito da estrutura do prompt vs. o conteúdo da
+ontologia, as demais condições deste estudo omitem o exemplo e são zero-shot. C1_oneshot_original
+serve como âncora de reprodução — permite verificar que nosso pipeline reproduz os valores do
+artigo antes de comparar as condições experimentais.
+
+**Implicação:** a comparação direta C1 vs. C1_oneshot_original mede o efeito do exemplo no
+prompt, mantendo tudo mais constante.
+
+---
+
+## D-13: C0 bruta e C0 projetada
+
+**Status:** APROVADA
+
+### Decisão
+
+A condição **C0** (sem ontologia) é avaliada em dois modos:
+
+| Modo | Descrição |
+|---|---|
+| **C0 bruta** | Avaliação direta: triplas do modelo comparadas ao gabarito sem filtragem |
+| **C0 projetada** | Triplas do modelo são projetadas para a ontologia alvo antes da avaliação (relações não conformes descartadas) |
+
+### Justificativa
+
+C0 bruta mede o que o modelo gera quando completamente livre; C0 projetada isola a contribuição
+do conteúdo semântico das triplas C0 que por acaso estão conformes com a ontologia. A diferença
+C0_projetada − C0_bruta quantifica quanto da precisão de C0 é "acidental" (relações corretas
+geradas sem guia ontológico). Este delta é relevante para interpretar o ganho de C1 sobre C0.
+
+---
+
+## D-14: Avaliação sempre contra a ontologia de referência do alvo
+
+**Status:** APROVADA
+
+### Decisão
+
+A conformidade ontológica e as métricas de alucinação são calculadas **sempre usando a ontologia
+alvo** (a ontologia correta associada ao par sentença/GT), mesmo quando o prompt usa uma
+ontologia parceira (condições C5_vizinho e C5_incongruente).
+
+### Justificativa
+
+O objetivo da avaliação é medir quão bem o modelo extrai triplas corretas para o domínio alvo.
+Se a conformidade fosse calculada contra a ontologia parceira, C5_vizinho teria conformidade
+artificialmente alta (pois o modelo gerou relações da parceira que fornecemos). Usar sempre a
+ontologia de referência garante que a conformidade reflita o objetivo real (extração correta)
+e não o quão bem o modelo seguiu a ontologia errada que fornecemos.
+
+---
+
+## D-15: Correção do parser — Categoria J
+
+**Status:** APROVADA
+
+### Decisão
+
+O parser aceita triplas no formato `rel(sub, obj),` — com vírgula após o parêntese de
+fechamento — sem gerar erro nem descartar a tripla. A vírgula final é simplesmente ignorada.
+
+### Justificativa
+
+Modelos de completamento (Vicuna, Alpaca) geram frequentemente listas de triplas separadas
+por vírgula após o parêntese: `rel1(a,b),\nrel2(a,c),`. Sem esta correção, a tripla seria
+descartada (a regex de fechamento não encontraria `)` no final da linha), gerando falsos
+negativos na avaliação. O padrão é análogo à Categoria D original do benchmark
+("trailing comma after triple"), mas afeta o delimitador externo em vez dos argumentos.
+
+**Implementação:** `parser.py` — `_RE_TRIPLA` inclui `,?` após `)` antes do fim da linha.
+Teste: `TestParserVirgulaFinal.test_multiplas_com_virgula_final` em `tests/test_parser.py`.

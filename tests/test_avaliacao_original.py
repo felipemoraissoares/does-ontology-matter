@@ -177,11 +177,24 @@ class TestTaxaErroFormato:
         # ambos sujeito e objeto são erros; mas a métrica conta por tripla (1 se qualquer)
         assert calcular_taxa_erro_formato(ont, triplas) == 1.0
 
-    def test_sujeito_com_prefixo_espaco(self):
-        # 'film "Keyboard Cat"' → começa com "film " → erro
+    def test_sujeito_com_prefixo_espaco_seguido_de_aspas(self):
+        # 'film "Keyboard Cat"' → começa com 'film "' → erro (padrão 3)
         ont = self._ont(["film"])
         triplas = [['film "Keyboard Cat"', "genre", "Animation"]]
         assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_sem_falso_positivo_city_of_god(self):
+        # "City of God" é um título legítimo que começa com "city " (sem aspas).
+        # Com a classe "city" na ontologia, o padrão 3 restrito NÃO deve flagear.
+        ont = self._ont(["city", "film"])
+        triplas = [["City of God", "director", "Fernando Meirelles"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 0.0
+
+    def test_sem_falso_positivo_sport_competition(self):
+        # "sport competition" começa com "sport " mas é entidade real (sem aspas).
+        ont = self._ont(["sport"])
+        triplas = [["sport competition", "type", "Athletics"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 0.0
 
     def test_entidade_correta_sem_erro(self):
         ont = self._ont(["film", "human"])

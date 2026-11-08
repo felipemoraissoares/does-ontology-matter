@@ -27,14 +27,15 @@ _INSTRUCAO_COM_ONT_BENCH = (
     "In the output, only include the triples in the given output format."
 )
 _INSTRUCAO_C3 = (
-    "Given the following sentence and list of relations, please extract the triples. "
+    "Given the following sentence and list of key relations, please extract the triples. "
+    "You may use relation names not in the list when the text explicitly indicates them. "
     "In the output, only include the triples in the format rel(subject, object), "
     "one triple per line. "
     + _INSTRUCAO_ENTIDADE
 )
 _INSTRUCAO_C5 = (
-    "Given the following ontology (in JSON format) and sentence, please extract "
-    "the triples according to the relations defined in the ontology. "
+    "Given the following ontology and sentence, please extract the triples "
+    "according to the relations defined in the ontology. "
     "In the output, only include the triples in the format rel(subject, object), "
     "one triple per line. "
     + _INSTRUCAO_ENTIDADE

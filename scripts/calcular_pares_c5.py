@@ -33,6 +33,10 @@ except ImportError:
     print("  pip install sentence-transformers scikit-learn --user")
     sys.exit(1)
 
+# Importa formatador de ontologia (formato texto, mesmo que C1)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+from t2kg.pipeline.ontologias import formatar_contexto  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # Configuração
 # ---------------------------------------------------------------------------
@@ -67,9 +71,13 @@ def carregar_onto(dataset: str, onto_id: str) -> dict:
         return json.load(f)
 
 
-def num_tokens_json(onto: dict) -> int:
-    """Conta palavras no JSON do bloco C5 (proxy para tokens LLM)."""
-    return len(json.dumps(onto).split())
+def num_tokens_texto(onto: dict) -> int:
+    """
+    Conta palavras no bloco de texto formato C1/C5 (whitespace-split, proxy para tokens LLM).
+    Usando whitespace-split e não tokenizador Qwen — subestima ~20% (documentado em D-11).
+    """
+    ctx = formatar_contexto(onto, "C1")
+    return len(ctx.split())
 
 
 def overlap_jaccard(rels_a: list, rels_b: list) -> float:
@@ -115,7 +123,7 @@ def analisar_dataset(dataset: str, ontos: list, modelo: SentenceTransformer) -> 
             "ont": ont, "rels": rels, "concs": concs,
             "labels_norm": labels_norm, "embs": embs,
             "n_rels": len(rels), "n_concs": len(concs),
-            "n_tokens": num_tokens_json(ont),
+            "n_tokens": num_tokens_texto(ont),
         }
 
     # 2. Computa matriz de similaridade (overlap e embedding) para todos os pares

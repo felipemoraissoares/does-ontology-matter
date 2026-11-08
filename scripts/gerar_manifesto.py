@@ -1,9 +1,10 @@
 """
-Gera o manifesto JSON completo para os experimentos da Fase 2.
+Gera os manifestos JSON para os experimentos da Fase 2.
 
-Produz dois arquivos em configs/pipeline/:
-  manifesto_7b_full.json        — experimento principal (29 onto × 6 cond = 174 entradas)
+Produz arquivos em configs/pipeline/:
+  manifesto_7b_full.json         — experimento principal (29 onto × 6 cond = 174 entradas)
   manifesto_7b_sensibilidade.json — análise de sensibilidade (5 onto × C5_incongruente_2)
+  manifesto_piloto_kaggle.json   — piloto Kaggle (2 TekGen × 3 cond, 200 frases, seed=42)
 
 Uso:
   python scripts/gerar_manifesto.py [--modelo MODELO] [--url URL] [--saida_dir DIR]
@@ -23,6 +24,10 @@ import sys
 # Configuração fixa
 # ---------------------------------------------------------------------------
 CONDICOES_PRINCIPAIS = ["C0", "C1", "C1_oneshot_original", "C3", "C5_vizinho", "C5_incongruente"]
+CONDICOES_PILOTO = ["C0", "C1", "C1_oneshot_original"]
+PILOTO_ONTOS_TEKGEN = ["1_movie", "2_music"]
+PILOTO_FRASES_MAX = 200
+PILOTO_FRASES_SEED = 42
 
 TEKGEN_ONTOS = [
     "1_movie", "2_music", "3_sport", "4_book", "5_military",
@@ -87,6 +92,35 @@ def entrada(
     return e
 
 
+def entrada_piloto(
+    *,
+    exp_id: str,
+    dataset: str,
+    onto_id: str,
+    condicao: str,
+    modelo: str,
+    url: str,
+    saida_base: str,
+    git: str,
+    frases_max: int,
+    frases_seed: int,
+) -> dict:
+    e = entrada(
+        exp_id=exp_id,
+        dataset=dataset,
+        onto_id=onto_id,
+        condicao=condicao,
+        modelo=modelo,
+        url=url,
+        saida_base=saida_base,
+        git=git,
+    )
+    e["frases_max"] = frases_max
+    e["frases_seed"] = frases_seed
+    e["modo_amostra"] = True
+    return e
+
+
 def gerar_principal(ontos_tkg, ontos_web, pares, modelo, url, saida_base, git):
     exp = []
 
@@ -135,6 +169,34 @@ def gerar_principal(ontos_tkg, ontos_web, pares, modelo, url, saida_base, git):
                 saida_base=saida_base,
                 git=git,
                 onto_parceira_id=parceira,
+            ))
+
+    return exp
+
+
+def gerar_piloto(modelo, url, saida_base, git):
+    exp = []
+
+    def _slug(modelo):
+        return modelo.split("/")[-1].lower().replace("-", "_").replace(".", "")
+
+    slug = _slug(modelo)
+
+    for onto_id in PILOTO_ONTOS_TEKGEN:
+        for cond in CONDICOES_PILOTO:
+            cond_slug = cond.lower()
+            exp_id = f"piloto_tkg_{onto_id}_{cond_slug}_{slug}"
+            exp.append(entrada_piloto(
+                exp_id=exp_id,
+                dataset="tekgen",
+                onto_id=onto_id,
+                condicao=cond,
+                modelo=modelo,
+                url=url,
+                saida_base=saida_base,
+                git=git,
+                frases_max=PILOTO_FRASES_MAX,
+                frases_seed=PILOTO_FRASES_SEED,
             ))
 
     return exp
@@ -198,15 +260,20 @@ if __name__ == "__main__":
         TEKGEN_ONTOS, WEBNLG_ONTOS, pares, args.modelo, args.url, saida_resultados, git
     )
     exp_sens = gerar_sensibilidade(pares, args.modelo, args.url, saida_resultados, git)
+    exp_piloto = gerar_piloto(args.modelo, args.url, saida_resultados, git)
 
     full_path = os.path.join(args.saida_dir, "manifesto_7b_full.json")
     sens_path = os.path.join(args.saida_dir, "manifesto_7b_sensibilidade.json")
+    piloto_path = os.path.join(args.saida_dir, "manifesto_piloto_kaggle.json")
 
     with open(full_path, "w", encoding="utf-8") as f:
         json.dump(exp_full, f, ensure_ascii=False, indent=2)
     with open(sens_path, "w", encoding="utf-8") as f:
         json.dump(exp_sens, f, ensure_ascii=False, indent=2)
+    with open(piloto_path, "w", encoding="utf-8") as f:
+        json.dump(exp_piloto, f, ensure_ascii=False, indent=2)
 
     print(f"\nManifesto principal:    {full_path}  ({len(exp_full)} experimentos)")
     print(f"Manifesto sensibilidade: {sens_path}  ({len(exp_sens)} experimentos)")
-    print(f"Total de experimentos:   {len(exp_full) + len(exp_sens)}")
+    print(f"Manifesto piloto:        {piloto_path}  ({len(exp_piloto)} experimentos)")
+    print(f"Total de experimentos:   {len(exp_full) + len(exp_sens) + len(exp_piloto)}")
