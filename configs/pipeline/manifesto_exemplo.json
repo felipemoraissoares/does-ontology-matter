@@ -1,0 +1,41 @@
+[
+  {
+    "id": "tekgen_1_movie_C1_oneshot_qwen",
+    "dataset": "tekgen",
+    "split": "test",
+    "ontologia_id": "1_movie",
+    "condicao": "C1_oneshot_original",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:8000/v1",
+    "api_key": "token-nao-usado",
+    "temperatura": 0,
+    "max_tokens": 512,
+    "saida": "resultados/tekgen_1_movie_C1_oneshot_qwen.jsonl"
+  },
+  {
+    "id": "tekgen_1_movie_C0_qwen",
+    "dataset": "tekgen",
+    "split": "test",
+    "ontologia_id": "1_movie",
+    "condicao": "C0",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:8000/v1",
+    "api_key": "token-nao-usado",
+    "temperatura": 0,
+    "max_tokens": 512,
+    "saida": "resultados/tekgen_1_movie_C0_qwen.jsonl"
+  },
+  {
+    "id": "tekgen_1_movie_C1_mock",
+    "dataset": "tekgen",
+    "split": "test",
+    "ontologia_id": "1_movie",
+    "condicao": "C1",
+    "provedor": "mock",
+    "temperatura": 0,
+    "max_tokens": 512,
+    "saida": "resultados/tekgen_1_movie_C1_mock.jsonl"
+  }
+]
