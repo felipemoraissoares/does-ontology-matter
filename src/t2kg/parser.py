@@ -58,8 +58,8 @@ def _extrair_tripla(linha: str) -> Optional[Tuple[str, str, str]]:
     if not linha:
         return None
 
-    # Padrão: identificador_de_relação(conteúdo)
-    m = re.match(r"^([A-Za-z_][^\(]*)\((.+)\)\s*$", linha)
+    # Padrão: identificador_de_relação(conteúdo) com vírgula/ponto-e-vírgula final opcionais
+    m = re.match(r"^([A-Za-z_][^\(]*)\((.+)\)\s*[,;]?\s*$", linha)
     if not m:
         return None
 

@@ -74,6 +74,29 @@ class TestParserAspas:
         assert result == [["Film A", "director", "Director B"]]
 
 
+class TestParserVirgulaFinal:
+    def test_virgula_apos_parentese_final(self):
+        # Categoria J: "rel(sub, obj)," — vírgula após ) é ignorada
+        resp = "director(Film A, Director B),"
+        assert parsear_resposta(resp) == [["Film A", "director", "Director B"]]
+
+    def test_multiplas_com_virgula_final(self):
+        # Padrão real do Vicuna: cada tripla termina com vírgula
+        resp = (
+            "directs(Kanta Kamei, Tales of Vesperia: The First Strike),\n"
+            "writes(Reiko Yoshida, Tales of Vesperia: The First Strike),\n"
+            "genre(Tales of Vesperia: The First Strike, fantasy),"
+        )
+        result = parsear_resposta(resp)
+        assert ["Kanta Kamei", "directs", "Tales of Vesperia: The First Strike"] in result
+        assert ["Reiko Yoshida", "writes", "Tales of Vesperia: The First Strike"] in result
+        assert ["Tales of Vesperia: The First Strike", "genre", "fantasy"] in result
+
+    def test_ponto_e_virgula_final(self):
+        resp = "director(Film A, Director B);"
+        assert parsear_resposta(resp) == [["Film A", "director", "Director B"]]
+
+
 class TestParserProsaIgnorada:
     def test_linha_em_prosa_ignorada(self):
         resp = "Here is the answer.\ndirector(Film A,Director B)"
