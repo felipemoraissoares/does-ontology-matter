@@ -35,13 +35,19 @@ def carregar_ontologia(bench_dir: str, dataset: str, ontologia_id: str) -> Dict:
 def _formatar_relacoes_c1(ontologia: Dict) -> str:
     """
     Formato do benchmark: rel_label(domain_label,range_label), ...
-    Espaços nos labels são preservados (o benchmark usa espaços no nome dos conceitos).
+    O benchmark usa os *labels* dos conceitos (ex.: 'film', 'human'), não os QIDs.
+    Para TekGen o mapeamento é QID→label; para DBpedia domain/range já são labels.
     """
+    id_para_label = {c["qid"]: c["label"] for c in ontologia.get("concepts", [])}
+
     partes = []
     for r in ontologia["relations"]:
         label = r["label"].replace(" ", "_")
-        dom = r.get("domain", "")
-        rng = r.get("range", "")
+        dom_raw = r.get("domain", "")
+        rng_raw = r.get("range", "")
+        # Converte QID para label se existir no mapeamento; caso contrário mantém como está
+        dom = id_para_label.get(dom_raw, dom_raw)
+        rng = id_para_label.get(rng_raw, rng_raw)
         partes.append(f"{label}({dom},{rng})")
     return ", ".join(partes)
 

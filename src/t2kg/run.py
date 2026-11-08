@@ -47,6 +47,7 @@ def _criar_provedor(exp: dict):
             url=exp["provedor_url"],
             modelo=exp["modelo"],
             api_key=exp.get("api_key", "token-nao-usado"),
+            seed=exp.get("seed"),
         )
 
     raise ValueError(f"Provedor desconhecido: {tipo!r}. Use 'openai_compat' ou 'mock'.")

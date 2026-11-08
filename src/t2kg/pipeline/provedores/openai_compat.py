@@ -19,6 +19,7 @@ class ProvedorOpenAICompat(ProvedorBase):
         modelo: str,
         api_key: str = "token-nao-usado",
         sistema: Optional[str] = None,
+        seed: Optional[int] = None,
         max_tentativas: int = 3,
         espera_tentativa: float = 5.0,
     ):
@@ -50,6 +51,7 @@ class ProvedorOpenAICompat(ProvedorBase):
         self._cliente = OpenAI(base_url=url, api_key=api_key)
         self._modelo = modelo
         self._sistema = sistema
+        self._seed = seed
         self._max_tentativas = max_tentativas
         self._espera = espera_tentativa
 
@@ -62,12 +64,15 @@ class ProvedorOpenAICompat(ProvedorBase):
         ultimo_erro = None
         for tentativa in range(self._max_tentativas):
             try:
-                resposta = self._cliente.chat.completions.create(
+                kwargs = dict(
                     model=self._modelo,
                     messages=mensagens,
                     max_tokens=max_tokens,
                     temperature=temperatura,
                 )
+                if self._seed is not None:
+                    kwargs["seed"] = self._seed
+                resposta = self._cliente.chat.completions.create(**kwargs)
                 return resposta.choices[0].message.content or ""
             except Exception as e:
                 ultimo_erro = e

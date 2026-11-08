@@ -1,41 +1,54 @@
 [
   {
-    "id": "tekgen_1_movie_C1_oneshot_qwen",
+    "id": "tekgen_1_movie_C1_oneshot_qwen25_7b",
     "dataset": "tekgen",
     "split": "test",
     "ontologia_id": "1_movie",
     "condicao": "C1_oneshot_original",
     "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "quantizacao": "AWQ-4bit",
+    "chat_template": "qwen2",
     "provedor": "openai_compat",
     "provedor_url": "http://localhost:8000/v1",
     "api_key": "token-nao-usado",
     "temperatura": 0,
+    "seed": 42,
     "max_tokens": 512,
-    "saida": "resultados/tekgen_1_movie_C1_oneshot_qwen.jsonl"
+    "git_hash": "PREENCHER_COM_git_rev-parse_HEAD",
+    "saida": "resultados/tekgen_1_movie_C1_oneshot_qwen25_7b.jsonl"
   },
   {
-    "id": "tekgen_1_movie_C0_qwen",
+    "id": "tekgen_1_movie_C0_qwen25_7b",
     "dataset": "tekgen",
     "split": "test",
     "ontologia_id": "1_movie",
     "condicao": "C0",
     "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "quantizacao": "AWQ-4bit",
+    "chat_template": "qwen2",
     "provedor": "openai_compat",
     "provedor_url": "http://localhost:8000/v1",
     "api_key": "token-nao-usado",
     "temperatura": 0,
+    "seed": 42,
     "max_tokens": 512,
-    "saida": "resultados/tekgen_1_movie_C0_qwen.jsonl"
+    "git_hash": "PREENCHER_COM_git_rev-parse_HEAD",
+    "saida": "resultados/tekgen_1_movie_C0_qwen25_7b.jsonl"
   },
   {
-    "id": "tekgen_1_movie_C1_mock",
+    "id": "tekgen_1_movie_C1_mock_smoke",
     "dataset": "tekgen",
     "split": "test",
     "ontologia_id": "1_movie",
     "condicao": "C1",
+    "modelo": "mock",
+    "quantizacao": null,
+    "chat_template": null,
     "provedor": "mock",
     "temperatura": 0,
+    "seed": null,
     "max_tokens": 512,
+    "git_hash": "PREENCHER_COM_git_rev-parse_HEAD",
     "saida": "resultados/tekgen_1_movie_C1_mock.jsonl"
   }
 ]
