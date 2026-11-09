@@ -1,4 +1,4 @@
-dataset,condicao,modo_amostra,avg_precision,avg_recall,avg_f1,avg_onto_conf,avg_sub_halluc,avg_rel_halluc,avg_obj_halluc,avg_fmt_error
-tekgen,C0,True,0.0,0.0,0.0,0.09,0.1,0.91,0.24,0.02
-tekgen,C1,True,0.19,0.14,0.16,0.93,0.07,0.07,0.1,0.19
-tekgen,C1_oneshot_original,True,0.42,0.31,0.34,0.97,0.12,0.03,0.12,0.08
+dataset,condicao,modo_amostra,avg_precision,avg_recall,avg_f1,avg_onto_conf,avg_sub_halluc,avg_rel_halluc,avg_obj_halluc,avg_fmt_error,avg_parse_error
+tekgen,C0,True,0.03,0.01,0.01,0.23,0.09,0.77,0.08,0.02,0.21
+tekgen,C1,True,0.26,0.2,0.21,0.92,0.03,0.08,0.07,0.39,0.01
+tekgen,C1_oneshot_original,True,0.42,0.31,0.34,0.97,0.12,0.03,0.12,0.08,0.01
