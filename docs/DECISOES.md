@@ -685,33 +685,55 @@ entre condições experimentais.
 
 ## D-21: Regra pré-registrada — threshold de agrupamento e freq_min para C2
 
-**Status:** PRÉ-REGISTRADA (2026-11-09) — definida ANTES de re-executar a indução C2 no Kaggle
+**Status:** RESULTADO APURADO (2026-11-09) — varredura executada, parâmetros definitivos determinados
 
-### Decisão
+### Regra (pré-registrada)
 
-**threshold_agrupamento (para redundancia_semantica e indução C2):**
+**threshold_agrupamento:**
+- Varredura `scripts/analisar_threshold_c2.py` sweep 0.50–0.90.
+- `threshold_definitivo = breakpoint + 0.05` onde breakpoint = menor t onde algum par de relações de referência se funde.
+- **Se nenhum breakpoint em [0.50, 0.90]:** usar `threshold = 0.80` (conservador).
 
-Determinado pela varredura `scripts/analisar_threshold_c2.py` (sweep 0.50–0.90):
-- Encontrar o menor threshold (ponto de ruptura) onde algum par de relações da ontologia
-  de REFERÊNCIA se funde.
-- `threshold_definitivo = breakpoint + 0.05`
-- **Se nenhum breakpoint encontrado em 0.50–0.90:** usar `threshold = 0.80` (conservador).
+**freq_min:** `freq_min = 5`. Sem cap de tamanho (2× cap revogado).
 
-Justificativa: o threshold mais baixo que ainda separa as relações referenciais é o ponto
-de máxima sensibilidade ao agrupamento que não produz falsos grupos em dados anotados.
-O offset +0.05 garante margem de segurança.
+### Resultado da varredura (executada em 2026-11-09)
 
-**freq_min para a ontologia induzida C2:**
+| Onto | Pares ref que se fundem | Breakpoint | Threshold D-21 |
+|---|---|---|---|
+| **1_movie** | `director`+`screenwriter` (sim=0.658) a t=0.65; `award received`+`nominated for` (sim=0.621) a t=0.60 | **t=0.65** | **0.70** |
+| **2_music** | Nenhum par se funde até t=0.50 | nenhum | **0.80** (fallback conservador) |
 
-- `freq_min = 5` (relação deve aparecer pelo menos 5× nas 50 frases de treino para entrar na
-  ontologia induzida).
-- Sem cap de tamanho (revogado o cap de 2× a referência de versões anteriores).
+Relações de referência 1_movie (15): director, screenwriter, genre, based on, cast member, award received, production company, country of origin, publication date, characters, narrative location, filming location, main subject, nominated for, cost.
 
-Justificativa: freq_min≥5 elimina hápax e relações acidentais enquanto mantém relações
-com suporte estatístico mínimo. Derivado da análise de distribuição em `scripts/analisar_threshold_c2.py`
-(seção "Frequência das relações livres").
+Relações de referência 2_music (13): composer, part of, lyrics by, publication date, language of work or name, voice type, instrumentation, tracklist, genre, performer, producer, nominated for, record label.
 
-**Implementação:** parâmetros registrados em `configs/c2/params_c2.json` antes da re-indução.
+### Tamanho da ontologia induzida C2 com freq_min=5 (a partir de C0 teste, N=200 frases)
+
+| Onto | freq_min=1 | freq_min=2 | freq_min=3 | freq_min=5 | freq_min=10 | Referência |
+|---|---|---|---|---|---|---|
+| 1_movie | 331 (22.1×) | 111 (7.4×) | 60 (4.0×) | **23 (1.5×)** | 12 (0.8×) | 15 |
+| 2_music | 326 (25.1×) | 91 (7.0×) | 45 (3.5×) | **19 (1.5×)** | 8 (0.6×) | 13 |
+
+freq_min=5 → ~1.5× a referência para ambas as ontologias, o que é razoável para uma ontologia induzida.
+
+### Alinhamento relações livres → referência (t=0.80, top-15 por frequência)
+
+| Onto | Mapeadas (t≥0.80) | Melhor não-mapeada |
+|---|---|---|
+| 1_movie | 3/15 (`genre`=1.0, `director`=1.0, `based_on`=1.0) | `directed_by`→`director` (0.582), `produced_by`→`production company` (0.566) |
+| 2_music | 0/15 | `produced`→`producer` (0.764), `written_by`→`lyrics by` (0.583) |
+
+Conclusão: relações livres são lexicalmente muito diferentes das referências (mesmo `directed_by` ≠ `director` a t=0.80).
+Para H1 redundância, threshold=0.80 (padrão) subestima sinonímia — mas é conservador e comparável entre condições.
+
+### Ontologia C2 atual vs. D-21
+
+A indução atual (50 frases treino, threshold=0.80, sem freq_min) gerou 113/102 relações para 1_movie/2_music.
+"Knocking at the Door" e "eight-minute animated film" aparecem como predicados na indução atual — confirmados como
+hápax de frases de treino específicas. Com freq_min=5, seriam filtrados.
+
+**Implementação:** parâmetros definitivos `{"threshold_1_movie": 0.70, "threshold_2_music": 0.80, "freq_min": 5}`
+registrados em `configs/c2/params_c2.json` antes da re-indução no Kaggle.
 
 ---
 

@@ -1,0 +1,13 @@
+{
+  "descricao": "Parâmetros definitivos D-21 para re-indução C2 no Kaggle",
+  "threshold_agrupamento": {
+    "1_movie": 0.70,
+    "2_music": 0.80,
+    "regra": "breakpoint + 0.05; fallback 0.80 quando nenhum par de referência se funde"
+  },
+  "freq_min": 5,
+  "cap_tamanho": null,
+  "modelo_embeddings": "all-MiniLM-L6-v2",
+  "data_registro": "2026-11-09",
+  "referencia_decisao": "docs/DECISOES.md#D-21"
+}

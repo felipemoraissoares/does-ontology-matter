@@ -1,0 +1,62 @@
+[
+  {
+    "ontologia": "1_movie",
+    "condicao": "C0",
+    "n_triplas": 716,
+    "n_rotulos": 331,
+    "n_grupos": 273,
+    "taxa_predicados_unicos": 0.4622905027932961,
+    "redundancia_semantica": 0.17522658610271902,
+    "threshold": 0.8
+  },
+  {
+    "ontologia": "1_movie",
+    "condicao": "C1",
+    "n_triplas": 781,
+    "n_rotulos": 51,
+    "n_grupos": 48,
+    "taxa_predicados_unicos": 0.06530089628681178,
+    "redundancia_semantica": 0.05882352941176472,
+    "threshold": 0.8
+  },
+  {
+    "ontologia": "1_movie",
+    "condicao": "C1_oneshot",
+    "n_triplas": 637,
+    "n_rotulos": 39,
+    "n_grupos": 37,
+    "taxa_predicados_unicos": 0.061224489795918366,
+    "redundancia_semantica": 0.05128205128205132,
+    "threshold": 0.8
+  },
+  {
+    "ontologia": "2_music",
+    "condicao": "C0",
+    "n_triplas": 634,
+    "n_rotulos": 326,
+    "n_grupos": 277,
+    "taxa_predicados_unicos": 0.5141955835962145,
+    "redundancia_semantica": 0.1503067484662577,
+    "threshold": 0.8
+  },
+  {
+    "ontologia": "2_music",
+    "condicao": "C1",
+    "n_triplas": 642,
+    "n_rotulos": 40,
+    "n_grupos": 37,
+    "taxa_predicados_unicos": 0.06230529595015576,
+    "redundancia_semantica": 0.07499999999999996,
+    "threshold": 0.8
+  },
+  {
+    "ontologia": "2_music",
+    "condicao": "C1_oneshot",
+    "n_triplas": 535,
+    "n_rotulos": 23,
+    "n_grupos": 21,
+    "taxa_predicados_unicos": 0.04299065420560748,
+    "redundancia_semantica": 0.08695652173913049,
+    "threshold": 0.8
+  }
+]

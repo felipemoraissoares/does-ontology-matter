@@ -9,11 +9,13 @@ Responde:
 Uso:
   python scripts/analisar_ontologia_c2.py
 """
+import io
 import json
 import os
 import sys
 from collections import Counter
 
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
