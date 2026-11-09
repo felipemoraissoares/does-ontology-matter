@@ -67,9 +67,14 @@ def _selected_path(bench_dir, dataset, onto_id):
     return None
 
 
-def avaliar_condicao(experimentos_cond, bench_dir, avaliacao_dir, cond, dataset):
+def avaliar_condicao(experimentos_cond, bench_dir, avaliacao_dir, cond, dataset,
+                     modo_amostra: bool = False):
     """
     Monta config para o avaliador e roda para todos os experimentos de uma (cond, dataset).
+
+    modo_amostra=True  → denominador = frases efetivamente avaliadas (correto para amostras).
+    modo_amostra=False → denominador = total do GT (reproduz métrica do benchmark publicado).
+
     Retorna o dict global de métricas.
     """
     onto_list = []
@@ -101,7 +106,7 @@ def avaliar_condicao(experimentos_cond, bench_dir, avaliacao_dir, cond, dataset)
         "onto_list": onto_list,
         "avg_out_file": os.path.join(avaliacao_dir, f"{dataset}_{cond}_avg.jsonl"),
     }
-    avaliar(config, diretorio_base="")
+    avaliar(config, diretorio_base="", modo_amostra=modo_amostra)
 
     # Lê o global
     with open(config["avg_out_file"], encoding="utf-8") as f:
@@ -119,6 +124,10 @@ def main():
     p.add_argument("--avaliacao_dir",
                    default=os.path.join(REPO_ROOT, "resultados", "avaliacao"))
     p.add_argument("--csv", default=None, help="Salva tabela em CSV neste caminho.")
+    p.add_argument(
+        "--auto_modo_amostra", action="store_true",
+        help="Lê modo_amostra de cada experimento no manifesto (padrão: False para todos).",
+    )
     args = p.parse_args()
 
     with open(args.manifesto, encoding="utf-8") as f:
@@ -138,14 +147,25 @@ def main():
             print("  Nenhum resultado ainda.")
             continue
 
-        resultado = avaliar_condicao(exps, args.bench_dir, args.avaliacao_dir, cond, dataset)
+        # modo_amostra: lido do manifesto (primeiro exp do grupo) ou False
+        modo_amostra = False
+        if args.auto_modo_amostra:
+            modo_amostra = bool(exps[0].get("modo_amostra", False))
+        if modo_amostra:
+            print("  modo_amostra=True (denominador = frases avaliadas)")
+
+        resultado = avaliar_condicao(
+            exps, args.bench_dir, args.avaliacao_dir, cond, dataset,
+            modo_amostra=modo_amostra,
+        )
         if resultado is None:
             print("  Avaliacao retornou None.")
             continue
 
         # As métricas saem do avaliador original como strings "0.32"; converte para float.
         resultado_float = {m: (float(v) if v is not None else None) for m, v in resultado.items()}
-        linha = {"dataset": dataset, "condicao": cond, **resultado_float}
+        linha = {"dataset": dataset, "condicao": cond, "modo_amostra": modo_amostra,
+                 **resultado_float}
         linhas.append(linha)
 
         for m, v in resultado_float.items():
@@ -154,7 +174,7 @@ def main():
 
     if args.csv and linhas:
         os.makedirs(os.path.dirname(args.csv) or ".", exist_ok=True)
-        cabecalho = ["dataset", "condicao"] + METRICAS
+        cabecalho = ["dataset", "condicao", "modo_amostra"] + METRICAS
         with open(args.csv, "w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=cabecalho)
             w.writeheader()

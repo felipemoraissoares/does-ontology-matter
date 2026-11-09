@@ -1,0 +1,4 @@
+dataset,condicao,modo_amostra,avg_precision,avg_recall,avg_f1,avg_onto_conf,avg_sub_halluc,avg_rel_halluc,avg_obj_halluc,avg_fmt_error
+tekgen,C0,False,0.0,0.0,0.0,0.02,0.03,0.24,0.06,0.01
+tekgen,C1,False,0.05,0.04,0.04,0.25,0.02,0.02,0.03,0.05
+tekgen,C1_oneshot_original,False,0.11,0.08,0.09,0.26,0.03,0.01,0.03,0.02

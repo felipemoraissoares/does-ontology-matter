@@ -54,20 +54,55 @@ def _criar_provedor(exp: dict):
 
 
 def _push_resultado(repo_dir: str, exp_id: str, saida: str) -> None:
-    """git add + commit + push após um experimento concluído."""
+    """git add + commit + push após um experimento concluído.
+
+    Verifica explicitamente que o arquivo JSONL de saída foi incluído no commit.
+    Se não foi (ex.: .gitignore bloqueando), imprime aviso claro e NÃO imprime
+    'Push OK' — evita a falsa confirmação do piloto Kaggle (D-17).
+    """
     import subprocess
-    cmds = [
-        f'git -C "{repo_dir}" add -A',
+
+    # Stage
+    r_add = subprocess.run(
+        f'git -C "{repo_dir}" add -A', shell=True, capture_output=True, text=True
+    )
+    if r_add.returncode != 0:
+        print(f"    AVISO push — git add falhou: {r_add.stderr.strip()[:200]}", file=sys.stderr)
+
+    # Verifica se o JSONL alvo está no index (staged ou já commitado sem mudanças)
+    saida_rel = os.path.relpath(saida, repo_dir).replace("\\", "/")
+    r_status = subprocess.run(
+        f'git -C "{repo_dir}" status --porcelain -- "{saida_rel}"',
+        shell=True, capture_output=True, text=True,
+    )
+    jsonl_staged = bool(r_status.stdout.strip())
+
+    # Commit
+    r_commit = subprocess.run(
         f'git -C "{repo_dir}" commit -m "auto: {exp_id}"',
-        f'git -C "{repo_dir}" push',
-    ]
-    for cmd in cmds:
-        r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        ok = r.returncode == 0 or "nothing to commit" in (r.stdout + r.stderr)
-        if not ok:
-            print(f"    AVISO push ({cmd[:40]}...): {r.stderr.strip()[:200]}", file=sys.stderr)
-        elif "push" in cmd and r.returncode == 0:
-            print(f"    Push OK: {exp_id}")
+        shell=True, capture_output=True, text=True,
+    )
+    commit_saida = r_commit.stdout + r_commit.stderr
+    commit_ok = r_commit.returncode == 0 or "nothing to commit" in commit_saida
+    if not commit_ok:
+        print(f"    AVISO push — git commit falhou: {r_commit.stderr.strip()[:200]}", file=sys.stderr)
+        return
+
+    # Push
+    r_push = subprocess.run(
+        f'git -C "{repo_dir}" push', shell=True, capture_output=True, text=True
+    )
+    if r_push.returncode != 0:
+        print(f"    AVISO push — git push falhou: {r_push.stderr.strip()[:200]}", file=sys.stderr)
+    elif jsonl_staged:
+        print(f"    Push OK (com JSONL): {exp_id}")
+    else:
+        print(
+            f"    AVISO: push enviou commit SEM o JSONL de resultado ({saida_rel}). "
+            "Verifique .gitignore — o arquivo pode estar bloqueado. "
+            f"Experimento: {exp_id}",
+            file=sys.stderr,
+        )
 
 
 def main():

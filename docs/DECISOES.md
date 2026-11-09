@@ -474,6 +474,103 @@ e não o quão bem o modelo seguiu a ontologia errada que fornecemos.
 
 ---
 
+## D-17: Bugs encontrados no piloto Kaggle — C2 inválida, push falso
+
+**Status:** REGISTRADO (2026-11-09) — correções aplicadas em 7e74d7f e nesta sessão
+
+### Contexto
+
+O piloto Kaggle rodou em 2026-11-09 (commits cc564e8 → 213a83b). Os 6 experimentos
+C0/C1/C1_oneshot para 1_movie e 2_music produziram resultados válidos. A indução C2
+(`scripts/induzir_c2.py`) e o `auto_push` apresentaram três problemas independentes.
+
+### Bug 1 — Vazamento de gt_triples no prompt de indução C2
+
+**Código afetado:** `scripts/induzir_c2.py`, chamada a `montar_prompt()`.
+
+**Causa:** chamada com argumentos posicionais:
+```python
+# ANTES (bugado):
+prompt = montar_prompt(f, onto_vazia, "C0")
+```
+O 1.º parâmetro posicional de `montar_prompt` é `sentenca` (string). Passando o dict
+completo da frase (`f`), `sentenca` recebia `str(f)` — incluindo `gt_triples: [{'rel':
+'director', ...}]`. O 2.º parâmetro (`condicao`) recebia o dict da ontologia vazia; como
+nunca igualava à string `"C0"`, o bloco `C1_oneshot_original` era atingido por fallthrough,
+e o campo `Test Sentence:` continha literalmente `{'id': ..., 'gt_triples': [...]}`.
+
+**Efeito:** o modelo leu os rótulos de relação do gabarito diretamente no prompt → copiou
+exatamente os labels da ontologia de referência para a ontologia induzida. Os 14 grupos de
+`tekgen_1_movie_induced.json` coincidem quase perfeitamente com a ontologia oficial.
+
+**Correção:**
+```python
+# DEPOIS (correto):
+prompt = montar_prompt(sentenca=f["sent"], condicao="C0")
+```
+
+### Bug 2 — Dados de teste usados em vez de dados de treino
+
+**Código afetado:** `scripts/induzir_c2.py`, chamada a `carregar_frases()`.
+
+**Causa:** `carregar_frases(bench, dataset, "train", onto_id)` foi usada supondo que
+aceitaria `split="train"`. Mas `_caminhos_gt()` não tem caso "train" — cai no `else` e
+retorna o caminho do GT de TESTE. Os 50 IDs sorteados tinham o padrão `ont_1_movie_test_*`
+(confirmado pelo arquivo `tekgen_1_movie_frases_seed42.json` comprometido).
+
+**Efeito:** a "indução" treinou com frases de teste. Os alignamentos par(sub,obj) para
+calibração também usaram triplas do GT de teste → `curva_agrupamento` em
+`calibracao_tekgen_1_movie.json` mostra F1=0 em todos os thresholds (sinal de alinhamento
+incorreto por ID errado).
+
+**Correção:** nova função `carregar_frases_treino()` em `dados.py` que lê diretamente de
+`data/{dataset}/train/ont_{onto_id}_train.jsonl`, sem usar `_caminhos_gt()`.
+
+### Bug 3 — Push falso (`auto_push` enviou commit sem JSONL)
+
+**Causa:** `.gitignore` continha `resultados/` (trailing slash), que faz o git ignorar o
+DIRETÓRIO inteiro sem inspecionar subentradas. As negações `!resultados/piloto/**` nunca
+eram avaliadas. Resultado: `git add -A` não staged os 6 JSONL; `git commit` commit apenas
+os arquivos `configs/pipeline/manifesto_*.json` (que mudaram porque `gerar_manifesto.py`
+foi re-executado no Kaggle). A mensagem `"auto: piloto completo"` apareceu no log mas o
+JSONL não estava no commit.
+
+**Efeito:** o piloto executou com sucesso, mas os resultados não foram enviados ao GitHub
+automaticamente. Os arquivos foram recuperados manualmente do Output do Kaggle.
+
+**Correção:** `.gitignore` alterado para `resultados/*` (sem trailing slash), que permite
+o git entrar no diretório e aplicar as negações.
+
+### Dados inválidos — `configs/c2/` do piloto
+
+Os seguintes arquivos gerados pelo piloto são **INVÁLIDOS** e foram removidos do
+repositório (commit desta sessão):
+
+| Arquivo | Motivo |
+|---|---|
+| `tekgen_1_movie_induced.json` | Bug 1: relações copiadas do GT via prompt contaminado |
+| `tekgen_2_music_induced.json` | Bug 1: idem |
+| `tekgen_1_movie_frases_seed42.json` | Bug 2: IDs são `test_*`, não `train_*` |
+| `tekgen_2_music_frases_seed42.json` | Bug 2: idem |
+| `calibracao_tekgen_1_movie.json` | Bugs 1+2: alinhamentos incorretos, F1=0 artificialmente |
+| `calibracao_tekgen_2_music.json` | Bugs 1+2: precisao_projecao ~0.77 inflada pelo leak |
+
+### Por que os testes anteriores não detectaram esses bugs
+
+Os testes existentes cobrem `executar.py` via `ProvedorMock` — que usa chamadas corretas com
+keyword arguments. `induzir_c2.py` não era importado por nenhum teste; era puro `__main__`.
+A função `carregar_frases()` com `split="train"` retornava silenciosamente o GT de teste
+sem erro, então nada explodiu. Os testes para `carregar_frases_treino()` e para o
+interceptor de `open()` foram adicionados retroativamente em `tests/test_c2_inducao.py`.
+
+### Ação de remediação
+
+Re-indução C2 no Kaggle com os bugs corrigidos, usando o manifesto
+`configs/pipeline/manifesto_c2_reinducao.json`. Os 6 experimentos C0/C1/C1_oneshot NÃO
+precisam ser refeitos — estão válidos.
+
+---
+
 ## D-15: Correção do parser — Categoria J
 
 **Status:** APROVADA

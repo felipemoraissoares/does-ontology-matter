@@ -1,0 +1,28 @@
+[
+  {
+    "id": "c2_reinducao_tkg_1_movie",
+    "tipo": "c2_inducao",
+    "dataset": "tekgen",
+    "onto": "1_movie",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 50,
+    "seed": 42,
+    "threshold": 0.80,
+    "calibrar": true,
+    "motivo": "D-17: re-inducao com dois bugs corrigidos (prompt posicional + split errado)"
+  },
+  {
+    "id": "c2_reinducao_tkg_2_music",
+    "tipo": "c2_inducao",
+    "dataset": "tekgen",
+    "onto": "2_music",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 50,
+    "seed": 42,
+    "threshold": 0.80,
+    "calibrar": true,
+    "motivo": "D-17: re-inducao com dois bugs corrigidos (prompt posicional + split errado)"
+  }
+]
