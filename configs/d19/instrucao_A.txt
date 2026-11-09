@@ -1,0 +1,2 @@
+Output only the triples, one per line, in the format relation(subject, object).
+Do not write any other text.

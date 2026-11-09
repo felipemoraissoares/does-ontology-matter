@@ -8,6 +8,7 @@
 import json
 import os
 import random
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional
 
 from ..parser import parsear_resposta
@@ -55,6 +56,8 @@ def executar(
     frases_seed: Optional[int] = None,
     verbose: bool = False,
     ontologia_parceira_id: Optional[str] = None,
+    workers: int = 1,
+    instrucao_formato: Optional[str] = None,
 ) -> int:
     """
     Executa a extração de triplas para uma (ontologia, condição) e salva em JSONL.
@@ -88,6 +91,14 @@ def executar(
     ontologia_parceira_id : str | None
         Para C5_vizinho/C5_incongruente: ID da ontologia cujo conteúdo será
         fornecido ao modelo. Se None, usa a própria ontologia alvo.
+    workers : int
+        Número de requisições paralelas ao provedor (padrão 1 = sequencial).
+        Com temperatura=0 e greedy decoding, o resultado por frase é determinístico
+        e independente da ordem de execução — parallelismo não altera as respostas.
+        A saída é sempre escrita na ordem original das frases.
+    instrucao_formato : str | None
+        Sobrescreve a instrução de formato padrão (D-19: mini-teste).
+        None = usa o padrão definido em prompts.py.
     """
     frases = carregar_frases(bench_dir, dataset, split, ontologia_id)
 
@@ -117,40 +128,59 @@ def executar(
     ja_prontos = _ids_ja_processados(saida)
     processados = 0
 
+    # Filtra frases que ainda precisam ser processadas
+    pendentes: List[Dict] = []
     for frase in frases:
-        sent_id = frase["id"]
-
-        # Aplica limite total (checkpoint + novos)
-        if frases_max is not None and (len(ja_prontos) + processados) >= frases_max:
+        if frases_max is not None and (len(ja_prontos) + len(pendentes)) >= frases_max:
             break
+        if frase["id"] not in ja_prontos:
+            pendentes.append(frase)
 
-        if sent_id in ja_prontos:
-            continue
+    if workers <= 1:
+        # Modo sequencial — comportamento original
+        for frase in pendentes:
+            prompt = montar_prompt(
+                sentenca=frase["sent"],
+                condicao=condicao,
+                contexto_ontologia=contexto,
+                exemplo_sent=frase.get("exemplo_sent"),
+                exemplo_saida=frase.get("exemplo_saida"),
+                instrucao_formato=instrucao_formato,
+            )
+            resposta = provedor.gerar(prompt, max_tokens=max_tokens, temperatura=temperatura)
+            triplas = parsear_resposta(resposta)
+            _registrar(saida, {
+                "id": frase["id"], "sent": frase["sent"],
+                "prompt": prompt, "response": resposta, "triples": triplas,
+            })
+            processados += 1
+            if verbose:
+                print(f"  [{processados}] {frase['id']}: {len(triplas)} tripla(s)")
+    else:
+        # Modo paralelo — mantém a ordem de saída
+        # Com temperatura=0 e greedy decoding, resultado por frase é determinístico.
+        def _processar_frase(frase: Dict):
+            prompt = montar_prompt(
+                sentenca=frase["sent"],
+                condicao=condicao,
+                contexto_ontologia=contexto,
+                exemplo_sent=frase.get("exemplo_sent"),
+                exemplo_saida=frase.get("exemplo_saida"),
+                instrucao_formato=instrucao_formato,
+            )
+            resposta = provedor.gerar(prompt, max_tokens=max_tokens, temperatura=temperatura)
+            return frase, prompt, resposta, parsear_resposta(resposta)
 
-        prompt = montar_prompt(
-            sentenca=frase["sent"],
-            condicao=condicao,
-            contexto_ontologia=contexto,
-            exemplo_sent=frase.get("exemplo_sent"),
-            exemplo_saida=frase.get("exemplo_saida"),
-        )
-
-        resposta = provedor.gerar(prompt, max_tokens=max_tokens, temperatura=temperatura)
-        triplas = parsear_resposta(resposta)
-
-        _registrar(
-            saida,
-            {
-                "id": sent_id,
-                "sent": frase["sent"],
-                "prompt": prompt,
-                "response": resposta,
-                "triples": triplas,
-            },
-        )
-        processados += 1
-
-        if verbose:
-            print(f"  [{processados}] {sent_id}: {len(triplas)} tripla(s)")
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [executor.submit(_processar_frase, f) for f in pendentes]
+            for future in futures:
+                frase, prompt, resposta, triplas = future.result()
+                _registrar(saida, {
+                    "id": frase["id"], "sent": frase["sent"],
+                    "prompt": prompt, "response": resposta, "triples": triplas,
+                })
+                processados += 1
+                if verbose:
+                    print(f"  [{processados}] {frase['id']}: {len(triplas)} tripla(s)")
 
     return processados

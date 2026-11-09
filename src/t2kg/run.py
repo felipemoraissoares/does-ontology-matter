@@ -193,6 +193,8 @@ def main():
                 "use modo_amostra=True na avaliação (avaliar_resultados.py --auto_modo_amostra)."
             )
 
+        workers = int(exp.get("workers", 1))
+        instrucao_formato = exp.get("instrucao_formato")
         n = executar(
             bench_dir=args.bench_dir,
             dataset=exp["dataset"],
@@ -207,6 +209,8 @@ def main():
             frases_seed=frases_seed,
             verbose=args.verbose,
             ontologia_parceira_id=exp.get("ontologia_parceira_id"),
+            workers=workers,
+            instrucao_formato=instrucao_formato,
         )
         print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
 

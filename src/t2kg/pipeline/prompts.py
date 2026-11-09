@@ -59,6 +59,7 @@ def montar_prompt(
     contexto_ontologia: Optional[str] = None,
     exemplo_sent: Optional[str] = None,
     exemplo_saida: Optional[str] = None,
+    instrucao_formato: Optional[str] = None,
 ) -> str:
     """
     Monta o prompt completo como string (mensagem de usuário).
@@ -76,17 +77,42 @@ def montar_prompt(
         Sentença de exemplo (apenas para C1_oneshot_original).
     exemplo_saida : str | None
         Saída esperada do exemplo (apenas para C1_oneshot_original).
+    instrucao_formato : str | None
+        Sobrescreve _INSTRUCAO_FORMATO (D-19: mini-teste de redações alternativas).
+        Ignorado para C1_oneshot_original. Se None, usa o padrão D-18.
     """
+    fmt = instrucao_formato if instrucao_formato is not None else _INSTRUCAO_FORMATO
+
+    inst_c0 = (
+        "Given the following sentence, please extract all relevant triples. "
+        + fmt + " " + _INSTRUCAO_ENTIDADE
+    )
+    inst_c1 = (
+        "Given the following ontology and sentence, please extract the triples "
+        "from the sentence according to the relations in the ontology. "
+        + fmt + " " + _INSTRUCAO_ENTIDADE
+    )
+    inst_c3 = (
+        "Given the following sentence and list of key relations, please extract the triples. "
+        "You may use relation names not in the list when the text explicitly indicates them. "
+        + fmt + " " + _INSTRUCAO_ENTIDADE
+    )
+    inst_c5 = (
+        "Given the following ontology and sentence, please extract the triples "
+        "according to the relations defined in the ontology. "
+        + fmt + " " + _INSTRUCAO_ENTIDADE
+    )
+
     if condicao == "C0":
         return (
-            f"{_INSTRUCAO_C0}\n\n"
+            f"{inst_c0}\n\n"
             f"Test Sentence: {sentenca}\n"
             f"Test Output: "
         )
 
     if condicao == "C3":
         return (
-            f"{_INSTRUCAO_C3}\n\n"
+            f"{inst_c3}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
             f"Test Sentence: {sentenca}\n"
@@ -95,7 +121,7 @@ def montar_prompt(
 
     if condicao in ("C5", "C5_vizinho", "C5_incongruente"):
         return (
-            f"{_INSTRUCAO_C5}\n\n"
+            f"{inst_c5}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
             f"Test Sentence: {sentenca}\n"
@@ -105,7 +131,7 @@ def montar_prompt(
     # C1 — zero-shot com ontologia completa
     if condicao == "C1":
         return (
-            f"{_INSTRUCAO_COM_ONT}\n\n"
+            f"{inst_c1}\n\n"
             f"CONTEXT:\n"
             f"{contexto_ontologia}\n\n"
             f"Test Sentence: {sentenca}\n"

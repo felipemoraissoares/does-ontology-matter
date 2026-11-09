@@ -151,3 +151,56 @@ class TestParserCategoriaG:
         resp = "director(\n  Film A, Director B)\ngenre(Film A, Action)"
         result = parsear_resposta(resp)
         assert ["Film A", "genre", "Action"] in result
+
+
+class TestParserCasosReaisD19:
+    """Casos reais encontrados no piloto — bugs corrigidos em D-19."""
+
+    def test_relacao_com_espaco_ja_funciona(self):
+        """directed by(X, Y) já funcionava antes de D-19 — confirmação explícita."""
+        assert parsear_resposta("directed by(The Matrix, Wachowskis)") == [
+            ["The Matrix", "directed by", "Wachowskis"]
+        ]
+
+    def test_relacao_com_hifen_ja_funciona(self):
+        assert parsear_resposta("based-on(The Dark Knight, Batman)") == [
+            ["The Dark Knight", "based-on", "Batman"]
+        ]
+
+    def test_objeto_com_parenteses_aninhados(self):
+        """D-19: objeto com parênteses aninhados não divide incorretamente."""
+        r = parsear_resposta("is_a_song_by(Pavement, Summer Babe (Winter Version))")
+        assert r == [["Pavement", "is_a_song_by", "Summer Babe (Winter Version)"]]
+
+    def test_trailing_comma_no_objeto(self):
+        """D-19: trailing comma antes de ) é removida."""
+        r = parsear_resposta("director(Film A, Person B,)")
+        assert r == [["Film A", "director", "Person B"]]
+
+    def test_bullet_numero_parenteses(self):
+        """D-19: '1) rel(a, b)' — remoção de bullet com parênteses."""
+        r = parsear_resposta("1) director(The Matrix, Wachowskis)")
+        assert r == [["The Matrix", "director", "Wachowskis"]]
+
+    def test_multiplas_triplas_sem_dividir_dentro_do_objeto(self):
+        """D-19: duas triplas na mesma linha não dividem argumentos internos."""
+        r = parsear_resposta("director(Matrix, W), screenwriter(Matrix, W)")
+        assert len(r) == 2
+
+    def test_prose_pura_retorna_vazio(self):
+        """Prosa pura sem rel(X,Y) retorna [] — comportamento correto."""
+        assert parsear_resposta("The film revolves around a detective.") == []
+
+    def test_relacao_longa_com_espacos_e_hifen(self):
+        """'eight-minute animated film(X, Y)' — relação longa com espaços e hífens."""
+        r = parsear_resposta("eight-minute animated film(Bambi, Forest)")
+        assert r == [["Bambi", "eight-minute animated film", "Forest"]]
+
+    def test_objeto_aninhado_mais_segunda_tripla(self):
+        """D-19: objeto aninhado seguido de segunda tripla na mesma linha."""
+        r = parsear_resposta(
+            "is_a_song_by(Pavement, Summer Babe (Winter Version)), "
+            "genre(Pavement, Indie Rock)"
+        )
+        assert ["Pavement", "is_a_song_by", "Summer Babe (Winter Version)"] in r
+        assert ["Pavement", "genre", "Indie Rock"] in r

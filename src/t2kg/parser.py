@@ -3,12 +3,13 @@
 #
 # Estratégias aplicadas em ordem:
 #   1. Padrão canônico linha a linha: rel(sub, obj) com escapes markdown removidos
-#   2. Múltiplas triplas na mesma linha separadas por ", rel(" — divididas antes
-#   3. Aspas externas em sub/obj são removidas
+#   2. (D-19) Múltiplas triplas na mesma linha divididas por vírgulas fora de parênteses
+#   3. Aspas externas em sub/obj são removidas; trailing comma removida
 #   4. Triplas com objeto vazio são descartadas (rel(sub,) ou rel(sub))
 #   5. Linhas em prosa (sem parênteses) são ignoradas
 #   6. (Cat H) Prefixos "Test Output:", "Output:", "Answer:", "Triples:" removidos
 #   7. (Cat G) Triplas multi-linha (rel( \n sub, obj \n )) são reunidas
+#   8. (D-19) Bullet "1)" além de "1." removido; rel com espaços já suportado
 
 import re
 from typing import List, Optional, Tuple
@@ -39,9 +40,10 @@ def parsear_resposta(resposta: str) -> List[List[str]]:
         linha = linha.strip()
         # Categoria H: remove prefixos "Test Output:", "Output:", etc.
         linha = _RE_PREFIXO_RESPOSTA.sub("", linha).strip()
-        # Remove prefixos de lista: "- ", "* ", "• ", "1. "
+        # Remove prefixos de lista: "- ", "* ", "• ", "1. ", "1) "
         linha = re.sub(r"^[-*•]\s+", "", linha)
         linha = re.sub(r"^\d+\.\s+", "", linha)
+        linha = re.sub(r"^\d+\)\s+", "", linha)  # D-19: "1) rel(a,b)"
         # Categoria I (D-18): remove parênteses externos em ((rel(sub,obj))) ou (rel(sub,obj))
         # quando o conteúdo interno corresponde ao padrão canônico (identificador + parênteses).
         # NÃO toca (rel, sub, obj) — argumento posicional ambíguo, nunca interpretado.
@@ -88,13 +90,31 @@ def _juntar_triplas_multiplas_linhas(texto: str) -> str:
 
 def _dividir_multiplas(linha: str) -> List[str]:
     """
-    Divide uma linha que contém múltiplas triplas do formato rel(sub,obj), rel2(sub,obj).
-    Usa a heurística: divide antes de um identificador_de_relação( que segue ),
+    Divide linhas com múltiplas triplas (rel1(a,b), rel2(c,d)) somente em
+    vírgulas no nível externo (profundidade = 0). Evita divisão incorreta quando
+    o objeto contém parênteses aninhados, ex.: is_a_song_by(Pavement, Song (Live)).
+    D-19: substitui o split regex que não rastreava profundidade.
     """
-    # Padrão: ", identificador(" onde identificador não contém vírgulas ou parênteses
-    partes = re.split(r",\s*(?=[A-Za-z_][^,()\n]*\()", linha)
-    # Se a divisão produziu apenas 1 parte, retorna a linha original
-    return partes if len(partes) > 1 else [linha]
+    partes: List[str] = []
+    profundidade = 0
+    inicio = 0
+    for i, c in enumerate(linha):
+        if c == "(":
+            profundidade += 1
+        elif c == ")":
+            profundidade -= 1
+        elif c == "," and profundidade == 0:
+            parte = linha[inicio:i].strip()
+            if parte:
+                partes.append(parte)
+            inicio = i + 1
+    ultimo = linha[inicio:].strip()
+    if ultimo:
+        partes.append(ultimo)
+    # Só retorna múltiplas partes se cada parte parece uma tripla (identificador + '(')
+    if len(partes) > 1 and all(re.match(r"^[A-Za-z_]", p) and "(" in p for p in partes):
+        return partes
+    return [linha]
 
 
 def _extrair_tripla(linha: str) -> Optional[Tuple[str, str, str]]:
@@ -144,8 +164,11 @@ def _dividir_argumentos(conteudo: str) -> Tuple[Optional[str], Optional[str]]:
 
 
 def _limpar_string(s: str) -> str:
-    """Remove espaços externos e aspas duplas/simples externas."""
+    """Remove espaços externos, trailing comma e aspas duplas/simples externas."""
     s = s.strip()
+    # D-19: remove vírgula terminal — rel(sub, obj,) → obj = "obj,"
+    if s.endswith(","):
+        s = s[:-1].strip()
     if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
         s = s[1:-1].strip()
     elif len(s) >= 2 and s[0] == "'" and s[-1] == "'":

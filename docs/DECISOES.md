@@ -545,6 +545,105 @@ e contaminaria a análise comparativa. A instrução de formato D-18 deve elimin
 
 ---
 
+## D-19: Parser depth-aware, workers paralelos e mini-teste de instrução de formato
+
+**Status:** IMPLEMENTADO (2026-11-09) — parser.py, executar.py, run.py, prompts.py
+
+### Motivação
+
+Três problemas independentes identificados na análise do piloto D-18:
+
+1. **Parser bug em `_dividir_multiplas`:** o split por regex não rastreava profundidade de
+   parênteses → `is_a_song_by(Pavement, Summer Babe (Winter Version))` era dividida
+   incorretamente em `is_a_song_by(Pavement, Summer Babe (Winter Version` + `))` ao invés
+   de ser tratada como um objeto com parênteses aninhados.
+
+2. **FmtErr C1 duplicou (0,19 → 0,39) após D-18:** causa raiz identificada — a instrução
+   D-18 `relation(subject, object)` usa a mesma notação que a assinatura da ontologia
+   `director(film, human)` → modelo copia os nomes de classe como entidades (530/668 = 79%).
+   Necessário testar redações alternativas que descrevam o formato sem citar domínio.
+
+3. **Velocidade:** vLLM mostra "Running: 1 reqs" — sem paralelismo. Com temperatura=0 e
+   greedy decoding, o resultado por frase é determinístico e independente da ordem de
+   execução, portanto paralelismo é seguro.
+
+### Decisões
+
+#### Parser depth-aware (correção de bug)
+
+`_dividir_multiplas` substituída por implementação que percorre caractere a caractere e
+rastreia `profundidade`. Divisão ocorre apenas em vírgulas com `profundidade == 0`.
+A saída é uma lista de múltiplas partes somente se cada parte corresponde ao padrão
+`identificador(`. Comportamento anterior preservado em todos os outros casos.
+
+Ganho medido: recupera 4 triplas extras nos 6 JSONL do piloto (casos de objetos com
+parênteses aninhados em 2_music).
+
+#### Trailing comma em objeto
+
+`_limpar_string` passa a remover vírgula terminal antes das aspas externas, cobrindo
+o padrão `rel(sub, obj,)` que aparecia esporadicamente nas respostas C2.
+
+#### Bullet `\d+\)` (D-19)
+
+Adicionada remoção de bullet numérico com parênteses (`1) rel(a,b)`) além do já existente
+`1. rel(a,b)`. Padrão encontrado em respostas de modelos maiores.
+
+#### Workers paralelos
+
+Novo parâmetro `workers: int = 1` em `executar()`. Quando `workers > 1`, usa
+`ThreadPoolExecutor` enviando todas as frases pendentes em paralelo, mas coletando
+resultados em ordem de submissão (não de conclusão) para garantir a mesma saída JSONL
+sequencial. Configurável via campo `workers` no manifesto.
+
+**Justificativa para determinismo:** com `temperatura=0` e greedy decoding, a distribuição
+de tokens é calculada independentemente por frase — a resposta não depende de outras frases
+em curso. Testado com ProvedorMock.
+
+#### Mini-teste de instrução de formato (C1 FmtErr)
+
+**Critério de escolha:** SOMENTE `avg_fmt_error` + `avg_parse_error` + `% respostas vazias`.
+O F1 NÃO é usado como critério — evita selecionar instrução que vaze informação sobre a
+estrutura da ontologia.
+
+Três redações alternativas em `configs/d19/`:
+
+| Variante | Texto da instrução |
+|---|---|
+| **A** (padrão D-18) | `Output only the triples, one per line, in the format relation(subject, object). Do not write any other text.` |
+| **B** | `List only the extracted triples. Each triple must follow this exact pattern: predicate(entity1, entity2). One triple per line. No explanations, no extra text.` |
+| **C** | `Extract triples as: name_of_relation(first_entity, second_entity). Write one triple per line. Nothing else.` |
+
+Diferenças entre variantes:
+- A usa `relation(subject, object)` — espelha a assinatura da ontologia (suspeita D-19)
+- B usa `predicate(entity1, entity2)` — termos genéricos de lógica de predicados, sem
+  conotação de "tipo de classe"
+- C usa `name_of_relation(first_entity, second_entity)` — ênfase em "nome" e "entidade",
+  sem parênteses na própria explicação do formato
+
+Manifesto: `configs/pipeline/minilancador_d19.json`
+12 experimentos: 3 variantes × 2 condições (C0, C1) × 2 ontologias (1_movie, 2_music)
+100 frases/experimento, seed=42.
+
+#### Suporte a `instrucao_formato` no manifesto
+
+Novo campo opcional `instrucao_formato` nos experimentos do manifesto. Quando presente,
+sobrescreve `_INSTRUCAO_FORMATO` em `prompts.py` para aquele experimento específico.
+Implementado em `executar.py` e `run.py`. Ignorado para `C1_oneshot_original`.
+
+### Arquivos modificados
+
+- `src/t2kg/parser.py` — `_dividir_multiplas` depth-aware, trailing comma, bullet `\d+\)`
+- `src/t2kg/pipeline/prompts.py` — parâmetro `instrucao_formato` em `montar_prompt()`
+- `src/t2kg/pipeline/executar.py` — `workers` e `instrucao_formato`
+- `src/t2kg/run.py` — lê `workers` e `instrucao_formato` do manifesto
+- `tests/test_parser.py` — classe `TestParserCasosReaisD19` (9 casos reais)
+- `scripts/analisar_threshold_c2.py` — análise de calibração do threshold C2
+- `configs/d19/instrucao_A.txt`, `instrucao_B.txt`, `instrucao_C.txt`
+- `configs/pipeline/minilancador_d19.json`
+
+---
+
 ## D-17: Bugs encontrados no piloto Kaggle — C2 inválida, push falso
 
 **Status:** REGISTRADO (2026-11-09) — correções aplicadas em 7e74d7f e nesta sessão

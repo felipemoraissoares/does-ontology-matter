@@ -1,0 +1,2 @@
+Extract triples as: name_of_relation(first_entity, second_entity)
+Write one triple per line. Nothing else.

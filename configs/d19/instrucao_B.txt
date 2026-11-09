@@ -1,0 +1,3 @@
+List only the extracted triples. Each triple must follow this exact pattern:
+predicate(entity1, entity2)
+One triple per line. No explanations, no extra text.
