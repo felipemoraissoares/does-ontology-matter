@@ -87,6 +87,49 @@ def _caminhos_treino(bench_dir: str, dataset: str, ontologia_id: str) -> str:
     )
 
 
+def carregar_frases_treino(
+    bench_dir: str, dataset: str, ontologia_id: str
+) -> List[Dict]:
+    """
+    Carrega frases de TREINO para indução C2.
+
+    Retorna dicts mínimos: {"id", "sent", "gt_triples"}.
+    gt_triples é usado apenas para calibração — NÃO deve aparecer no prompt enviado ao modelo.
+
+    TekGen:  uma tripla por linha; agrupa em frases únicas por "sent".
+    DBpedia: uma frase por linha com campo "triples".
+    """
+    caminho = _caminhos_treino(bench_dir, dataset, ontologia_id)
+    por_sent: Dict[str, Dict] = {}  # sent_text → dict acumulado
+    with open(caminho, encoding="utf-8") as f:
+        for linha in f:
+            linha = linha.strip()
+            if not linha:
+                continue
+            d = json.loads(linha)
+            sent = d.get("sent", "")
+            if not sent:
+                continue
+            if dataset == "tekgen":
+                if sent not in por_sent:
+                    por_sent[sent] = {"id": d.get("id", sent), "sent": sent, "gt_triples": []}
+                # Uma linha = uma tripla
+                por_sent[sent]["gt_triples"].append({
+                    "sub": d.get("sub_label", ""),
+                    "rel": d.get("rel_label", "").replace(" ", "_"),
+                    "obj": d.get("obj_label", ""),
+                })
+            else:
+                # DBpedia: uma linha = uma frase
+                if sent not in por_sent:
+                    por_sent[sent] = {
+                        "id": d.get("id", sent),
+                        "sent": sent,
+                        "gt_triples": d.get("triples", []),
+                    }
+    return list(por_sent.values())
+
+
 def carregar_frequencias_treino(
     bench_dir: str, dataset: str, ontologia_id: str, k: int = 3
 ) -> List[str]:

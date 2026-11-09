@@ -2,8 +2,8 @@
 .env
 *.env
 
-# Resultados (exceto piloto e testes)
-resultados/
+# Resultados: ignora conteúdo mas permite git entrar no dir (resultados/* em vez de resultados/)
+resultados/*
 !resultados/.gitkeep
 !resultados/piloto/
 !resultados/piloto/**

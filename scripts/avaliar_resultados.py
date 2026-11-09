@@ -143,10 +143,12 @@ def main():
             print("  Avaliacao retornou None.")
             continue
 
-        linha = {"dataset": dataset, "condicao": cond, **resultado}
+        # As métricas saem do avaliador original como strings "0.32"; converte para float.
+        resultado_float = {m: (float(v) if v is not None else None) for m, v in resultado.items()}
+        linha = {"dataset": dataset, "condicao": cond, **resultado_float}
         linhas.append(linha)
 
-        for m, v in resultado.items():
+        for m, v in resultado_float.items():
             if v is not None:
                 print(f"  {m}: {v:.4f}")
 

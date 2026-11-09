@@ -36,7 +36,7 @@ except ImportError:
     _EMBS_OK = False
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-from t2kg.pipeline.dados import carregar_frases  # noqa: E402
+from t2kg.pipeline.dados import carregar_frases, carregar_frases_treino  # noqa: E402
 from t2kg.pipeline.provedores.openai_compat import ProvedorOpenAICompat  # noqa: E402
 from t2kg.pipeline.prompts import montar_prompt  # noqa: E402
 from t2kg.parser import parsear_resposta  # noqa: E402
@@ -53,8 +53,8 @@ THRESHOLD_PROVISORIO = 0.80
 # ---------------------------------------------------------------------------
 
 def sortear_frases_treino(bench: str, dataset: str, onto_id: str, n: int, seed: int) -> List[Dict]:
-    """Sorteia n frases do treino com seed fixa."""
-    frases = list(carregar_frases(bench, dataset, "train", onto_id))
+    """Sorteia n frases de TREINO com seed fixa (sem vazar gt_triples para o modelo)."""
+    frases = list(carregar_frases_treino(bench, dataset, onto_id))
     rng = random.Random(seed)
     rng.shuffle(frases)
     return frases[:n]
@@ -68,10 +68,10 @@ def extrair_triplas_livres(
     Extrai triplas livres (modo C0) de cada frase de treino.
     Retorna dict {frase_id: [[sub, rel, obj], ...]} para permitir alinhamento com GT.
     """
-    onto_vazia = {"concepts": [], "relations": []}
     triplas_por_frase: Dict[str, List[List[str]]] = {}
     for f in frases:
-        prompt = montar_prompt(f, onto_vazia, "C0")
+        # Envia APENAS o texto da frase — gt_triples NUNCA aparecem no prompt (D-16)
+        prompt = montar_prompt(sentenca=f["sent"], condicao="C0")
         resp = provedor.gerar(prompt, max_tokens=512, temperatura=0.0)
         triplas = parsear_resposta(resp)
         triplas_por_frase[f["id"]] = triplas
