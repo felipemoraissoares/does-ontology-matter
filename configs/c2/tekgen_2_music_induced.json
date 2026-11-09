@@ -1,0 +1,786 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "2_music",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "modelo_llm": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_2_music_train_848",
+      "ont_2_music_train_290",
+      "ont_2_music_train_434",
+      "ont_2_music_train_251",
+      "ont_2_music_train_401",
+      "ont_2_music_train_832",
+      "ont_2_music_train_522",
+      "ont_2_music_train_348",
+      "ont_2_music_train_84",
+      "ont_2_music_train_672",
+      "ont_2_music_train_663",
+      "ont_2_music_train_461",
+      "ont_2_music_train_201",
+      "ont_2_music_train_425",
+      "ont_2_music_train_605",
+      "ont_2_music_train_506",
+      "ont_2_music_train_116",
+      "ont_2_music_train_820",
+      "ont_2_music_train_256",
+      "ont_2_music_train_545",
+      "ont_2_music_train_787",
+      "ont_2_music_train_758",
+      "ont_2_music_train_39",
+      "ont_2_music_train_448",
+      "ont_2_music_train_422",
+      "ont_2_music_train_655",
+      "ont_2_music_train_742",
+      "ont_2_music_train_498",
+      "ont_2_music_train_11",
+      "ont_2_music_train_286",
+      "ont_2_music_train_638",
+      "ont_2_music_train_395",
+      "ont_2_music_train_665",
+      "ont_2_music_train_27",
+      "ont_2_music_train_182",
+      "ont_2_music_train_442",
+      "ont_2_music_train_132",
+      "ont_2_music_train_53",
+      "ont_2_music_train_694",
+      "ont_2_music_train_804",
+      "ont_2_music_train_753",
+      "ont_2_music_train_721",
+      "ont_2_music_train_725",
+      "ont_2_music_train_642",
+      "ont_2_music_train_730",
+      "ont_2_music_train_168",
+      "ont_2_music_train_317",
+      "ont_2_music_train_94",
+      "ont_2_music_train_18",
+      "ont_2_music_train_44"
+    ]
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "performed",
+      "frequencia": 8,
+      "membros": [
+        "performed"
+      ]
+    },
+    {
+      "label": "recorded",
+      "frequencia": 6,
+      "membros": [
+        "recorded in",
+        "recorded"
+      ]
+    },
+    {
+      "label": "features",
+      "frequencia": 6,
+      "membros": [
+        "features"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 4,
+      "membros": [
+        "born"
+      ]
+    },
+    {
+      "label": "preceded_by",
+      "frequencia": 4,
+      "membros": [
+        "preceded_by"
+      ]
+    },
+    {
+      "label": "written_by",
+      "frequencia": 4,
+      "membros": [
+        "written_by",
+        "written_and_produced_by"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 3,
+      "membros": [
+        "nationality"
+      ]
+    },
+    {
+      "label": "is_a_song_by",
+      "frequencia": 3,
+      "membros": [
+        "is_a_song_by",
+        "is_a_song_of"
+      ]
+    },
+    {
+      "label": "included",
+      "frequencia": 3,
+      "membros": [
+        "included"
+      ]
+    },
+    {
+      "label": "title",
+      "frequencia": 3,
+      "membros": [
+        "title"
+      ]
+    },
+    {
+      "label": "selected_by",
+      "frequencia": 3,
+      "membros": [
+        "selected_by"
+      ]
+    },
+    {
+      "label": "genre",
+      "frequencia": 3,
+      "membros": [
+        "genre"
+      ]
+    },
+    {
+      "label": "released",
+      "frequencia": 2,
+      "membros": [
+        "released",
+        "release"
+      ]
+    },
+    {
+      "label": "featuring",
+      "frequencia": 2,
+      "membros": [
+        "featuring"
+      ]
+    },
+    {
+      "label": "birth_date",
+      "frequencia": 2,
+      "membros": [
+        "birth_date"
+      ]
+    },
+    {
+      "label": "death_date",
+      "frequencia": 2,
+      "membros": [
+        "death_date"
+      ]
+    },
+    {
+      "label": "occupation",
+      "frequencia": 2,
+      "membros": [
+        "occupation"
+      ]
+    },
+    {
+      "label": "in",
+      "frequencia": 2,
+      "membros": [
+        "in"
+      ]
+    },
+    {
+      "label": "from_album",
+      "frequencia": 2,
+      "membros": [
+        "from_album"
+      ]
+    },
+    {
+      "label": "year",
+      "frequencia": 2,
+      "membros": [
+        "year"
+      ]
+    },
+    {
+      "label": "consists_of",
+      "frequencia": 2,
+      "membros": [
+        "consists_of"
+      ]
+    },
+    {
+      "label": "was nominated for",
+      "frequencia": 2,
+      "membros": [
+        "was nominated for",
+        "to be nominated for"
+      ]
+    },
+    {
+      "label": "performance_type",
+      "frequencia": 2,
+      "membros": [
+        "performance_type"
+      ]
+    },
+    {
+      "label": "attribute",
+      "frequencia": 2,
+      "membros": [
+        "attribute"
+      ]
+    },
+    {
+      "label": "from",
+      "frequencia": 2,
+      "membros": [
+        "from"
+      ]
+    },
+    {
+      "label": "producers_credits",
+      "frequencia": 2,
+      "membros": [
+        "producers_credits",
+        "producers_credits_including_Barrett"
+      ]
+    },
+    {
+      "label": "features_vocals",
+      "frequencia": 2,
+      "membros": [
+        "features_vocals"
+      ]
+    },
+    {
+      "label": "producedBy",
+      "frequencia": 2,
+      "membros": [
+        "producedBy"
+      ]
+    },
+    {
+      "label": "noted_for",
+      "frequencia": 2,
+      "membros": [
+        "noted_for"
+      ]
+    },
+    {
+      "label": "through",
+      "frequencia": 1,
+      "membros": [
+        "through"
+      ]
+    },
+    {
+      "label": "is_a_suite_for_instrument组合",
+      "frequencia": 1,
+      "membros": [
+        "is_a_suite_for_instrument组合"
+      ]
+    },
+    {
+      "label": "performs",
+      "frequencia": 1,
+      "membros": [
+        "performs"
+      ]
+    },
+    {
+      "label": "experienced",
+      "frequencia": 1,
+      "membros": [
+        "experienced"
+      ]
+    },
+    {
+      "label": "reached",
+      "frequencia": 1,
+      "membros": [
+        "reached"
+      ]
+    },
+    {
+      "label": "recorded_for",
+      "frequencia": 1,
+      "membros": [
+        "recorded_for"
+      ]
+    },
+    {
+      "label": "also_known_as",
+      "frequencia": 1,
+      "membros": [
+        "also_known_as"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 1,
+      "membros": [
+        "part_of"
+      ]
+    },
+    {
+      "label": "began",
+      "frequencia": 1,
+      "membros": [
+        "began"
+      ]
+    },
+    {
+      "label": "was_a_set_of_nocturnes_for_solo_piano",
+      "frequencia": 1,
+      "membros": [
+        "was_a_set_of_nocturnes_for_solo_piano"
+      ]
+    },
+    {
+      "label": "turned_into",
+      "frequencia": 1,
+      "membros": [
+        "turned_into"
+      ]
+    },
+    {
+      "label": "suggestion_of",
+      "frequencia": 1,
+      "membros": [
+        "suggestion_of"
+      ]
+    },
+    {
+      "label": "originallyWrittenBy",
+      "frequencia": 1,
+      "membros": [
+        "originallyWrittenBy"
+      ]
+    },
+    {
+      "label": "coWriter",
+      "frequencia": 1,
+      "membros": [
+        "coWriter"
+      ]
+    },
+    {
+      "label": "feltSimilarToPreviousMaterial",
+      "frequencia": 1,
+      "membros": [
+        "feltSimilarToPreviousMaterial"
+      ]
+    },
+    {
+      "label": "passedOnto",
+      "frequencia": 1,
+      "membros": [
+        "passedOnto"
+      ]
+    },
+    {
+      "label": "orchestrated",
+      "frequencia": 1,
+      "membros": [
+        "orchestrated"
+      ]
+    },
+    {
+      "label": "contains",
+      "frequencia": 1,
+      "membros": [
+        "contains"
+      ]
+    },
+    {
+      "label": "at",
+      "frequencia": 1,
+      "membros": [
+        "at"
+      ]
+    },
+    {
+      "label": "is_debut_single",
+      "frequencia": 1,
+      "membros": [
+        "is_debut_single"
+      ]
+    },
+    {
+      "label": "released_in",
+      "frequencia": 1,
+      "membros": [
+        "released_in"
+      ]
+    },
+    {
+      "label": "genre_of_band",
+      "frequencia": 1,
+      "membros": [
+        "genre_of_band"
+      ]
+    },
+    {
+      "label": "single_of",
+      "frequencia": 1,
+      "membros": [
+        "single_of"
+      ]
+    },
+    {
+      "label": "position_in_chart",
+      "frequencia": 1,
+      "membros": [
+        "position_in_chart"
+      ]
+    },
+    {
+      "label": "produced by",
+      "frequencia": 1,
+      "membros": [
+        "produced by"
+      ]
+    },
+    {
+      "label": "recorded between",
+      "frequencia": 1,
+      "membros": [
+        "recorded between"
+      ]
+    },
+    {
+      "label": "wasCompletedBy",
+      "frequencia": 1,
+      "membros": [
+        "wasCompletedBy"
+      ]
+    },
+    {
+      "label": "occurredBefore",
+      "frequencia": 1,
+      "membros": [
+        "occurredBefore"
+      ]
+    },
+    {
+      "label": "is_a_ballet",
+      "frequencia": 1,
+      "membros": [
+        "is_a_ballet"
+      ]
+    },
+    {
+      "label": "has_act_count",
+      "frequencia": 1,
+      "membros": [
+        "has_act_count"
+      ]
+    },
+    {
+      "label": "has_scene_count",
+      "frequencia": 1,
+      "membros": [
+        "has_scene_count"
+      ]
+    },
+    {
+      "label": "choreographed_by",
+      "frequencia": 1,
+      "membros": [
+        "choreographed_by"
+      ]
+    },
+    {
+      "label": "has_music_by",
+      "frequencia": 1,
+      "membros": [
+        "has_music_by"
+      ]
+    },
+    {
+      "label": "has_libretto_by",
+      "frequencia": 1,
+      "membros": [
+        "has_libretto_by"
+      ]
+    },
+    {
+      "label": "composer",
+      "frequencia": 1,
+      "membros": [
+        "composer"
+      ]
+    },
+    {
+      "label": "is_composition_by",
+      "frequencia": 1,
+      "membros": [
+        "is_composition_by"
+      ]
+    },
+    {
+      "label": "became_in_great_demand_as_a_performer",
+      "frequencia": 1,
+      "membros": [
+        "became_in_great_demand_as_a_performer"
+      ]
+    },
+    {
+      "label": "played_at",
+      "frequencia": 1,
+      "membros": [
+        "played_at"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 1,
+      "membros": [
+        "located_in"
+      ]
+    },
+    {
+      "label": "making",
+      "frequencia": 1,
+      "membros": [
+        "making"
+      ]
+    },
+    {
+      "label": "was_third_album",
+      "frequencia": 1,
+      "membros": [
+        "was_third_album"
+      ]
+    },
+    {
+      "label": "includes_first_single",
+      "frequencia": 1,
+      "membros": [
+        "includes_first_single"
+      ]
+    },
+    {
+      "label": "is_a_power_ballad_by",
+      "frequencia": 1,
+      "membros": [
+        "is_a_power_ballad_by"
+      ]
+    },
+    {
+      "label": "offered",
+      "frequencia": 1,
+      "membros": [
+        "offered"
+      ]
+    },
+    {
+      "label": "re-record",
+      "frequencia": 1,
+      "membros": [
+        "re-record"
+      ]
+    },
+    {
+      "label": "participation",
+      "frequencia": 1,
+      "membros": [
+        "participation"
+      ]
+    },
+    {
+      "label": "debut studio album",
+      "frequencia": 1,
+      "membros": [
+        "debut studio album"
+      ]
+    },
+    {
+      "label": "translates",
+      "frequencia": 1,
+      "membros": [
+        "translates"
+      ]
+    },
+    {
+      "label": "sings",
+      "frequencia": 1,
+      "membros": [
+        "sings"
+      ]
+    },
+    {
+      "label": "uses",
+      "frequencia": 1,
+      "membros": [
+        "uses"
+      ]
+    },
+    {
+      "label": "can_be_practiced_to_increase_dexterity_and_accuracy",
+      "frequencia": 1,
+      "membros": [
+        "can_be_practiced_to_increase_dexterity_and_accuracy"
+      ]
+    },
+    {
+      "label": "can_be_practiced_to_increase_agility",
+      "frequencia": 1,
+      "membros": [
+        "can_be_practiced_to_increase_agility"
+      ]
+    },
+    {
+      "label": "independently_released_in",
+      "frequencia": 1,
+      "membros": [
+        "independently_released_in"
+      ]
+    },
+    {
+      "label": "had_chequered_recording_history",
+      "frequencia": 1,
+      "membros": [
+        "had_chequered_recording_history"
+      ]
+    },
+    {
+      "label": "work_began",
+      "frequencia": 1,
+      "membros": [
+        "work_began"
+      ]
+    },
+    {
+      "label": "bulk_sessions_took_place",
+      "frequencia": 1,
+      "membros": [
+        "bulk_sessions_took_place"
+      ]
+    },
+    {
+      "label": "producers_credits_including_Peter_Jenner",
+      "frequencia": 1,
+      "membros": [
+        "producers_credits_including_Peter_Jenner"
+      ]
+    },
+    {
+      "label": "producers_credits_including_Malcolm_Jones",
+      "frequencia": 1,
+      "membros": [
+        "producers_credits_including_Malcolm_Jones"
+      ]
+    },
+    {
+      "label": "producers_credits_including_David_Gilmour",
+      "frequencia": 1,
+      "membros": [
+        "producers_credits_including_David_Gilmour"
+      ]
+    },
+    {
+      "label": "producers_credits_including_Roger_Waters",
+      "frequencia": 1,
+      "membros": [
+        "producers_credits_including_Roger_Waters"
+      ]
+    },
+    {
+      "label": "is_a_single_by",
+      "frequencia": 1,
+      "membros": [
+        "is_a_single_by"
+      ]
+    },
+    {
+      "label": "credited",
+      "frequencia": 1,
+      "membros": [
+        "credited"
+      ]
+    },
+    {
+      "label": "is_a_set_of_songs",
+      "frequencia": 1,
+      "membros": [
+        "is_a_set_of_songs"
+      ]
+    },
+    {
+      "label": "has_author",
+      "frequencia": 1,
+      "membros": [
+        "has_author"
+      ]
+    },
+    {
+      "label": "origin_place",
+      "frequencia": 1,
+      "membros": [
+        "origin_place"
+      ]
+    },
+    {
+      "label": "alternative_name",
+      "frequencia": 1,
+      "membros": [
+        "alternative_name"
+      ]
+    },
+    {
+      "label": "author",
+      "frequencia": 1,
+      "membros": [
+        "author"
+      ]
+    },
+    {
+      "label": "benefit",
+      "frequencia": 1,
+      "membros": [
+        "benefit"
+      ]
+    },
+    {
+      "label": "alleviate",
+      "frequencia": 1,
+      "membros": [
+        "alleviate"
+      ]
+    },
+    {
+      "label": "albumTitle",
+      "frequencia": 1,
+      "membros": [
+        "albumTitle"
+      ]
+    },
+    {
+      "label": "wrote",
+      "frequencia": 1,
+      "membros": [
+        "wrote"
+      ]
+    },
+    {
+      "label": "popularized",
+      "frequencia": 1,
+      "membros": [
+        "popularized"
+      ]
+    },
+    {
+      "label": "hit",
+      "frequencia": 1,
+      "membros": [
+        "hit"
+      ]
+    }
+  ]
+}

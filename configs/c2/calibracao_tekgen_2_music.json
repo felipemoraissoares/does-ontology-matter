@@ -1,0 +1,129 @@
+{
+  "dataset": "tekgen",
+  "onto_id": "2_music",
+  "n_frases": 50,
+  "n_relacoes_livres": 157,
+  "n_relacoes_unicas": 108,
+  "n_pares_alinhados": 9,
+  "relacoes_unicas_exemplo": [
+    "located_in",
+    "experienced",
+    "birth_date",
+    "passedonto",
+    "has_libretto_by",
+    "producers_credits_including_malcolm_jones",
+    "has_act_count",
+    "cowriter",
+    "popularized",
+    "credited",
+    "is_a_song_by",
+    "independently_released_in",
+    "alleviate",
+    "turned_into",
+    "wrote",
+    "produced by",
+    "albumtitle",
+    "producers_credits_including_barrett",
+    "written_by",
+    "includes_first_single"
+  ],
+  "curva_agrupamento": {
+    "0.7": {
+      "pares_agrupados": 28,
+      "total_pares": 5778,
+      "fracao_agrupada": 0.004845967462789893,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.75": {
+      "pares_agrupados": 14,
+      "total_pares": 5778,
+      "fracao_agrupada": 0.0024229837313949464,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.8": {
+      "pares_agrupados": 6,
+      "total_pares": 5778,
+      "fracao_agrupada": 0.0010384215991692627,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.85": {
+      "pares_agrupados": 2,
+      "total_pares": 5778,
+      "fracao_agrupada": 0.00034614053305642093,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.9": {
+      "pares_agrupados": 0,
+      "total_pares": 5778,
+      "fracao_agrupada": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "curva_projecao": {
+    "0.7": {
+      "relacoes_projetadas": 6,
+      "total_unicas": 108,
+      "fracao_projetada": 0.05555555555555555,
+      "threshold": 0.7,
+      "tp_projecao": 0,
+      "precisao_projecao": 0.0
+    },
+    "0.75": {
+      "relacoes_projetadas": 5,
+      "total_unicas": 108,
+      "fracao_projetada": 0.046296296296296294,
+      "threshold": 0.75,
+      "tp_projecao": 0,
+      "precisao_projecao": 0.0
+    },
+    "0.8": {
+      "relacoes_projetadas": 4,
+      "total_unicas": 108,
+      "fracao_projetada": 0.037037037037037035,
+      "threshold": 0.8,
+      "tp_projecao": 0,
+      "precisao_projecao": 0.0
+    },
+    "0.85": {
+      "relacoes_projetadas": 4,
+      "total_unicas": 108,
+      "fracao_projetada": 0.037037037037037035,
+      "threshold": 0.85,
+      "tp_projecao": 0,
+      "precisao_projecao": 0.0
+    },
+    "0.9": {
+      "relacoes_projetadas": 3,
+      "total_unicas": 108,
+      "fracao_projetada": 0.027777777777777776,
+      "threshold": 0.9,
+      "tp_projecao": 0,
+      "precisao_projecao": 0.0
+    }
+  }
+}

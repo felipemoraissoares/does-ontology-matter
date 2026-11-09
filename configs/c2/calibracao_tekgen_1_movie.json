@@ -1,0 +1,129 @@
+{
+  "dataset": "tekgen",
+  "onto_id": "1_movie",
+  "n_frases": 50,
+  "n_relacoes_livres": 174,
+  "n_relacoes_unicas": 116,
+  "n_pares_alinhados": 7,
+  "relacoes_unicas_exemplo": [
+    "set_out",
+    "lost_to",
+    "has_release_year",
+    "subject",
+    "knocking at the door",
+    "country",
+    "is_a",
+    "location",
+    "chicago",
+    "assisted",
+    "tied",
+    "releasingcompany",
+    "stars",
+    "feature",
+    "tries",
+    "is_a_video_by",
+    "co-written",
+    "story",
+    "features",
+    "is_about"
+  ],
+  "curva_agrupamento": {
+    "0.7": {
+      "pares_agrupados": 16,
+      "total_pares": 6670,
+      "fracao_agrupada": 0.0023988005997001498,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 1.0,
+      "recall": 0.5,
+      "f1": 0.6667
+    },
+    "0.75": {
+      "pares_agrupados": 6,
+      "total_pares": 6670,
+      "fracao_agrupada": 0.0008995502248875562,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.8": {
+      "pares_agrupados": 3,
+      "total_pares": 6670,
+      "fracao_agrupada": 0.0004497751124437781,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.85": {
+      "pares_agrupados": 3,
+      "total_pares": 6670,
+      "fracao_agrupada": 0.0004497751124437781,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "0.9": {
+      "pares_agrupados": 0,
+      "total_pares": 6670,
+      "fracao_agrupada": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 2,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "curva_projecao": {
+    "0.7": {
+      "relacoes_projetadas": 11,
+      "total_unicas": 116,
+      "fracao_projetada": 0.09482758620689655,
+      "threshold": 0.7,
+      "tp_projecao": 3,
+      "precisao_projecao": 0.2727
+    },
+    "0.75": {
+      "relacoes_projetadas": 8,
+      "total_unicas": 116,
+      "fracao_projetada": 0.06896551724137931,
+      "threshold": 0.75,
+      "tp_projecao": 1,
+      "precisao_projecao": 0.125
+    },
+    "0.8": {
+      "relacoes_projetadas": 6,
+      "total_unicas": 116,
+      "fracao_projetada": 0.05172413793103448,
+      "threshold": 0.8,
+      "tp_projecao": 1,
+      "precisao_projecao": 0.1667
+    },
+    "0.85": {
+      "relacoes_projetadas": 4,
+      "total_unicas": 116,
+      "fracao_projetada": 0.034482758620689655,
+      "threshold": 0.85,
+      "tp_projecao": 1,
+      "precisao_projecao": 0.25
+    },
+    "0.9": {
+      "relacoes_projetadas": 2,
+      "total_unicas": 116,
+      "fracao_projetada": 0.017241379310344827,
+      "threshold": 0.9,
+      "tp_projecao": 1,
+      "precisao_projecao": 0.5
+    }
+  }
+}
