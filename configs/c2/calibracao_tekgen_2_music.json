@@ -1,0 +1,124 @@
+{
+  "dataset": "tekgen",
+  "onto_id": "2_music",
+  "n_frases": 50,
+  "n_relacoes_livres": 109,
+  "n_relacoes_unicas": 15,
+  "n_pares_alinhados": 75,
+  "relacoes_unicas_exemplo": [
+    "publication_date",
+    "record_label",
+    "tracklist",
+    "lyrics_by",
+    "genre",
+    "composition",
+    "publication date",
+    "instrumentation",
+    "language_of_work_or_name",
+    "composer",
+    "producer",
+    "occupation",
+    "performer",
+    "voice_type",
+    "part_of"
+  ],
+  "curva_agrupamento": {
+    "0.7": {
+      "pares_agrupados": 1,
+      "total_pares": 105,
+      "fracao_agrupada": 0.009523809523809525,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 3,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    },
+    "0.75": {
+      "pares_agrupados": 1,
+      "total_pares": 105,
+      "fracao_agrupada": 0.009523809523809525,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 3,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    },
+    "0.8": {
+      "pares_agrupados": 1,
+      "total_pares": 105,
+      "fracao_agrupada": 0.009523809523809525,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 3,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    },
+    "0.85": {
+      "pares_agrupados": 1,
+      "total_pares": 105,
+      "fracao_agrupada": 0.009523809523809525,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 3,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    },
+    "0.9": {
+      "pares_agrupados": 1,
+      "total_pares": 105,
+      "fracao_agrupada": 0.009523809523809525,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 3,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    }
+  },
+  "curva_projecao": {
+    "0.7": {
+      "relacoes_projetadas": 13,
+      "total_unicas": 15,
+      "fracao_projetada": 0.8666666666666667,
+      "threshold": 0.7,
+      "tp_projecao": 10,
+      "precisao_projecao": 0.7692
+    },
+    "0.75": {
+      "relacoes_projetadas": 13,
+      "total_unicas": 15,
+      "fracao_projetada": 0.8666666666666667,
+      "threshold": 0.75,
+      "tp_projecao": 10,
+      "precisao_projecao": 0.7692
+    },
+    "0.8": {
+      "relacoes_projetadas": 13,
+      "total_unicas": 15,
+      "fracao_projetada": 0.8666666666666667,
+      "threshold": 0.8,
+      "tp_projecao": 10,
+      "precisao_projecao": 0.7692
+    },
+    "0.85": {
+      "relacoes_projetadas": 12,
+      "total_unicas": 15,
+      "fracao_projetada": 0.8,
+      "threshold": 0.85,
+      "tp_projecao": 9,
+      "precisao_projecao": 0.75
+    },
+    "0.9": {
+      "relacoes_projetadas": 9,
+      "total_unicas": 15,
+      "fracao_projetada": 0.6,
+      "threshold": 0.9,
+      "tp_projecao": 7,
+      "precisao_projecao": 0.7778
+    }
+  }
+}

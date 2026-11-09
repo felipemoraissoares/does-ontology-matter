@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "2_music",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "modelo_llm": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_2_music_test_442",
+      "ont_2_music_test_40",
+      "ont_2_music_test_405",
+      "ont_2_music_test_580",
+      "ont_2_music_test_191",
+      "ont_2_music_test_633",
+      "ont_2_music_test_185",
+      "ont_2_music_test_359",
+      "ont_2_music_test_3",
+      "ont_2_music_test_599",
+      "ont_2_music_test_267",
+      "ont_2_music_test_488",
+      "ont_2_music_test_431",
+      "ont_2_music_test_93",
+      "ont_2_music_test_159",
+      "ont_2_music_test_321",
+      "ont_2_music_test_557",
+      "ont_2_music_test_294",
+      "ont_2_music_test_459",
+      "ont_2_music_test_527",
+      "ont_2_music_test_529",
+      "ont_2_music_test_528",
+      "ont_2_music_test_352",
+      "ont_2_music_test_133",
+      "ont_2_music_test_87",
+      "ont_2_music_test_379",
+      "ont_2_music_test_495",
+      "ont_2_music_test_214",
+      "ont_2_music_test_256",
+      "ont_2_music_test_43",
+      "ont_2_music_test_309",
+      "ont_2_music_test_262",
+      "ont_2_music_test_384",
+      "ont_2_music_test_242",
+      "ont_2_music_test_630",
+      "ont_2_music_test_287",
+      "ont_2_music_test_139",
+      "ont_2_music_test_616",
+      "ont_2_music_test_291",
+      "ont_2_music_test_392",
+      "ont_2_music_test_650",
+      "ont_2_music_test_582",
+      "ont_2_music_test_602",
+      "ont_2_music_test_561",
+      "ont_2_music_test_186",
+      "ont_2_music_test_358",
+      "ont_2_music_test_280",
+      "ont_2_music_test_101",
+      "ont_2_music_test_177",
+      "ont_2_music_test_670"
+    ]
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "performer",
+      "frequencia": 19,
+      "membros": [
+        "performer"
+      ]
+    },
+    {
+      "label": "publication_date",
+      "frequencia": 16,
+      "membros": [
+        "publication date",
+        "publication_date"
+      ]
+    },
+    {
+      "label": "composer",
+      "frequencia": 10,
+      "membros": [
+        "composer"
+      ]
+    },
+    {
+      "label": "voice_type",
+      "frequencia": 10,
+      "membros": [
+        "voice_type"
+      ]
+    },
+    {
+      "label": "instrumentation",
+      "frequencia": 9,
+      "membros": [
+        "instrumentation"
+      ]
+    },
+    {
+      "label": "producer",
+      "frequencia": 8,
+      "membros": [
+        "producer"
+      ]
+    },
+    {
+      "label": "record_label",
+      "frequencia": 8,
+      "membros": [
+        "record_label"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 8,
+      "membros": [
+        "part_of"
+      ]
+    },
+    {
+      "label": "tracklist",
+      "frequencia": 7,
+      "membros": [
+        "tracklist"
+      ]
+    },
+    {
+      "label": "lyrics_by",
+      "frequencia": 5,
+      "membros": [
+        "lyrics_by"
+      ]
+    },
+    {
+      "label": "occupation",
+      "frequencia": 5,
+      "membros": [
+        "occupation"
+      ]
+    },
+    {
+      "label": "composition",
+      "frequencia": 2,
+      "membros": [
+        "composition"
+      ]
+    },
+    {
+      "label": "genre",
+      "frequencia": 1,
+      "membros": [
+        "genre"
+      ]
+    },
+    {
+      "label": "language_of_work_or_name",
+      "frequencia": 1,
+      "membros": [
+        "language_of_work_or_name"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "1_movie",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "modelo_llm": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_1_movie_test_510",
+      "ont_1_movie_test_369",
+      "ont_1_movie_test_639",
+      "ont_1_movie_test_579",
+      "ont_1_movie_test_89",
+      "ont_1_movie_test_355",
+      "ont_1_movie_test_309",
+      "ont_1_movie_test_173",
+      "ont_1_movie_test_832",
+      "ont_1_movie_test_615",
+      "ont_1_movie_test_93",
+      "ont_1_movie_test_50",
+      "ont_1_movie_test_529",
+      "ont_1_movie_test_106",
+      "ont_1_movie_test_826",
+      "ont_1_movie_test_222",
+      "ont_1_movie_test_684",
+      "ont_1_movie_test_777",
+      "ont_1_movie_test_496",
+      "ont_1_movie_test_300",
+      "ont_1_movie_test_248",
+      "ont_1_movie_test_445",
+      "ont_1_movie_test_539",
+      "ont_1_movie_test_709",
+      "ont_1_movie_test_11",
+      "ont_1_movie_test_242",
+      "ont_1_movie_test_189",
+      "ont_1_movie_test_214",
+      "ont_1_movie_test_317",
+      "ont_1_movie_test_295",
+      "ont_1_movie_test_724",
+      "ont_1_movie_test_758",
+      "ont_1_movie_test_426",
+      "ont_1_movie_test_701",
+      "ont_1_movie_test_370",
+      "ont_1_movie_test_25",
+      "ont_1_movie_test_37",
+      "ont_1_movie_test_587",
+      "ont_1_movie_test_798",
+      "ont_1_movie_test_29",
+      "ont_1_movie_test_192",
+      "ont_1_movie_test_668",
+      "ont_1_movie_test_79",
+      "ont_1_movie_test_351",
+      "ont_1_movie_test_495",
+      "ont_1_movie_test_273",
+      "ont_1_movie_test_313",
+      "ont_1_movie_test_710",
+      "ont_1_movie_test_555",
+      "ont_1_movie_test_149"
+    ]
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "publication_date",
+      "frequencia": 29,
+      "membros": [
+        "publication_date"
+      ]
+    },
+    {
+      "label": "director",
+      "frequencia": 18,
+      "membros": [
+        "director"
+      ]
+    },
+    {
+      "label": "screenwriter",
+      "frequencia": 17,
+      "membros": [
+        "screenwriter"
+      ]
+    },
+    {
+      "label": "cast_member",
+      "frequencia": 13,
+      "membros": [
+        "cast_member"
+      ]
+    },
+    {
+      "label": "genre",
+      "frequencia": 12,
+      "membros": [
+        "genre"
+      ]
+    },
+    {
+      "label": "characters",
+      "frequencia": 12,
+      "membros": [
+        "characters"
+      ]
+    },
+    {
+      "label": "award_received",
+      "frequencia": 10,
+      "membros": [
+        "award_received"
+      ]
+    },
+    {
+      "label": "narrative_location",
+      "frequencia": 7,
+      "membros": [
+        "narrative_location"
+      ]
+    },
+    {
+      "label": "filming_location",
+      "frequencia": 6,
+      "membros": [
+        "filming_location"
+      ]
+    },
+    {
+      "label": "country_of_origin",
+      "frequencia": 5,
+      "membros": [
+        "country_of_origin"
+      ]
+    },
+    {
+      "label": "main_subject",
+      "frequencia": 4,
+      "membros": [
+        "main_subject"
+      ]
+    },
+    {
+      "label": "production_company",
+      "frequencia": 3,
+      "membros": [
+        "production_company"
+      ]
+    },
+    {
+      "label": "nominated_for",
+      "frequencia": 3,
+      "membros": [
+        "nominated_for"
+      ]
+    },
+    {
+      "label": "based_on",
+      "frequencia": 3,
+      "membros": [
+        "based_on"
+      ]
+    }
+  ]
+}
