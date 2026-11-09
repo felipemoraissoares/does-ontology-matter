@@ -8,16 +8,24 @@ from typing import Optional
 
 
 # Instrução de entidade: evita que o modelo substitua entidades reais por classes da ontologia.
-# Aplicada a C0, C1, C3, C5*. NÃO aplicada a C1_oneshot_original (fidelidade ao benchmark).
+# Aplicada a C0, C1, C2, C3, C5*. NÃO aplicada a C1_oneshot_original (fidelidade ao benchmark).
 _INSTRUCAO_ENTIDADE = (
     "Use as subject and object the exact entity names as written in the sentence, "
     "never the ontology class names."
 )
 
+# Instrução de formato unificada (D-18): explícita sobre rel(sub,obj) e proíbe texto extra.
+# Substituiu "in the given output format" (vago) em C1 e unificou C0/C3/C5.
+# NÃO aplicada a C1_oneshot_original.
+_INSTRUCAO_FORMATO = (
+    "Output only the triples, one per line, in the format relation(subject, object). "
+    "Do not write any other text."
+)
+
 _INSTRUCAO_COM_ONT = (
     "Given the following ontology and sentence, please extract the triples "
     "from the sentence according to the relations in the ontology. "
-    "In the output, only include the triples in the given output format. "
+    + _INSTRUCAO_FORMATO + " "
     + _INSTRUCAO_ENTIDADE
 )
 # O benchmark usa "sentences" (plural) — mantido para C1_oneshot_original; sem instrução de entidade.
@@ -29,21 +37,18 @@ _INSTRUCAO_COM_ONT_BENCH = (
 _INSTRUCAO_C3 = (
     "Given the following sentence and list of key relations, please extract the triples. "
     "You may use relation names not in the list when the text explicitly indicates them. "
-    "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line. "
+    + _INSTRUCAO_FORMATO + " "
     + _INSTRUCAO_ENTIDADE
 )
 _INSTRUCAO_C5 = (
     "Given the following ontology and sentence, please extract the triples "
     "according to the relations defined in the ontology. "
-    "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line. "
+    + _INSTRUCAO_FORMATO + " "
     + _INSTRUCAO_ENTIDADE
 )
 _INSTRUCAO_C0 = (
     "Given the following sentence, please extract all relevant triples. "
-    "In the output, only include the triples in the format rel(subject, object), "
-    "one triple per line. "
+    + _INSTRUCAO_FORMATO + " "
     + _INSTRUCAO_ENTIDADE
 )
 

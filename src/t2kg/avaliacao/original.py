@@ -226,7 +226,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
     if os.path.exists(avg_path):
         os.remove(avg_path)
 
-    gp = gr = gf1 = gc = grh = gsh = goh = gef = 0.0
+    gp = gr = gf1 = gc = grh = gsh = goh = gef = gpe = 0.0
     resultados_por_onto = {}
 
     for onto in config["onto_list"]:
@@ -247,7 +247,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             if os.path.exists(sid_path):
                 ids_selecionados = ler_jsonl(sid_path, como_json=False)
 
-        tp = tr_ = tf1 = tc = trh = tsh = toh = tef = 0.0
+        tp = tr_ = tf1 = tc = trh = tsh = toh = tef = tpe = 0.0
         stp = str_ = stf1 = stc = strh = stsh = stoh = stef = 0.0
         metricas_por_frase = []
 
@@ -265,6 +265,11 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
                 continue
 
             sys_triplas = saida_sistema[sent_id]["triples"]
+
+            # Erro de parse (D-18): response não-vazia mas triples=[] → parser não extraiu nada.
+            sys_resp = saida_sistema[sent_id].get("response", "")
+            parse_error = 1.0 if (sys_resp.strip() and len(sys_triplas) == 0) else 0.0
+            tpe += parse_error
 
             # relações do gabarito (espaços → _)
             rels_gabarito = {t[1].replace(" ", "_") for t in gt_triplas}
@@ -323,12 +328,13 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             "avg_rel_halluc": f"{trh/total:.2f}",
             "avg_obj_halluc": f"{toh/total:.2f}",
             "avg_fmt_error": f"{tef/total:.2f}",
+            "avg_parse_error": f"{tpe/total:.2f}",
         }
         acrescentar_jsonl(media, avg_path)
 
         gp += tp/total; gr += tr_/total; gf1 += tf1/total
         gc += tc/total; grh += trh/total; gsh += tsh/total; goh += toh/total
-        gef += tef/total
+        gef += tef/total; gpe += tpe/total
 
         resultados_por_onto[onto_id] = media
 
@@ -359,6 +365,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
         "avg_rel_halluc": f"{grh/n_onto:.2f}",
         "avg_obj_halluc": f"{goh/n_onto:.2f}",
         "avg_fmt_error": f"{gef/n_onto:.2f}",
+        "avg_parse_error": f"{gpe/n_onto:.2f}",
         "onto_list": config["onto_list"],
     }
     acrescentar_jsonl(global_metricas, avg_path)

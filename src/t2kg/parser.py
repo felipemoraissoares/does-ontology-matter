@@ -42,6 +42,13 @@ def parsear_resposta(resposta: str) -> List[List[str]]:
         # Remove prefixos de lista: "- ", "* ", "• ", "1. "
         linha = re.sub(r"^[-*•]\s+", "", linha)
         linha = re.sub(r"^\d+\.\s+", "", linha)
+        # Categoria I (D-18): remove parênteses externos em ((rel(sub,obj))) ou (rel(sub,obj))
+        # quando o conteúdo interno corresponde ao padrão canônico (identificador + parênteses).
+        # NÃO toca (rel, sub, obj) — argumento posicional ambíguo, nunca interpretado.
+        if linha.startswith("(") and linha.endswith(")"):
+            interior = linha[1:-1].strip()
+            if re.match(r"^[A-Za-z_][^\(]*\(.+\)\s*$", interior):
+                linha = interior
 
         # Divide linha com múltiplas triplas: "rel1(a,b), rel2(c,d)"
         for segmento in _dividir_multiplas(linha):

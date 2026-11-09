@@ -474,6 +474,77 @@ e não o quão bem o modelo seguiu a ontologia errada que fornecemos.
 
 ---
 
+## D-18: Instrução de formato unificada e métrica de erro de parse
+
+**Status:** APROVADA (2026-11-09) — implementada em prompts.py, parser.py, original.py
+
+### Motivação — dados do piloto (Qwen2.5-7B, TekGen 1_movie + 2_music, n=200)
+
+| Condição | % respostas vazias | % erro de parse |
+|---|---|---|
+| C0 | 10.0% / 8.0% | 10.0% / 8.0% |
+| **C1** | **39.5% / 23.0%** | **39.5% / 23.0%** |
+| C1_oneshot_original | 0.5% / 1.5% | 0.5% / 1.5% |
+
+Todas as respostas "vazias" têm `response != ""` — são falhas de parse, não recusas.
+Categorização das 79 falhas de C1 (1_movie):
+- 31 usam `(rel, sub, obj)` — ordem lógica predicativa, não interpretada (argumento posicional ambíguo)
+- 29 adicionam texto de prefácio antes das triplas ("Based on...", "Here are...")
+- 4 usam bullet `- (sub, rel, obj)` com ordem errada
+- 5 genuinamente vazias (modelo diz que nada há para extrair)
+
+**Causa raiz:** `_INSTRUCAO_COM_ONT` para C1 dizia "in the given output format" (vago, sem
+referenciar `rel(sub, obj)` explicitamente). Sem exemplo e sem formato nomeado, o modelo
+escolhia `(rel, sub, obj)` por analogia com lógica de predicados. C1_oneshot_original tem
+um exemplo e obtém 0.5% de vazias — o exemplo âncora o formato.
+
+### Decisão
+
+#### Instrução de formato unificada
+
+Substituir todas as instruções de formato implícitas por uma única string:
+
+```
+Output only the triples, one per line, in the format relation(subject, object).
+Do not write any other text.
+```
+
+Aplicada a **C0, C1, C2, C3, C5, C5_vizinho, C5_incongruente**.
+**NÃO** aplicada a C1_oneshot_original (máxima fidelidade ao benchmark publicado).
+
+Implementação: constante `_INSTRUCAO_FORMATO` em `prompts.py`, compartilhada entre todas
+as condições afetadas.
+
+#### Melhoria do parser (Categoria I)
+
+Limpeza de parênteses externos: linha do tipo `(rel(sub, obj))` → strip outer `()` →
+`rel(sub, obj)` → parseia normalmente.
+
+Recupera +7 respostas nos 6 JSONL do piloto (3 em C1 1_movie, 4 em C1 2_music).
+As 158 falhas restantes requerem nova execução com o prompt corrigido.
+
+**NÃO** interpretado: `(rel, sub, obj)` — argumento posicional ambíguo sem argumento nomeado
+que identifique ordem.
+
+#### Métrica nova: `avg_parse_error` (D-18)
+
+Fração de frases avaliadas onde o modelo produziu resposta não-vazia mas o parser não
+extraiu nenhuma tripla: `response != ""` e `triples == []`.
+
+Complementa `avg_fmt_error` (que mede uso de nomes de classe como entidades). As duas
+métricas juntas cobrem:
+- `avg_parse_error` → modelo produziu algo mas parser falhou (problema de formato de saída)
+- `avg_fmt_error` → parser extraiu triplas mas entidades têm o nome de uma classe ontológica
+
+### Justificativa para não interpretar `(rel, sub, obj)`
+
+Reordenar argumentos `(rel, sub, obj)` → `rel(sub, obj)` é uma adivinhação perigosa:
+o mesmo formato `(a, b, c)` poderia ser `(sub, rel, obj)` — sem forma de distinguir sem
+semântica. Uma tripla incorretamente ordenada produz métricas infladas artificialmente
+e contaminaria a análise comparativa. A instrução de formato D-18 deve eliminar esse padrão.
+
+---
+
 ## D-17: Bugs encontrados no piloto Kaggle — C2 inválida, push falso
 
 **Status:** REGISTRADO (2026-11-09) — correções aplicadas em 7e74d7f e nesta sessão

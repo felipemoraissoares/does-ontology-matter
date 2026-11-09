@@ -143,6 +143,7 @@ def executar(
             {
                 "id": sent_id,
                 "sent": frase["sent"],
+                "prompt": prompt,
                 "response": resposta,
                 "triples": triplas,
             },

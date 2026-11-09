@@ -28,7 +28,7 @@ from t2kg.avaliacao.original import avaliar
 METRICAS = [
     "avg_precision", "avg_recall", "avg_f1",
     "avg_onto_conf", "avg_sub_halluc", "avg_rel_halluc", "avg_obj_halluc",
-    "avg_fmt_error",
+    "avg_fmt_error", "avg_parse_error",
 ]
 
 TEKGEN_ONTOS = [
