@@ -204,3 +204,23 @@ class TestParserCasosReaisD19:
         )
         assert ["Pavement", "is_a_song_by", "Summer Babe (Winter Version)"] in r
         assert ["Pavement", "genre", "Indie Rock"] in r
+
+
+class TestParserVarianteD:
+    """D-19: angle-brackets <entity name> usados pela instrução variante D."""
+
+    def test_angle_brackets_basico(self):
+        resp = "director(<Bleach: Hell Verse>, <Noriyuki Abe>)"
+        assert parsear_resposta(resp) == [["Bleach: Hell Verse", "director", "Noriyuki Abe"]]
+
+    def test_angle_brackets_sujeito_apenas(self):
+        resp = "cast_member(<Toy Story>, Tom Hanks)"
+        assert parsear_resposta(resp) == [["Toy Story", "cast_member", "Tom Hanks"]]
+
+    def test_angle_brackets_objeto_apenas(self):
+        resp = "genre(Bleach, <Action Film>)"
+        assert parsear_resposta(resp) == [["Bleach", "genre", "Action Film"]]
+
+    def test_angle_brackets_sem_espaco_interno(self):
+        resp = "director(<Inception>,<Christopher Nolan>)"
+        assert parsear_resposta(resp) == [["Inception", "director", "Christopher Nolan"]]

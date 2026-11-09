@@ -164,11 +164,14 @@ def _dividir_argumentos(conteudo: str) -> Tuple[Optional[str], Optional[str]]:
 
 
 def _limpar_string(s: str) -> str:
-    """Remove espaços externos, trailing comma e aspas duplas/simples externas."""
+    """Remove espaços externos, trailing comma, angle-brackets e aspas duplas/simples externas."""
     s = s.strip()
     # D-19: remove vírgula terminal — rel(sub, obj,) → obj = "obj,"
     if s.endswith(","):
         s = s[:-1].strip()
+    # D-19: remove angle-brackets da variante D — <entity name> → entity name
+    if len(s) >= 2 and s[0] == "<" and s[-1] == ">":
+        s = s[1:-1].strip()
     if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
         s = s[1:-1].strip()
     elif len(s) >= 2 and s[0] == "'" and s[-1] == "'":

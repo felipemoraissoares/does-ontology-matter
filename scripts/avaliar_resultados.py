@@ -166,7 +166,7 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
         "avg_sem_filtro_f1": 0.0,
         "avg_projetado_f1": 0.0,
         "avg_fracao_projetada": 0.0,
-        "avg_redundancia_esquema": 0.0,
+        "avg_taxa_predicados_unicos": 0.0,
     }
     n_onto_ok = 0
 
@@ -197,7 +197,7 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
         resultados_onto[onto_id] = resumo
 
         for k in soma_global:
-            soma_global[k] += resumo.get(k, 0.0)
+            soma_global[k] += resumo.get(k, 0.0)  # avg_taxa_predicados_unicos substituiu avg_redundancia_esquema
         n_onto_ok += 1
 
     if n_onto_ok == 0:
@@ -284,10 +284,10 @@ def main():
             )
             if ext:
                 g = ext["global"]
-                print(f"  [ext] avg_sem_filtro_f1:    {g['avg_sem_filtro_f1']:.4f}")
-                print(f"  [ext] avg_projetado_f1:     {g['avg_projetado_f1']:.4f}")
-                print(f"  [ext] avg_fracao_projetada: {g['avg_fracao_projetada']:.4f}")
-                print(f"  [ext] avg_redundancia:      {g['avg_redundancia_esquema']:.4f}")
+                print(f"  [ext] avg_sem_filtro_f1:          {g['avg_sem_filtro_f1']:.4f}")
+                print(f"  [ext] avg_projetado_f1:           {g['avg_projetado_f1']:.4f}")
+                print(f"  [ext] avg_fracao_projetada:       {g['avg_fracao_projetada']:.4f}")
+                print(f"  [ext] avg_taxa_predicados_unicos: {g['avg_taxa_predicados_unicos']:.4f}")
                 # Acrescenta ao CSV
                 linha["ext_sem_filtro_f1"]    = g["avg_sem_filtro_f1"]
                 linha["ext_projetado_f1"]     = g["avg_projetado_f1"]

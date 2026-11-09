@@ -9,7 +9,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from t2kg.avaliacao.extended import (
     prf1_sem_filtro,
-    redundancia_esquema,
+    taxa_predicados_unicos,
+    redundancia_semantica,
     deduplicar_onto_list,
     sumarizar_estendido,
     avaliar_frase_estendida,
@@ -48,20 +49,20 @@ class TestPRF1SemFiltro:
         assert r == 1.0
 
 
-class TestRedundanciaEsquema:
+class TestTaxaPredicadosUnicos:
     def test_uma_relacao_unica(self):
         triplas = [["A", "director", "B"], ["C", "director", "D"]]
-        assert redundancia_esquema(triplas) == 0.5
+        assert taxa_predicados_unicos(triplas) == 0.5
 
     def test_todas_distintas(self):
         triplas = [["A", "director", "B"], ["A", "writer", "C"], ["A", "genre", "D"]]
-        assert redundancia_esquema(triplas) == 1.0
+        assert taxa_predicados_unicos(triplas) == 1.0
 
     def test_vazio(self):
-        assert redundancia_esquema([]) == 0.0
+        assert taxa_predicados_unicos([]) == 0.0
 
     def test_uma_tripla(self):
-        assert redundancia_esquema([["A", "director", "B"]]) == 1.0
+        assert taxa_predicados_unicos([["A", "director", "B"]]) == 1.0
 
 
 class TestDeduplicarOntoList:
@@ -85,11 +86,11 @@ class TestDeduplicarOntoList:
 
 
 class TestSumarizarEstendido:
-    def _m(self, pf, rf, ff, pp, rp, fp, fp_frac, red):
+    def _m(self, pf, rf, ff, pp, rp, fp, fp_frac, tpu):
         return {
             "prf1_sem_filtro": {"precision": pf, "recall": rf, "f1": ff},
             "prf1_projetado": {"precision": pp, "recall": rp, "f1": fp, "fracao_projetada": fp_frac},
-            "redundancia_esquema": red,
+            "taxa_predicados_unicos": tpu,
         }
 
     def test_modo_benchmark(self):
@@ -110,6 +111,37 @@ SKIP_EMBS = pytest.mark.skipif(
 )
 
 
+class TestRedundanciaSemantica:
+    def test_vazio(self):
+        r = redundancia_semantica([])
+        assert r["valor"] == 0.0
+        assert r["n_rotulos"] == 0
+
+    def test_um_rotulo(self):
+        r = redundancia_semantica([["A", "director", "B"]])
+        assert r["valor"] == 0.0
+        assert r["n_rotulos"] == 1
+        assert r["n_grupos"] == 1
+
+    @SKIP_EMBS
+    def test_sem_sinonimos(self):
+        triplas = [["A", "director", "B"], ["X", "birthplace", "Y"]]
+        r = redundancia_semantica(triplas, threshold=0.80)
+        assert r["n_rotulos"] == 2
+        assert r["n_grupos"] == 2
+        assert r["valor"] == 0.0
+
+    @SKIP_EMBS
+    def test_sinonimos_obvios(self):
+        # "director" e "directed_by" devem fundir a threshold baixo
+        triplas = [["A", "director", "B"], ["C", "directed_by", "D"]]
+        r = redundancia_semantica(triplas, threshold=0.70)
+        assert r["n_rotulos"] == 2
+        assert "n_grupos" in r
+        assert "grupos" in r
+        assert r["valor"] is not None
+
+
 class TestAvaliarFraseEstendida:
     @SKIP_EMBS
     def test_basico(self):
@@ -119,7 +151,7 @@ class TestAvaliarFraseEstendida:
         r = avaliar_frase_estendida(frase, triplas, ont)
         assert r["id"] == "s1"
         assert r["prf1_sem_filtro"]["f1"] == 1.0
-        assert r["redundancia_esquema"] == 1.0
+        assert r["taxa_predicados_unicos"] == 1.0
 
     def test_estrutura_retorno(self):
         frase = {"id": "s1", "sent": "X.", "gt_triples": []}
@@ -128,6 +160,6 @@ class TestAvaliarFraseEstendida:
             r = avaliar_frase_estendida(frase, [], ont)
             assert "id" in r
             assert "prf1_sem_filtro" in r
-            assert "redundancia_esquema" in r
+            assert "taxa_predicados_unicos" in r
         except ImportError:
             pytest.skip("sentence-transformers não instalado")

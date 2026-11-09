@@ -19,11 +19,18 @@ Métricas implementadas (pré-registradas em Fase 2 / item B):
    SimE >= threshold_projecao. As triplas projetadas são então avaliadas com P/R/F1.
    Threshold provisório: 0.80 (a calibrar no piloto, ver D-16).
 
-4. Redundância de esquema
+4. Taxa de predicados únicos (taxa_predicados_unicos)
    Fração de relações únicas sobre total de relações extraídas por ontologia.
-   Alta redundância = modelo repete poucas relações; baixa = vocabulário variado.
+   1.0 = todas as relações são distintas; baixo = modelo repete poucos predicados.
+   NÃO é a métrica H1 da dissertação — apenas indica variedade de vocabulário.
 
-5. Custo de tokens de contexto
+5. Redundância semântica (redundancia_semantica) — métrica H1
+   Grau em que o esquema extraído contém relações semanticamente equivalentes sob rótulos
+   distintos (sinônimos). Definição: 1 − (n_grupos / n_rotulos_distintos).
+   Agrupamento por single-linkage greedy com all-MiniLM-L6-v2 ao threshold calibrado.
+   0.0 = cada rótulo é seu próprio grupo (sem redundância); 1.0 = um único grupo (máxima).
+
+6. Custo de tokens de contexto
    Conta palavras no bloco de ontologia do prompt (mesmo proxy de num_tokens_texto).
 """
 import json
@@ -151,14 +158,14 @@ def prf1_projetado(
 
 
 # ---------------------------------------------------------------------------
-# 3. Redundância de esquema
+# 3. Taxa de predicados únicos (antes: redundância de esquema)
 # ---------------------------------------------------------------------------
 
-def redundancia_esquema(triplas: List) -> float:
+def taxa_predicados_unicos(triplas: List) -> float:
     """
     Fração de relações únicas sobre total de relações extraídas.
-    0.0 = todas as relações são iguais; 1.0 = todas são distintas.
-    Alta redundância (valor baixo) indica que o modelo usa poucos predicados.
+    1.0 = todas as relações são distintas; 0.0 = um único predicado repetido.
+    Mede variedade de vocabulário; NÃO é a métrica de redundância semântica H1.
     """
     if not triplas:
         return 0.0
@@ -168,7 +175,69 @@ def redundancia_esquema(triplas: List) -> float:
 
 
 # ---------------------------------------------------------------------------
-# 4. Avaliação estendida por frase
+# 4. Redundância semântica (métrica H1)
+# ---------------------------------------------------------------------------
+
+def redundancia_semantica(triplas: List, threshold: float = 0.80) -> Dict:
+    """
+    Grau em que o esquema extraído contém relações semanticamente equivalentes
+    sob rótulos distintos (sinônimos).
+
+    Definição: 1 − (n_grupos / n_rotulos_distintos).
+    0.0 = cada rótulo forma seu próprio grupo; 1.0 = todos fundidos em um grupo.
+
+    Agrupamento: single-linkage greedy com all-MiniLM-L6-v2.
+    Um novo rótulo é adicionado ao primeiro grupo onde QUALQUER membro tenha
+    sim >= threshold (single-linkage). Se nenhum grupo aceita, cria novo grupo.
+
+    Retorna dict com: valor, n_rotulos, n_grupos, threshold, grupos (lista de listas).
+    """
+    rotulos_distintos = list({t[1] for t in triplas})
+    n = len(rotulos_distintos)
+
+    if n == 0:
+        return {"valor": 0.0, "n_rotulos": 0, "n_grupos": 0, "threshold": threshold, "grupos": []}
+    if n == 1:
+        return {"valor": 0.0, "n_rotulos": 1, "n_grupos": 1, "threshold": threshold,
+                "grupos": [rotulos_distintos]}
+
+    if not _EMBS_OK:
+        return {"valor": None, "n_rotulos": n, "n_grupos": None, "threshold": threshold,
+                "grupos": [], "erro": "sentence-transformers não disponível"}
+
+    modelo = _get_modelo()
+    rotulos_norm = [r.replace("_", " ").lower() for r in rotulos_distintos]
+    embs = modelo.encode(rotulos_norm, show_progress_bar=False)
+    from sklearn.metrics.pairwise import cosine_similarity as _cos
+    sim = _cos(embs, embs)
+
+    # Single-linkage greedy: processa rótulos em ordem, adiciona ao primeiro grupo compatível
+    grupos: List[List[int]] = []
+    for i in range(n):
+        adicionado = False
+        for grupo in grupos:
+            if any(sim[i, j] >= threshold for j in grupo):
+                grupo.append(i)
+                adicionado = True
+                break
+        if not adicionado:
+            grupos.append([i])
+
+    n_grupos = len(grupos)
+    valor = 1.0 - (n_grupos / n) if n > 0 else 0.0
+
+    grupos_rotulos = [[rotulos_distintos[i] for i in g] for g in grupos]
+    return {
+        "valor": valor,
+        "n_rotulos": n,
+        "n_grupos": n_grupos,
+        "threshold": threshold,
+        "grupos": grupos_rotulos,
+    }
+
+
+# ---------------------------------------------------------------------------
+# 5. Avaliação estendida por frase
 # ---------------------------------------------------------------------------
 
 def avaliar_frase_estendida(
@@ -187,20 +256,20 @@ def avaliar_frase_estendida(
 
     p_sf, r_sf, f1_sf = prf1_sem_filtro(gabarito, triplas_sistema)
     proj = prf1_projetado(gabarito, triplas_sistema, ontologia_ref, threshold_proj)
-    red = redundancia_esquema(triplas_sistema)
+    tpu = taxa_predicados_unicos(triplas_sistema)
 
     return {
         "id": frase["id"],
         "prf1_sem_filtro": {"precision": p_sf, "recall": r_sf, "f1": f1_sf},
         "prf1_projetado": proj,
-        "redundancia_esquema": red,
+        "taxa_predicados_unicos": tpu,
         "n_triplas_sistema": len(triplas_sistema),
         "n_triplas_gabarito": len(gabarito),
     }
 
 
 # ---------------------------------------------------------------------------
-# 5. Deduplicar onto_list DBpedia (remove segunda ocorrência de 1_university)
+# 6. Deduplicar onto_list DBpedia (remove segunda ocorrência de 1_university)
 # ---------------------------------------------------------------------------
 
 def deduplicar_onto_list(onto_list: List[Dict]) -> List[Dict]:
@@ -218,7 +287,7 @@ def deduplicar_onto_list(onto_list: List[Dict]) -> List[Dict]:
 
 
 # ---------------------------------------------------------------------------
-# 6. Sumarização de métricas estendidas por ontologia
+# 7. Sumarização de métricas estendidas por ontologia
 # ---------------------------------------------------------------------------
 
 def sumarizar_estendido(
@@ -238,14 +307,14 @@ def sumarizar_estendido(
 
     soma_prf_sf = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
     soma_proj = {"precision": 0.0, "recall": 0.0, "f1": 0.0, "fracao_projetada": 0.0}
-    soma_red = 0.0
+    soma_tpu = 0.0
 
     for m in metricas_por_frase:
         for k in soma_prf_sf:
             soma_prf_sf[k] += m["prf1_sem_filtro"][k]
         for k in soma_proj:
             soma_proj[k] += m["prf1_projetado"][k]
-        soma_red += m["redundancia_esquema"]
+        soma_tpu += m["taxa_predicados_unicos"]
 
     return {
         "avg_sem_filtro_precision": soma_prf_sf["precision"] / denom,
@@ -255,7 +324,7 @@ def sumarizar_estendido(
         "avg_projetado_recall": soma_proj["recall"] / denom,
         "avg_projetado_f1": soma_proj["f1"] / denom,
         "avg_fracao_projetada": soma_proj["fracao_projetada"] / denom,
-        "avg_redundancia_esquema": soma_red / denom,
+        "avg_taxa_predicados_unicos": soma_tpu / denom,
         "n_frases_avaliadas": len(metricas_por_frase),
         "n_frases_total": n_total_frases,
     }

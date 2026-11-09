@@ -606,13 +606,14 @@ em curso. Testado com ProvedorMock.
 O F1 NÃO é usado como critério — evita selecionar instrução que vaze informação sobre a
 estrutura da ontologia.
 
-Três redações alternativas em `configs/d19/`:
+Quatro redações alternativas em `configs/d19/`:
 
 | Variante | Texto da instrução |
 |---|---|
 | **A** (padrão D-18) | `Output only the triples, one per line, in the format relation(subject, object). Do not write any other text.` |
 | **B** | `List only the extracted triples. Each triple must follow this exact pattern: predicate(entity1, entity2). One triple per line. No explanations, no extra text.` |
 | **C** | `Extract triples as: name_of_relation(first_entity, second_entity). Write one triple per line. Nothing else.` |
+| **D** | `Output the triples, one per line, in this exact format: relation_name(<exact name of the first entity as written in the sentence>, <exact name of the second entity as written in the sentence>). No other text.` |
 
 Diferenças entre variantes:
 - A usa `relation(subject, object)` — espelha a assinatura da ontologia (suspeita D-19)
@@ -620,10 +621,16 @@ Diferenças entre variantes:
   conotação de "tipo de classe"
 - C usa `name_of_relation(first_entity, second_entity)` — ênfase em "nome" e "entidade",
   sem parênteses na própria explicação do formato
+- D usa angle-brackets `<entity name>` como marcadores explícitos — ênfase em "as written
+  in the sentence", espera-se redução de erros de formato. Parser atualizado para remover
+  `<>` automaticamente (D-19).
+
+A regra de escolha está pré-registrada em **D-20** (abaixo) — definida ANTES de rodar.
 
 Manifesto: `configs/pipeline/minilancador_d19.json`
-12 experimentos: 3 variantes × 2 condições (C0, C1) × 2 ontologias (1_movie, 2_music)
-100 frases/experimento, seed=42.
+17 experimentos: 4 variantes × 2 condições (C0, C1) × 2 ontologias (1_movie, 2_music)
+  + 1 teste de paralelismo (C1_oneshot_original, 1_movie, 200 frases, workers=16)
+100 frases/experimento (exceto paralelismo: 200), seed=42.
 
 #### Suporte a `instrucao_formato` no manifesto
 
@@ -633,14 +640,78 @@ Implementado em `executar.py` e `run.py`. Ignorado para `C1_oneshot_original`.
 
 ### Arquivos modificados
 
-- `src/t2kg/parser.py` — `_dividir_multiplas` depth-aware, trailing comma, bullet `\d+\)`
+- `src/t2kg/parser.py` — `_dividir_multiplas` depth-aware, trailing comma, bullet `\d+\)`, angle-brackets
 - `src/t2kg/pipeline/prompts.py` — parâmetro `instrucao_formato` em `montar_prompt()`
 - `src/t2kg/pipeline/executar.py` — `workers` e `instrucao_formato`
 - `src/t2kg/run.py` — lê `workers` e `instrucao_formato` do manifesto
 - `tests/test_parser.py` — classe `TestParserCasosReaisD19` (9 casos reais)
-- `scripts/analisar_threshold_c2.py` — análise de calibração do threshold C2
-- `configs/d19/instrucao_A.txt`, `instrucao_B.txt`, `instrucao_C.txt`
+- `scripts/analisar_threshold_c2.py` — sweep estendido 0.50–0.90, alinhamento free↔ref
+- `scripts/analisar_ontologia_c2.py` — varredura freq_min, investigação anomalias C2
+- `scripts/calcular_redundancia_piloto.py` — redundância semântica (H1) no piloto-v2
+- `src/t2kg/avaliacao/extended.py` — `taxa_predicados_unicos` (renomeado), `redundancia_semantica`
+- `configs/d19/instrucao_A.txt`, `instrucao_B.txt`, `instrucao_C.txt`, `instrucao_D.txt`
 - `configs/pipeline/minilancador_d19.json`
+
+---
+
+## D-20: Regra pré-registrada de escolha da instrução de formato (mini-teste D-19)
+
+**Status:** PRÉ-REGISTRADA (2026-11-09) — definida ANTES de rodar o mini-teste
+
+### Decisão
+
+A instrução vencedora para uso nas condições C0, C1, C2, C3, C5 é escolhida **exclusivamente**
+por critérios de erro de formato/parse, sem considerar F1. Isso evita que a escolha da instrução
+introduza viés favorável a alguma condição experimental.
+
+**Critério de seleção:**
+
+1. **Pontuação primária:** `avg_fmt_error + avg_parse_error` (soma sobre condições C0 e C1,
+   média entre 1_movie e 2_music) — menor = melhor.
+2. **Desempate:** variante mais simples (ordem A < B < C < D).
+3. **Critério de exclusão:** variante com `% de respostas prose` (response não-vazia, nenhuma
+   tripla extraída) > 20% é eliminada antes do critério 1.
+
+**Por que excluir F1 do critério:**
+Instruções com terminologia mais próxima da ontologia (ex.: `relation(subject, object)` em A)
+podem ter maior conformidade ontológica artificialmente — o modelo "copia" os termos da
+ontologia para o formato da instrução. Usar F1 como critério contaminaria a comparação
+entre condições experimentais.
+
+**Implementação:** resultado documentado aqui após a execução. Instrução escolhida substitui
+`_INSTRUCAO_FORMATO` em `prompts.py` para a fase de execução completa.
+
+---
+
+## D-21: Regra pré-registrada — threshold de agrupamento e freq_min para C2
+
+**Status:** PRÉ-REGISTRADA (2026-11-09) — definida ANTES de re-executar a indução C2 no Kaggle
+
+### Decisão
+
+**threshold_agrupamento (para redundancia_semantica e indução C2):**
+
+Determinado pela varredura `scripts/analisar_threshold_c2.py` (sweep 0.50–0.90):
+- Encontrar o menor threshold (ponto de ruptura) onde algum par de relações da ontologia
+  de REFERÊNCIA se funde.
+- `threshold_definitivo = breakpoint + 0.05`
+- **Se nenhum breakpoint encontrado em 0.50–0.90:** usar `threshold = 0.80` (conservador).
+
+Justificativa: o threshold mais baixo que ainda separa as relações referenciais é o ponto
+de máxima sensibilidade ao agrupamento que não produz falsos grupos em dados anotados.
+O offset +0.05 garante margem de segurança.
+
+**freq_min para a ontologia induzida C2:**
+
+- `freq_min = 5` (relação deve aparecer pelo menos 5× nas 50 frases de treino para entrar na
+  ontologia induzida).
+- Sem cap de tamanho (revogado o cap de 2× a referência de versões anteriores).
+
+Justificativa: freq_min≥5 elimina hápax e relações acidentais enquanto mantém relações
+com suporte estatístico mínimo. Derivado da análise de distribuição em `scripts/analisar_threshold_c2.py`
+(seção "Frequência das relações livres").
+
+**Implementação:** parâmetros registrados em `configs/c2/params_c2.json` antes da re-indução.
 
 ---
 

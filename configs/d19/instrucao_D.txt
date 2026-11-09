@@ -1,0 +1,3 @@
+Output the triples, one per line, in this exact format:
+relation_name(<exact name of the first entity as written in the sentence>, <exact name of the second entity as written in the sentence>)
+No other text.
