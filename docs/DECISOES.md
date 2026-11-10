@@ -1000,9 +1000,71 @@ Teste: `TestParserVirgulaFinal.test_multiplas_com_virgula_final` em `tests/test_
 
 ---
 
-## D-23: Piloto-v3 — validação antes da fase completa
+## D-23: Paralelismo — workers=1 fixado em todos os manifestos
 
-**Status:** PLANEJADA (2026-11-09) — a rodar no próximo run Kaggle
+**Status:** APROVADA (2026-11-10)
+
+### Resultado do teste
+
+Experimento `d19_paralelismo_1movie_c1os.jsonl` (workers=16, 200 frases) comparado ao piloto-v2 C1_oneshot_original (workers=1, 200 frases). vLLM T4×2, temperatura=0, greedy decoding.
+
+| Configuração | Throughput | Tempo/frase |
+|---|---|---|
+| workers=16 (paralelo) | ~5143 fr/h | ~0.70 s |
+| workers=1 (sequencial) | ~5300 fr/h | ~0.68 s |
+| Diferença | < 3% | insignificante |
+
+Timing derivado do log do Kaggle: vLLM pronto aos 540s; primeiro resultado de experimento aos 1808s → 1268s para 1800 frases totais (mini-teste D-19 completo). Tempo por-experimento individual não é rastreável (Kaggle registra apenas timestamp de conclusão de célula, não por linha de output).
+
+**Causa da ausência de ganho:** o servidor vLLM local opera em modo single-request (batch=1 por requisição individual quando não há batching explícito). Enviar 16 threads clientes não aumenta o throughput quando o servidor já está saturado — a fila de requisições no servidor permanece essencialmente serial. Paralelismo real requereria batched inference (vLLM continuous batching) ou engine externa.
+
+### Decisão
+
+**Fixar `workers=1` em todos os manifestos** (piloto-v3, fase completa) para garantir 100% de reprodutibilidade. Os 7% de variação estocástica observados em workers=16 são eliminados. Campo `workers: 1` adicionado explicitamente ao `manifesto_piloto_v3.json`.
+
+Paralelismo pode ser reativado em infra com batching real sem qualquer mudança de código (apenas alterar o campo `workers` no manifesto).
+
+---
+
+## D-24: Definição semântica para agrupamento e projeção C2 (estilo EDC)
+
+**Status:** IMPLEMENTADA (2026-11-10) — scripts prontos; definições a gerar no Kaggle
+
+### Motivação
+
+Cobertura da C2 era 7–29% usando só embedding de rótulo curto. Nomes como `released_in` e `publication_date` não são similares na superfície semântica. Zhang & Soh (2024) propõem "definição e canonicalização" (EDC) — o mesmo LLM que extrai gera definições para canonicalizar vocabulários.
+
+### Implementação
+
+Para cada rótulo de relação livre (das extrações treino C0) e da ontologia de referência, o LLM (mesmo modelo, temperatura=0) gera uma definição de 1 frase via prompt fixo:
+
+```
+Define the semantic relationship '{label}' in one concise sentence.
+Focus on what it means when connecting two entities.
+Reply with only the definition, no preamble.
+```
+
+O embedding passa a ser `encode("rótulo: definição")` em vez de `encode("rótulo")`. Agrupamento e projeção usam esse embedding aumentado.
+
+Hipótese: `released_in: "Indicates the year a film was released to the public."` e `publication_date: "Specifies the official date of public release."` terão alta similaridade semântica, melhorando a cobertura do gabarito de treino.
+
+### Arquivos
+
+- `configs/c2/definicoes_{onto_id}.json` — gerado por `scripts/gerar_definicoes_relacoes.py` no Kaggle
+- `scripts/gerar_definicoes_relacoes.py` — gera definições para uma ontologia
+- `scripts/calibrar_c2_com_definicoes.py` — tabela comparativa label × definição
+- `src/t2kg/avaliacao/extended.py` — `gerar_definicao_relacao()`, `redundancia_semantica(..., definicoes=None)`
+- `scripts/induzir_c2.py` — `agrupar_relacoes(..., definicoes=None)`
+
+### Status
+
+Scripts implementados. Definições serão geradas no próximo run Kaggle antes da re-indução C2 (célula 10 do lancador.ipynb). A tabela comparativa label × definição será calculada automaticamente com `--from_cache` após o run.
+
+---
+
+## D-23b: Piloto-v3 — validação antes da fase completa
+
+**Status:** PLANEJADA (2026-11-10) — a rodar no próximo run Kaggle
 
 ### Decisão
 

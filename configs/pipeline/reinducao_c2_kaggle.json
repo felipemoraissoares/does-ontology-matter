@@ -8,11 +8,12 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 50,
     "seed": 42,
-    "threshold": 0.70,
+    "threshold": 0.7,
     "freq_min": 5,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
-    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL"
+    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL",
+    "ativo": true
   },
   {
     "id": "c2_reinducao_tkg_2_music",
@@ -23,11 +24,12 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 50,
     "seed": 42,
-    "threshold": 0.70,
+    "threshold": 0.7,
     "freq_min": 5,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
-    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL"
+    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL",
+    "ativo": true
   },
   {
     "id": "c2_reinducao_tkg_1_movie_n100",
@@ -38,11 +40,12 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 100,
     "seed": 42,
-    "threshold": 0.70,
+    "threshold": 0.7,
     "freq_min": 3,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino_n100.jsonl",
-    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3)"
+    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3) [ativo=False: N=100 é análise extra; prioridade é N=50 para todos]",
+    "ativo": false
   },
   {
     "id": "c2_reinducao_tkg_2_music_n100",
@@ -53,10 +56,43 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 100,
     "seed": 42,
-    "threshold": 0.70,
+    "threshold": 0.7,
     "freq_min": 3,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino_n100.jsonl",
-    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3)"
+    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3) [ativo=False: N=100 é análise extra; prioridade é N=50 para todos]",
+    "ativo": false
+  },
+  {
+    "id": "c2_reinducao_dbp_1_university",
+    "tipo": "c2_inducao",
+    "dataset": "webnlg",
+    "onto": "1_university",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 50,
+    "seed": 42,
+    "threshold": 0.7,
+    "freq_min": 3,
+    "calibrar": true,
+    "ativo": true,
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_dbp_1_university_treino.jsonl",
+    "motivo": "C2 DBpedia 1_university: N=50 (85 frases treino disponíveis), freq_min=3, D-24"
+  },
+  {
+    "id": "c2_reinducao_dbp_19_film",
+    "tipo": "c2_inducao",
+    "dataset": "webnlg",
+    "onto": "19_film",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 50,
+    "seed": 42,
+    "threshold": 0.7,
+    "freq_min": 3,
+    "calibrar": true,
+    "ativo": true,
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_dbp_19_film_treino.jsonl",
+    "motivo": "C2 DBpedia 19_film: N=50 (137 frases treino disponíveis), freq_min=3, D-24"
   }
 ]

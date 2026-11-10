@@ -57,6 +57,18 @@ except ImportError:
 
 THRESHOLD_PROJECAO_PROVISORIO = 0.80
 
+PROMPT_DEFINICAO = (
+    "Define the semantic relationship '{label}' in one concise sentence. "
+    "Focus on what it means when connecting two entities. "
+    "Reply with only the definition, no preamble."
+)
+
+
+def gerar_definicao_relacao(rotulo: str, cliente_llm) -> str:
+    """D-24: chama o LLM para gerar definição de 1 frase para um rótulo de relação."""
+    prompt = PROMPT_DEFINICAO.format(label=rotulo)
+    return cliente_llm.gerar(prompt, max_tokens=128, temperatura=0.0).strip()
+
 
 def _normalizar_rotulo(label: str) -> str:
     """D-22: normaliza rótulo antes do embedding.
@@ -190,7 +202,7 @@ def taxa_predicados_unicos(triplas: List) -> float:
 # 4. Redundância semântica (métrica H1)
 # ---------------------------------------------------------------------------
 
-def redundancia_semantica(triplas: List, threshold: float = 0.80) -> Dict:
+def redundancia_semantica(triplas: List, threshold: float = 0.80, definicoes: Optional[Dict] = None) -> Dict:
     """
     Grau em que o esquema extraído contém relações semanticamente equivalentes
     sob rótulos distintos (sinônimos).
@@ -218,7 +230,10 @@ def redundancia_semantica(triplas: List, threshold: float = 0.80) -> Dict:
                 "grupos": [], "erro": "sentence-transformers não disponível"}
 
     modelo = _get_modelo()
-    rotulos_norm = [_normalizar_rotulo(r) for r in rotulos_distintos]
+    if definicoes:
+        rotulos_norm = [f"{_normalizar_rotulo(r)}: {definicoes[r]}" if r in definicoes else _normalizar_rotulo(r) for r in rotulos_distintos]
+    else:
+        rotulos_norm = [_normalizar_rotulo(r) for r in rotulos_distintos]
     embs = modelo.encode(rotulos_norm, show_progress_bar=False)
     from sklearn.metrics.pairwise import cosine_similarity as _cos
     sim = _cos(embs, embs)

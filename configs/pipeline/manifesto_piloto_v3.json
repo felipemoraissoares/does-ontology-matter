@@ -19,7 +19,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1movie_c0.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1movie_c0.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c1",
@@ -41,7 +42,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1movie_c1.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1movie_c1.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c1oneshotoriginal",
@@ -63,7 +65,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1movie_c1oneshotoriginal.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1movie_c1oneshotoriginal.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c2",
@@ -85,7 +88,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1movie_c2.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1movie_c2.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c3",
@@ -107,7 +111,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1movie_c3.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1movie_c3.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c5vizinho",
@@ -130,7 +135,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_1movie_c5vizinho.jsonl",
-    "ontologia_parceira_id": "4_book"
+    "ontologia_parceira_id": "4_book",
+    "workers": 1
   },
   {
     "id": "pv3_1movie_c5incongruente",
@@ -153,7 +159,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_1movie_c5incongruente.jsonl",
-    "ontologia_parceira_id": "9_nature"
+    "ontologia_parceira_id": "9_nature",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c0",
@@ -175,7 +182,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_2music_c0.jsonl"
+    "saida": "resultados/piloto_v3/pv3_2music_c0.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c1",
@@ -197,7 +205,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_2music_c1.jsonl"
+    "saida": "resultados/piloto_v3/pv3_2music_c1.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c1oneshotoriginal",
@@ -219,7 +228,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_2music_c1oneshotoriginal.jsonl"
+    "saida": "resultados/piloto_v3/pv3_2music_c1oneshotoriginal.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c2",
@@ -241,7 +251,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_2music_c2.jsonl"
+    "saida": "resultados/piloto_v3/pv3_2music_c2.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c3",
@@ -263,7 +274,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_2music_c3.jsonl"
+    "saida": "resultados/piloto_v3/pv3_2music_c3.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c5vizinho",
@@ -286,7 +298,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_2music_c5vizinho.jsonl",
-    "ontologia_parceira_id": "4_book"
+    "ontologia_parceira_id": "4_book",
+    "workers": 1
   },
   {
     "id": "pv3_2music_c5incongruente",
@@ -309,7 +322,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_2music_c5incongruente.jsonl",
-    "ontologia_parceira_id": "7_space"
+    "ontologia_parceira_id": "7_space",
+    "workers": 1
   },
   {
     "id": "pv3_1university_c0",
@@ -331,7 +345,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1university_c0.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1university_c0.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1university_c1",
@@ -353,7 +368,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1university_c1.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1university_c1.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1university_c1oneshotoriginal",
@@ -375,7 +391,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1university_c1oneshotoriginal.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1university_c1oneshotoriginal.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_1university_c3",
@@ -397,7 +414,31 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_1university_c3.jsonl"
+    "saida": "resultados/piloto_v3/pv3_1university_c3.jsonl",
+    "workers": 1
+  },
+  {
+    "id": "pv3_1university_c2",
+    "dataset": "webnlg",
+    "split": "test",
+    "ontologia_id": "1_university",
+    "condicao": "C2",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "quantizacao": "AWQ-4bit",
+    "chat_template": "qwen2",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:8000/v1",
+    "api_key": "token-nao-usado",
+    "temperatura": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "frases_max": 100,
+    "frases_seed": 42,
+    "workers": 1,
+    "git_hash": "4cfb296",
+    "bench_url": "https://github.com/cenguix/Text2KGBench.git",
+    "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
+    "saida": "resultados/piloto_v3/pv3_1university_c2.jsonl"
   },
   {
     "id": "pv3_1university_c5vizinho",
@@ -420,7 +461,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_1university_c5vizinho.jsonl",
-    "ontologia_parceira_id": "12_monument"
+    "ontologia_parceira_id": "12_monument",
+    "workers": 1
   },
   {
     "id": "pv3_1university_c5incongruente",
@@ -443,7 +485,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_1university_c5incongruente.jsonl",
-    "ontologia_parceira_id": "8_celestialbody"
+    "ontologia_parceira_id": "8_celestialbody",
+    "workers": 1
   },
   {
     "id": "pv3_19film_c0",
@@ -465,7 +508,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_19film_c0.jsonl"
+    "saida": "resultados/piloto_v3/pv3_19film_c0.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_19film_c1",
@@ -487,7 +531,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_19film_c1.jsonl"
+    "saida": "resultados/piloto_v3/pv3_19film_c1.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_19film_c1oneshotoriginal",
@@ -509,7 +554,8 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_19film_c1oneshotoriginal.jsonl"
+    "saida": "resultados/piloto_v3/pv3_19film_c1oneshotoriginal.jsonl",
+    "workers": 1
   },
   {
     "id": "pv3_19film_c3",
@@ -531,7 +577,31 @@
     "git_hash": "cfa7e1a",
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
-    "saida": "resultados/piloto_v3/pv3_19film_c3.jsonl"
+    "saida": "resultados/piloto_v3/pv3_19film_c3.jsonl",
+    "workers": 1
+  },
+  {
+    "id": "pv3_19film_c2",
+    "dataset": "webnlg",
+    "split": "test",
+    "ontologia_id": "19_film",
+    "condicao": "C2",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "quantizacao": "AWQ-4bit",
+    "chat_template": "qwen2",
+    "provedor": "openai_compat",
+    "provedor_url": "http://localhost:8000/v1",
+    "api_key": "token-nao-usado",
+    "temperatura": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "frases_max": 100,
+    "frases_seed": 42,
+    "workers": 1,
+    "git_hash": "4cfb296",
+    "bench_url": "https://github.com/cenguix/Text2KGBench.git",
+    "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
+    "saida": "resultados/piloto_v3/pv3_19film_c2.jsonl"
   },
   {
     "id": "pv3_19film_c5vizinho",
@@ -554,7 +624,8 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_19film_c5vizinho.jsonl",
-    "ontologia_parceira_id": "2_musicalwork"
+    "ontologia_parceira_id": "2_musicalwork",
+    "workers": 1
   },
   {
     "id": "pv3_19film_c5incongruente",
@@ -577,6 +648,7 @@
     "bench_url": "https://github.com/cenguix/Text2KGBench.git",
     "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
     "saida": "resultados/piloto_v3/pv3_19film_c5incongruente.jsonl",
-    "ontologia_parceira_id": "13_food"
+    "ontologia_parceira_id": "13_food",
+    "workers": 1
   }
 ]

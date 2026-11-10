@@ -107,19 +107,24 @@ def agrupar_relacoes(
     modelo: SentenceTransformer,
     threshold: float,
     normalizar: bool = False,
+    definicoes: Optional[Dict] = None,
 ) -> List[Dict]:
     """
     Agrupa rótulos de relação por similaridade de embedding (greedy single-link).
     Retorna lista de dicts: {label: str, frequencia: int, membros: List[str]}.
 
     normalizar=True aplica _normalizar_rotulo (D-22) antes do embedding.
+    definicoes: dict {rotulo: definicao} para D-24 (embedding aumentado com definição).
     """
     if not relacoes:
         return []
 
     contagem = Counter(relacoes)
     unicos = list(contagem.keys())
-    if normalizar:
+    if definicoes:
+        norm_fn = _normalizar_rotulo if normalizar else (lambda r: r.replace("_", " ").lower())
+        unicos_embs = [f"{norm_fn(r)}: {definicoes[r]}" if r in definicoes else norm_fn(r) for r in unicos]
+    elif normalizar:
         unicos_embs = [_normalizar_rotulo(r) for r in unicos]
     else:
         unicos_embs = [r.replace("_", " ").lower() for r in unicos]
