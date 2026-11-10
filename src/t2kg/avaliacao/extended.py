@@ -35,6 +35,7 @@ Métricas implementadas (pré-registradas em Fase 2 / item B):
 """
 import json
 import os
+import re
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
@@ -55,6 +56,17 @@ except ImportError:
 
 
 THRESHOLD_PROJECAO_PROVISORIO = 0.80
+
+
+def _normalizar_rotulo(label: str) -> str:
+    """D-22: normaliza rótulo antes do embedding.
+
+    Passos: replace _/-/→ space; remove has_/is_ prefix; remove _by/_of/_in/_to/_for suffix; lowercase.
+    """
+    s = re.sub(r"[_\-/]", " ", label.lower())
+    s = re.sub(r"^(has |is )", "", s)
+    s = re.sub(r" (by|of|in|to|for)$", "", s)
+    return s.strip()
 _MODELO_EMBS = "all-MiniLM-L6-v2"
 _modelo_cache: Optional[object] = None
 
@@ -206,7 +218,7 @@ def redundancia_semantica(triplas: List, threshold: float = 0.80) -> Dict:
                 "grupos": [], "erro": "sentence-transformers não disponível"}
 
     modelo = _get_modelo()
-    rotulos_norm = [r.replace("_", " ").lower() for r in rotulos_distintos]
+    rotulos_norm = [_normalizar_rotulo(r) for r in rotulos_distintos]
     embs = modelo.encode(rotulos_norm, show_progress_bar=False)
     from sklearn.metrics.pairwise import cosine_similarity as _cos
     sim = _cos(embs, embs)

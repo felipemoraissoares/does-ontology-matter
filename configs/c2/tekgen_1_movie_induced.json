@@ -5,7 +5,10 @@
     "n_frases_treino": 50,
     "seed": 42,
     "threshold_agrupamento": 0.7,
-    "modelo_llm": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "freq_min_frases": 5,
+    "normalizar_rotulo": true,
+    "from_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
     "modelo_embs": "all-MiniLM-L6-v2",
     "ids_frases": [
       "ont_1_movie_train_317",
@@ -63,24 +66,14 @@
   "concepts": [],
   "relations": [
     {
-      "label": "Knocking at the Door",
+      "label": "released_in",
       "frequencia": 7,
       "membros": [
-        "Knocking at the Door"
-      ]
-    },
-    {
-      "label": "include",
-      "frequencia": 7,
-      "membros": [
-        "include"
-      ]
-    },
-    {
-      "label": "is_loosely_adapted_mixture_of",
-      "frequencia": 6,
-      "membros": [
-        "is_loosely_adapted_mixture_of"
+        "released_in",
+        "has_release_year",
+        "released",
+        "was_released_on",
+        "release_year"
       ]
     },
     {
@@ -96,15 +89,6 @@
       "membros": [
         "directed_by",
         "directed"
-      ]
-    },
-    {
-      "label": "released_in",
-      "frequencia": 5,
-      "membros": [
-        "released_in",
-        "released_through",
-        "released"
       ]
     },
     {

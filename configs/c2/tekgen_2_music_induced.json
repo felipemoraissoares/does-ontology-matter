@@ -5,7 +5,10 @@
     "n_frases_treino": 50,
     "seed": 42,
     "threshold_agrupamento": 0.7,
-    "modelo_llm": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "freq_min_frases": 5,
+    "normalizar_rotulo": true,
+    "from_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
     "modelo_embs": "all-MiniLM-L6-v2",
     "ids_frases": [
       "ont_2_music_train_848",
@@ -63,37 +66,14 @@
   "concepts": [],
   "relations": [
     {
-      "label": "features",
-      "frequencia": 8,
-      "membros": [
-        "features"
-      ]
-    },
-    {
       "label": "is_a_song_by",
       "frequencia": 6,
       "membros": [
         "is_a_song_by",
         "is_a_song_of",
         "has_music_by",
-        "is_a_power_ballad_by",
-        "is_a_song"
-      ]
-    },
-    {
-      "label": "credited_producer",
-      "frequencia": 6,
-      "membros": [
-        "credited_producers",
-        "credited_producer"
-      ]
-    },
-    {
-      "label": "recorded",
-      "frequencia": 5,
-      "membros": [
-        "recorded_for",
-        "recorded"
+        "is_a_song",
+        "is_a_set_of_songs"
       ]
     }
   ]

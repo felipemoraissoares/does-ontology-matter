@@ -40,6 +40,7 @@ from t2kg.pipeline.dados import carregar_frases, carregar_frases_treino  # noqa:
 from t2kg.pipeline.provedores.openai_compat import ProvedorOpenAICompat  # noqa: E402
 from t2kg.pipeline.prompts import montar_prompt  # noqa: E402
 from t2kg.parser import parsear_resposta  # noqa: E402
+from t2kg.avaliacao.extended import _normalizar_rotulo  # noqa: E402
 
 BENCH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Text2KGBench"))
 MODELO_EMBS = "all-MiniLM-L6-v2"
@@ -105,17 +106,24 @@ def agrupar_relacoes(
     relacoes: List[str],
     modelo: SentenceTransformer,
     threshold: float,
+    normalizar: bool = False,
 ) -> List[Dict]:
     """
     Agrupa rótulos de relação por similaridade de embedding (greedy single-link).
     Retorna lista de dicts: {label: str, frequencia: int, membros: List[str]}.
+
+    normalizar=True aplica _normalizar_rotulo (D-22) antes do embedding.
     """
     if not relacoes:
         return []
 
     contagem = Counter(relacoes)
     unicos = list(contagem.keys())
-    embs = modelo.encode(unicos, show_progress_bar=False)
+    if normalizar:
+        unicos_embs = [_normalizar_rotulo(r) for r in unicos]
+    else:
+        unicos_embs = [r.replace("_", " ").lower() for r in unicos]
+    embs = modelo.encode(unicos_embs, show_progress_bar=False)
     sim = cosine_similarity(embs, embs)
     n = len(unicos)
     visitado = [False] * n
@@ -137,6 +145,22 @@ def agrupar_relacoes(
 
     grupos.sort(key=lambda g: -g["frequencia"])
     return grupos
+
+
+def contar_frases_por_grupo(
+    grupos: List[Dict],
+    triplas_por_frase: Dict[str, List[List[str]]],
+) -> None:
+    """Adiciona campo 'n_frases' a cada grupo: número de frases distintas com ≥1 tripla do grupo."""
+    for g in grupos:
+        membros_set = {m.lower().strip() for m in g["membros"]}
+        frases_do_grupo: set = set()
+        for fid, triplas in triplas_por_frase.items():
+            for t in triplas:
+                if len(t) >= 2 and t[1].lower().strip() in membros_set:
+                    frases_do_grupo.add(fid)
+                    break
+        g["n_frases"] = len(frases_do_grupo)
 
 
 def construir_ontologia_induzida(grupos: List[Dict]) -> Dict:
@@ -363,10 +387,14 @@ if __name__ == "__main__":
     p.add_argument("--calibrar", action="store_true",
                    help="Calcula e salva curvas de calibracao em calibracao_{dataset}_{onto}.json")
     p.add_argument("--freq_min", type=int, default=1,
-                   help="Frequência mínima para incluir relação na ontologia induzida. "
+                   help="Frequência mínima (frases DISTINTAS) para incluir relação. "
                         "freq_min=5 corresponde a >=10%% de N=50 frases de treino.")
     p.add_argument("--saida_raw_jsonl", default=None,
                    help="Caminho para salvar respostas cruas da extração livre (JSONL).")
+    p.add_argument("--from_raw_jsonl", default=None,
+                   help="Carrega respostas cruas de JSONL existente, sem chamar o LLM (D-22).")
+    p.add_argument("--normalizar", action="store_true",
+                   help="Aplica normalização D-22 aos rótulos antes do embedding.")
     p.add_argument("--saida_dir", default=os.path.join(
         os.path.dirname(__file__), "..", "configs", "c2"))
     args = p.parse_args()
@@ -391,16 +419,36 @@ if __name__ == "__main__":
                    "n_frases": len(frases), "ids": ids_sorteados}, fout, ensure_ascii=False, indent=2)
     print(f"  IDs registrados em: {seed_path}")
 
-    print(f"Extraindo triplas livres (C0) com LLM: {args.modelo_llm}")
-    provedor = _build_provedor(args.url, args.modelo_llm)
-    triplas_por_frase, registros_raw = extrair_triplas_com_respostas(frases, provedor)
+    if args.from_raw_jsonl:
+        # D-22: reprocessamento sem GPU a partir de respostas cruas
+        print(f"Carregando respostas cruas de: {args.from_raw_jsonl}")
+        with open(args.from_raw_jsonl, encoding="utf-8") as fin:
+            raw_data = [json.loads(l) for l in fin if l.strip()]
+        triplas_por_frase = {
+            r["id"]: (r.get("triples") or parsear_resposta(r.get("response", "")))
+            for r in raw_data
+        }
+        print(f"  {len(triplas_por_frase)} frases carregadas (sem chamada ao LLM).")
+        ids_raw = set(triplas_por_frase)
+        ids_frases = set(ids_sorteados)
+        if ids_raw != ids_frases:
+            extras = ids_raw - ids_frases
+            faltando = ids_frases - ids_raw
+            if extras:
+                print(f"  AVISO: {len(extras)} IDs no raw JSONL nao estao no sorteio (seed={args.seed}).")
+            if faltando:
+                print(f"  AVISO: {len(faltando)} IDs do sorteio ausentes no raw JSONL.")
+    else:
+        print(f"Extraindo triplas livres (C0) com LLM: {args.modelo_llm}")
+        provedor = _build_provedor(args.url, args.modelo_llm)
+        triplas_por_frase, registros_raw = extrair_triplas_com_respostas(frases, provedor)
 
-    if args.saida_raw_jsonl:
-        os.makedirs(os.path.dirname(os.path.abspath(args.saida_raw_jsonl)), exist_ok=True)
-        with open(args.saida_raw_jsonl, "w", encoding="utf-8") as fout:
-            for rec in registros_raw:
-                fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
-        print(f"  Respostas cruas salvas em: {args.saida_raw_jsonl}")
+        if args.saida_raw_jsonl:
+            os.makedirs(os.path.dirname(os.path.abspath(args.saida_raw_jsonl)), exist_ok=True)
+            with open(args.saida_raw_jsonl, "w", encoding="utf-8") as fout:
+                for rec in registros_raw:
+                    fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            print(f"  Respostas cruas salvas em: {args.saida_raw_jsonl}")
 
     all_relacoes = [t[1] for triplas in triplas_por_frase.values() for t in triplas if len(t) >= 3]
     print(f"  Relacoes extraidas: {len(all_relacoes)} total, {len(set(all_relacoes))} unicas")
@@ -413,16 +461,21 @@ if __name__ == "__main__":
             args.saida_dir, args.dataset, args.onto,
         )
 
-    print(f"\nAgrupando relacoes com threshold={args.threshold}")
-    grupos = agrupar_relacoes(all_relacoes, modelo_embs, args.threshold)
+    print(f"\nAgrupando relacoes com threshold={args.threshold}"
+          f"{' + normalizacao D-22' if args.normalizar else ''}")
+    grupos = agrupar_relacoes(all_relacoes, modelo_embs, args.threshold, normalizar=args.normalizar)
     print(f"  Grupos formados (antes de freq_min): {len(grupos)}")
 
+    # Conta frases DISTINTAS por grupo (D-21 fix: freq_min conta frases, nao triplas)
+    contar_frases_por_grupo(grupos, triplas_por_frase)
+
     if args.freq_min > 1:
-        grupos = [g for g in grupos if g["frequencia"] >= args.freq_min]
-        print(f"  Grupos apos freq_min>={args.freq_min} (>={args.freq_min/args.n_frases*100:.0f}% das frases): {len(grupos)}")
+        grupos = [g for g in grupos if g["n_frases"] >= args.freq_min]
+        pct = args.freq_min / args.n_frases * 100
+        print(f"  Grupos apos freq_min>={args.freq_min} frases distintas (>={pct:.0f}% de {args.n_frases}): {len(grupos)}")
 
     for g in grupos[:10]:
-        print(f"    {g['label']:30s} freq={g['frequencia']:3d}  membros={g['membros'][:3]}")
+        print(f"    {g['label']:30s} n_frases={g['n_frases']:3d}  freq={g['frequencia']:3d}  membros={g['membros'][:3]}")
 
     ontologia_induzida = construir_ontologia_induzida(grupos)
     saida = os.path.join(args.saida_dir, f"{args.dataset}_{args.onto}_induced.json")
@@ -430,7 +483,11 @@ if __name__ == "__main__":
         "dataset": args.dataset, "onto_id": args.onto,
         "n_frases_treino": len(frases), "seed": args.seed,
         "threshold_agrupamento": args.threshold,
-        "modelo_llm": args.modelo_llm, "modelo_embs": MODELO_EMBS,
+        "freq_min_frases": args.freq_min,
+        "normalizar_rotulo": args.normalizar,
+        "from_raw_jsonl": args.from_raw_jsonl,
+        "modelo_llm": args.modelo_llm if not args.from_raw_jsonl else "(reprocessado sem LLM)",
+        "modelo_embs": MODELO_EMBS,
         "ids_frases": ids_sorteados,
     }
     output = {"metadata": metadados, **ontologia_induzida}

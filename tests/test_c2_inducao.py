@@ -230,3 +230,49 @@ def test_induzir_c2_raw_jsonl_apenas_treino():
     # Verifica formato das triplas
     for fid, triplas in resultado.items():
         assert isinstance(triplas, list), f"triplas deve ser lista, obteve {type(triplas)}"
+
+
+# ---------------------------------------------------------------------------
+# (e) contar_frases_por_grupo conta frases distintas, não triplas (D-21 fix)
+# ---------------------------------------------------------------------------
+
+def test_contar_frases_por_grupo_conta_frases_distintas():
+    """
+    contar_frases_por_grupo deve contar frases DISTINTAS, não total de triplas.
+
+    Frase A: 3 triplas com rel "directed_by" → conta 1 (não 3).
+    Frase B: 1 tripla com rel "directed_by" → conta +1 = 2 total.
+    """
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from induzir_c2 import contar_frases_por_grupo
+
+    triplas_por_frase = {
+        "frase_A": [["F1", "directed_by", "P1"], ["F1", "directed_by", "P2"], ["F1", "directed_by", "P3"]],
+        "frase_B": [["F2", "directed_by", "P4"]],
+        "frase_C": [["F3", "other_rel", "P5"]],
+    }
+    grupos = [{"label": "directed_by", "frequencia": 4, "membros": ["directed_by"]}]
+    contar_frases_por_grupo(grupos, triplas_por_frase)
+
+    assert grupos[0]["n_frases"] == 2, (
+        f"n_frases esperado=2 (frase_A + frase_B), obteve {grupos[0]['n_frases']}. "
+        "contar_frases_por_grupo está contando triplas em vez de frases distintas."
+    )
+
+
+def test_contar_frases_por_grupo_membros_multiplos():
+    """Grupo com múltiplos membros deve unir frases de todos os membros."""
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from induzir_c2 import contar_frases_por_grupo
+
+    triplas_por_frase = {
+        "f1": [["A", "directed_by", "B"]],
+        "f2": [["C", "director", "D"]],
+        "f3": [["E", "wrote", "F"]],  # relação fora do grupo
+    }
+    grupos = [{"label": "directed_by", "frequencia": 2, "membros": ["directed_by", "director"]}]
+    contar_frases_por_grupo(grupos, triplas_por_frase)
+
+    assert grupos[0]["n_frases"] == 2, (
+        f"n_frases esperado=2 (f1 via 'directed_by', f2 via 'director'), obteve {grupos[0]['n_frases']}"
+    )

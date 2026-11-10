@@ -14,11 +14,82 @@ from t2kg.avaliacao.extended import (
     deduplicar_onto_list,
     sumarizar_estendido,
     avaliar_frase_estendida,
+    _normalizar_rotulo,
 )
 
 
 def _ont(relacoes):
     return {"concepts": [], "relations": [{"label": r} for r in relacoes]}
+
+
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+PILOTO_DIR = os.path.join(REPO, "resultados", "piloto")
+SKIP_SEM_PILOTO = pytest.mark.skipif(
+    not os.path.exists(PILOTO_DIR), reason="resultados/piloto não encontrado"
+)
+WORKSPACE = os.path.abspath(os.path.join(REPO, ".."))
+BENCH = os.path.join(WORKSPACE, "Text2KGBench")
+SKIP_SEM_BENCH = pytest.mark.skipif(
+    not os.path.exists(BENCH), reason="Text2KGBench não encontrado"
+)
+
+
+class TestNormalizarRotulo:
+    def test_underscores_para_espaco(self):
+        assert _normalizar_rotulo("directed_by") == "directed"
+
+    def test_has_prefix_removido(self):
+        assert _normalizar_rotulo("has_director") == "director"
+
+    def test_is_prefix_removido(self):
+        assert _normalizar_rotulo("is_a_song_by") == "a song"
+
+    def test_of_suffix_removido(self):
+        assert _normalizar_rotulo("director_of") == "director"
+
+    def test_sem_alteracao_simples(self):
+        assert _normalizar_rotulo("genre") == "genre"
+
+    def test_maiusculas_convertidas(self):
+        assert _normalizar_rotulo("DIRECTOR_BY") == "director"
+
+    def test_barra_para_espaco(self):
+        assert _normalizar_rotulo("country/origin") == "country origin"
+
+
+@SKIP_SEM_BENCH
+@SKIP_SEM_PILOTO
+def test_fmt_error_piloto_v2_c1_1movie():
+    """fmt_error para piloto-v2 C1 1_movie deve estar em ~0.38-0.45 (valor esperado ~0.42).
+
+    Verifica que calcular_taxa_erro_formato detecta cópias de nomes de classe como entidades,
+    erro de formato frequente quando o modelo recebe a ontologia completa (C1).
+    Valor calculado em 2026-11-09: 0.4239.
+    """
+    import json
+    from t2kg.avaliacao.original import calcular_taxa_erro_formato
+
+    onto_path = os.path.join(
+        BENCH, "data", "wikidata_tekgen", "ontologies", "1_movie_ontology.json"
+    )
+    jsonl_path = os.path.join(
+        PILOTO_DIR, "piloto_tkg_1_movie_c1_qwen25_7b_instruct_awq.jsonl"
+    )
+
+    with open(onto_path, encoding="utf-8") as f:
+        onto = json.load(f)
+
+    erros = []
+    with open(jsonl_path, encoding="utf-8") as f:
+        for line in f:
+            r = json.loads(line)
+            erros.append(calcular_taxa_erro_formato(onto, r.get("triples", [])))
+
+    avg = sum(erros) / len(erros)
+    assert 0.38 <= avg <= 0.46, (
+        f"fmt_error piloto-v2 C1 1_movie = {avg:.4f}, esperado 0.38–0.46 "
+        "(indica que calcular_taxa_erro_formato não está detectando cópias de classe)"
+    )
 
 
 class TestPRF1SemFiltro:

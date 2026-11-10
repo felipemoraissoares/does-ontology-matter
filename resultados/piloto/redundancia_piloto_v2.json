@@ -4,9 +4,9 @@
     "condicao": "C0",
     "n_triplas": 716,
     "n_rotulos": 331,
-    "n_grupos": 232,
+    "n_grupos": 224,
     "taxa_predicados_unicos": 0.4622905027932961,
-    "redundancia_semantica": 0.2990936555891238,
+    "redundancia_semantica": 0.32326283987915405,
     "threshold": 0.7
   },
   {
@@ -34,9 +34,9 @@
     "condicao": "C0",
     "n_triplas": 634,
     "n_rotulos": 326,
-    "n_grupos": 236,
+    "n_grupos": 226,
     "taxa_predicados_unicos": 0.5141955835962145,
-    "redundancia_semantica": 0.2760736196319018,
+    "redundancia_semantica": 0.3067484662576687,
     "threshold": 0.7
   },
   {

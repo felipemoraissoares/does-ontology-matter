@@ -684,6 +684,28 @@ entre condições experimentais.
 **Implementação:** resultado documentado aqui após a execução. Instrução escolhida substitui
 `_INSTRUCAO_FORMATO` em `prompts.py` para a fase de execução completa.
 
+### Resultado executado (mini-teste D-19, 2026-11-09)
+
+Executado no Kaggle com Qwen2.5-7B-Instruct-AWQ T4×2, 100 frases/variante.
+`d19_A_1movie_c1.jsonl` não foi baixado do Kaggle (ausente localmente); demais 16/17 arquivos presentes.
+Scores calculados com `calcular_erros_formato_detalhado()` (C1 usa ontologia de referência; C0 fmt_error=0).
+
+| Variante | score | fmt_err | fmt_a | fmt_b | parse_err | status |
+|---|---|---|---|---|---|---|
+| A | 0.2962 | 0.1762 | 0.1762 | 0.0000 | 0.1200 | candidata |
+| B | 0.2359 | 0.2134 | 0.2134 | 0.0017 | 0.0225 | candidata |
+| C | 0.2405 | 0.1680 | 0.1655 | 0.0025 | 0.0725 | candidata |
+| **D** | **0.1505** | **0.1380** | **0.1330** | **0.0050** | **0.0125** | **vencedora** |
+
+Nenhuma variante superou 20% de parse_error (máximo: A=12%) — exclusão por prosa não ativada.
+
+**D-20 VENCEDORA: Variante D** — `relation_name(<exact name of the first entity>, <exact name of the second entity>)`
+
+Observações:
+- fmt_error dominado por tipo_a (cópia literal do nome da classe como entidade), tipo_b mínimo, tipo_c zero.
+- Variante A: alto parse_error em C0 (21–25% de respostas prosa sem triplas).
+- Variante B: maior fmt_error — a instrução `predicate(entity1, entity2)` confunde o modelo que usa `entity1`/`entity2` como valores literais.
+
 ---
 
 ## D-21: Regra pré-registrada — threshold de agrupamento e freq_min para C2
@@ -716,18 +738,12 @@ Relações de referência 2_music (13): composer, part of, lyrics by, publicatio
 
 ### Tamanho da ontologia induzida C2 com freq_min=5
 
-**CORREÇÃO (2026-11-09):** A tabela a seguir mostrava análise do C0 de TESTE (200 frases → 331 rótulos). Os números estavam errados para a indução C2, que usa apenas as 50 frases de TREINO. Os dados corretos serão gerados pela re-indução D-21 no Kaggle com `--saida_raw_jsonl`, salvos em `resultados/c2_inducao/`.
-
-A tabela abaixo reflete o C0 de TESTE e serve apenas como contexto de ordem de grandeza — não determina o tamanho da ontologia induzida:
-
-| Fonte | Onto | freq_min=1 | freq_min=5 | freq_min=10 | Referência |
+| Fonte | Onto | total extraído | freq_min=1 (grupos) | freq_min=5 | Referência |
 |---|---|---|---|---|---|
-| C0 teste (200 frases) | 1_movie | 331 (22.1×) | 23 (1.5×) | 12 (0.8×) | 15 |
-| C0 teste (200 frases) | 2_music | 326 (25.1×) | 19 (1.5×) | 8 (0.6×) | 13 |
-| **C2 treino (50 frases)** | 1_movie | **a calcular** | **a calcular** | — | 15 |
-| **C2 treino (50 frases)** | 2_music | **a calcular** | **a calcular** | — | 13 |
+| C2 treino (50 frases) | 1_movie | 181 triplas, 117 únicas | 103 grupos | **7 (s/ D-22) → 4 (c/ D-22)** | 15 |
+| C2 treino (50 frases) | 2_music | 158 triplas, 108 únicas | 94 grupos | **4 (s/ D-22) → 1 (c/ D-22)** | 13 |
 
-Estimativa: com 50 frases de treino e freq_min=5, a ontologia induzida terá substancialmente menos relações que as 113/102 atuais (threshold=0.80, sem freq_min).
+**Nota:** freq_min conta frases DISTINTAS (D-21 fix) a partir da re-indução com `--from_raw_jsonl` (D-22). Sem a correção D-22, o Kaggle havia contado triplas totais (gerando 7/4 relações). Com D-22, a contagem correta de frases distintas filtra melhor os hápax.
 
 ### Alinhamento relações livres → referência (t=0.80, top-15 por frequência no C0 teste)
 
@@ -738,28 +754,84 @@ Estimativa: com 50 frases de treino e freq_min=5, a ontologia induzida terá sub
 
 Conclusão: relações livres são lexicalmente muito diferentes das referências — mesmo `directed_by` ≠ `director` a t=0.80. Isto confirma a necessidade da projeção C0→referência e justifica o uso do threshold único 0.70 para a métrica H1.
 
-### Redundância semântica H1 — piloto-v2 (threshold=0.70)
+### Redundância semântica H1 — piloto-v2 (threshold=0.70, normalização D-22)
+
+Recalculado com `_normalizar_rotulo` antes do embedding (D-22 aplicada em `extended.py`).
 
 | Onto | Condição | n_triplas | n_rótulos | n_grupos | taxa_pred_uniq | **red_sem (t=0.70)** |
 |---|---|---|---|---|---|---|
-| 1_movie | C0 | 716 | 331 | 232 | 0.462 | **0.299** |
-| 1_movie | C1 | 781 | 51 | 45 | 0.065 | **0.118** |
-| 1_movie | C1_oneshot | 637 | 39 | 36 | 0.061 | **0.077** |
-| 2_music | C0 | 634 | 326 | 236 | 0.514 | **0.276** |
-| 2_music | C1 | 642 | 40 | 34 | 0.062 | **0.150** |
-| 2_music | C1_oneshot | 535 | 23 | 21 | 0.043 | **0.087** |
+| 1_movie | C0 | 716 | 331 | 224 | 0.462 | **0.3233** |
+| 1_movie | C1 | 781 | 51 | 45 | 0.065 | **0.1176** |
+| 1_movie | C1_oneshot | 637 | 39 | 36 | 0.061 | **0.0769** |
+| 2_music | C0 | 634 | 326 | 226 | 0.514 | **0.3067** |
+| 2_music | C1 | 642 | 40 | 34 | 0.062 | **0.1500** |
+| 2_music | C1_oneshot | 535 | 23 | 21 | 0.043 | **0.0870** |
 
-A t=0.70 (mais sensível que 0.80), C0 exibe redundância ~0.28–0.30, C1 ~0.12–0.15, C1_oneshot ~0.08–0.09.
-C0 tem ~2.5–3.5× mais redundância semântica que as condições com ontologia — sinal consistente com H1.
+A t=0.70 com normalização D-22, C0 exibe redundância ~0.31–0.32, C1 ~0.12–0.15, C1_oneshot ~0.08–0.09.
+C0 tem ~2.6–4.2× mais redundância semântica que as condições com ontologia — sinal consistente com H1.
 
-### Ontologia C2 atual vs. D-21
+### Ontologia C2 D-21 definitiva (threshold=0.70, freq_min=5 frases, normalização D-22)
 
-A indução atual (50 frases treino, threshold=0.80, sem freq_min) gerou 113/102 relações para 1_movie/2_music.
-"Knocking at the Door" e "eight-minute animated film" aparecem como predicados na indução atual — confirmados como
-hápax de frases de treino específicas. Com freq_min=5, seriam filtrados.
+Reprocessado sem GPU com `--from_raw_jsonl` usando as respostas cruas de treino (50 frases, seed=42).
 
-**Implementação:** parâmetros definitivos `{"threshold_agrupamento": 0.70, "freq_min": 5}`
-registrados em `configs/c2/params_c2.json` antes da re-indução no Kaggle.
+**1_movie** — 4 relações:
+1. `released_in` (n_frases=7) — membros: released_in, has_release_year, released
+2. `is_a` (n_frases=6) — 1 membro; "is_a" normaliza para "a" (prefix "is_" removido)
+3. `directed_by` (n_frases=5) — membros: directed_by, directed
+4. `director` (n_frases=5) — membros: director_of, has_director, director
+
+**2_music** — 1 relação:
+1. `is_a_song_by` (n_frases=6) — membros: is_a_song_by, is_a_song_of, has_music_by
+
+Nota: a 2_music ficou com apenas 1 relação porque features, credited_producer e recorded ocorrem em < 5 frases distintas (apesar de aparecerem em várias triplas da mesma frase). "Knocking at the Door" e "include" do Kaggle tinham freq_triplas≥5 mas n_frases<5 — corretamente filtrados pelo fix D-21.
+
+**Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/tekgen_*_induced.json`.
+
+---
+
+## D-22: Normalização de rótulos antes do embedding (C2 e métrica H1)
+
+**Status:** APROVADA (2026-11-09)
+
+### Decisão
+
+Antes de computar embeddings de rótulos de relação — tanto na indução C2 quanto na métrica H1 de redundância semântica — aplicar normalização textual `_normalizar_rotulo`:
+
+1. Substituir `_`, `-`, `/` por espaço.
+2. Remover prefixos funcionais `has_` / `is_` (tornam-se `has ` / `is ` após passo 1).
+3. Remover sufixos funcionais `_by` / `_of` / `_in` / `_to` / `_for` (na forma com espaço).
+4. Converter para minúsculas.
+5. Remover espaços em branco extras.
+
+**Implementação:** `_normalizar_rotulo()` em `src/t2kg/avaliacao/extended.py`, usada em:
+- `redundancia_semantica()` — normaliza rótulos antes do `modelo.encode()`
+- `induzir_c2.py` com `--normalizar` — normaliza ao chamar `agrupar_relacoes(normalizar=True)`
+
+### Justificativa
+
+O modelo `all-MiniLM-L6-v2` trata `directed_by`, `has_director` e `director` como semanticamente distintos
+porque os tokens de função (`by`, `has`, `of`) afetam o embedding. Sem normalização, `directed_by` e
+`director` ficam em grupos separados (sim < 0.70). Com normalização:
+- `directed_by` → `directed` (remove ` by`)
+- `has_director` → `director` (remove `has `)
+- `director_of` → `director` (remove ` of`)
+
+Resultado em 1_movie: `directed_by` (n_frases=5) e `director` (n_frases=5) permanecem separados mesmo
+após normalização (sims "directed" vs "director" < 0.70). No entanto, `released_in`, `released` e
+`has_release_year` fundem-se em um grupo (sim "released" vs "release year" ≥ 0.70).
+
+### Efeito na H1 (piloto-v2, t=0.70)
+
+| Onto | Condição | red_sem (s/ D-22) | red_sem (c/ D-22) | Δ |
+|---|---|---|---|---|
+| 1_movie | C0 | 0.3082 | 0.3233 | +0.0151 |
+| 1_movie | C1 | 0.0784 | 0.1176 | +0.0392 |
+| 1_movie | C1_oneshot | 0.0769 | 0.0769 | 0 |
+| 2_music | C0 | 0.3006 | 0.3067 | +0.0061 |
+| 2_music | C1 | 0.1500 | 0.1500 | 0 |
+| 2_music | C1_oneshot | 0.0870 | 0.0870 | 0 |
+
+A razão C0/C1 se mantém (~2.6–4.2×) com ou sem normalização — o padrão qualitativo de H1 é robusto.
 
 ---
 

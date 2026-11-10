@@ -9,6 +9,12 @@ resultados/*
 !resultados/piloto/**
 !resultados/tests/
 !resultados/tests/**
+!resultados/d19/
+!resultados/d19/**
+!resultados/c2_inducao/
+!resultados/c2_inducao/**
+!resultados/Logs/
+!resultados/Logs/**
 
 # Python
 __pycache__/
