@@ -144,18 +144,23 @@ def montar_prompt(
     # Inclui "Test Output: " no final para ser idêntico ao prompt publicado.
     # Para modelos de chat, "Test Output: " sinaliza ao modelo que ele deve
     # continuar a partir daí, sem necessidade de prefixo adicional.
-    ex_bloco = ""
-    if exemplo_sent and exemplo_saida:
-        ex_bloco = (
-            f"\nExample Sentence: {exemplo_sent}\n"
-            f"Example Output: {exemplo_saida}\n"
+    if condicao == "C1_oneshot_original":
+        ex_bloco = ""
+        if exemplo_sent and exemplo_saida:
+            ex_bloco = (
+                f"\nExample Sentence: {exemplo_sent}\n"
+                f"Example Output: {exemplo_saida}\n"
+            )
+        return (
+            f"{_INSTRUCAO_COM_ONT_BENCH}\n"
+            f"CONTEXT:\n"
+            f"{contexto_ontologia}\n"
+            f"{ex_bloco}"
+            f"\nTest Sentence: {sentenca}\n"
+            f"Test Output: "
         )
 
-    return (
-        f"{_INSTRUCAO_COM_ONT_BENCH}\n"
-        f"CONTEXT:\n"
-        f"{contexto_ontologia}\n"
-        f"{ex_bloco}"
-        f"\nTest Sentence: {sentenca}\n"
-        f"Test Output: "
+    raise ValueError(
+        f"Condição desconhecida: {condicao!r}. "
+        f"Use: C0, C1, C2, C3, C5, C5_vizinho, C5_incongruente, C1_oneshot_original"
     )

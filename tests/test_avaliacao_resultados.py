@@ -75,9 +75,10 @@ def test_montar_prompt_c0_nao_inclui_gt():
     assert "The movie was directed by Nolan." in prompt_correto
     assert "Test Output:" in prompt_correto
 
-    # Chamada INCORRETA (como estava antes) deve produzir prompt com gt_triples
-    prompt_bugado = montar_prompt(frase_dict, {"concepts": [], "relations": []}, "C0")
-    assert "gt_triples" in str(prompt_bugado)  # confirma que o bug vazava
+    # Chamada INCORRETA (como estava antes) agora levanta ValueError — melhor que vazar gt_triples
+    import pytest
+    with pytest.raises((ValueError, TypeError)):
+        montar_prompt(frase_dict, {"concepts": [], "relations": []}, "C0")
 
 
 def test_montar_prompt_c0_identico_sem_ontologia():

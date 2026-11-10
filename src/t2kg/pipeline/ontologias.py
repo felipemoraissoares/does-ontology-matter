@@ -113,7 +113,7 @@ def formatar_contexto(
         if ontologia_parceira is None:
             raise ValueError("C2 requer ontologia_parceira com a ontologia induzida (vide D-16).")
         labels = ", ".join(r["label"].replace(" ", "_") for r in ontologia_parceira.get("relations", []))
-        return f"Relations: {labels}"
+        return f"Ontology Relations: {labels}"
 
     if condicao in ("C1", "C1_oneshot_original"):
         conceitos = _formatar_conceitos(ontologia)

@@ -182,7 +182,7 @@ class TestPrompts:
     @pytest.mark.parametrize("condicao,extra", [
         ("C0", {}),
         ("C1",           {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
-        ("C2",           {"contexto_ontologia": "Relations: rel_induzida_1, rel_induzida_2"}),
+        ("C2",           {"contexto_ontologia": "Ontology Relations: rel_induzida_1, rel_induzida_2"}),
         ("C3",           {"contexto_ontologia": "Relations: rel_treino_1, rel_treino_2"}),
         ("C5_vizinho",   {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
         ("C5_incongruente", {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
@@ -199,6 +199,32 @@ class TestPrompts:
         assert "Output the triples, one per line" in p, (
             f"{condicao}: instrução de formato D ausente"
         )
+
+    def test_condicao_desconhecida_levanta_value_error(self):
+        """montar_prompt deve levantar ValueError para condições não reconhecidas."""
+        with pytest.raises(ValueError, match="Condição desconhecida"):
+            montar_prompt("My sentence.", "C99")
+        with pytest.raises(ValueError, match="Condição desconhecida"):
+            montar_prompt("My sentence.", "")
+        with pytest.raises(ValueError, match="Condição desconhecida"):
+            montar_prompt("My sentence.", "c1")  # case-sensitive
+
+    def test_todas_condicoes_tem_ramo_explicito(self):
+        """Cada condição reconhecida deve retornar um prompt sem levantar erro."""
+        ctx_c1 = "Ontology Concepts: film,\nOntology Relations: director(film,human)"
+        ctx_c3 = "Relations: director, screenwriter"
+        casos = [
+            ("C0",                 {}),
+            ("C1",                 {"contexto_ontologia": ctx_c1}),
+            ("C2",                 {"contexto_ontologia": ctx_c1}),
+            ("C3",                 {"contexto_ontologia": ctx_c3}),
+            ("C5_vizinho",         {"contexto_ontologia": ctx_c1}),
+            ("C5_incongruente",    {"contexto_ontologia": ctx_c1}),
+            ("C1_oneshot_original", {"contexto_ontologia": ctx_c1}),
+        ]
+        for cond, extra in casos:
+            p = montar_prompt("My sentence.", cond, **extra)
+            assert isinstance(p, str) and len(p) > 0, f"{cond}: prompt vazio"
 
     def test_c2_identico_a_c1_com_mesmo_contexto(self):
         """C2 com mesmo contexto_ontologia que C1 deve produzir prompt byte-a-byte idêntico."""

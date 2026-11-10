@@ -99,14 +99,11 @@ def test_prompt_inducao_bugado_vaza_gt():
         "gt_triples": [{"sub": "The movie", "rel": "director", "obj": "Christopher Nolan"}],
     }
 
-    # Chamada bugada: frase_dict como 1.º arg posicional (sentenca recebe o dict inteiro)
-    prompt_bugado = montar_prompt(frase_dict, {"concepts": [], "relations": []}, "C0")
-
-    # O dict str(frase_dict) vaza gt_triples para o prompt
-    assert "gt_triples" in str(prompt_bugado), (
-        "A chamada bugada deveria vazar gt_triples — se este assert falhar, "
-        "o comportamento de montar_prompt() mudou e o teste precisa ser revisado."
-    )
+    # Chamada bugada: frase_dict como 1.º arg posicional; agora levanta ValueError
+    # (melhor que vazar gt_triples silenciosamente como ocorria antes)
+    import pytest
+    with pytest.raises((ValueError, TypeError)):
+        montar_prompt(frase_dict, {"concepts": [], "relations": []}, "C0")
 
 
 # ---------------------------------------------------------------------------

@@ -1118,3 +1118,33 @@ Célula 8 agora usa variável `MANIFESTO` configurável (default = `manifesto_pi
 2. Obter primeiras métricas de F1/conformidade/alucinação para 4 ontologias nas 7 condições.
 3. Executar re-indução C2 com N=100 para completar a tabela N×freq_min de D-21.
 4. Confirmar throughput e estabilidade antes de comprometer as 174 rodadas da fase completa.
+
+---
+
+## D-25: Formato do bloco de ontologia em C2 — rótulo, sem conceitos nem assinaturas
+
+**Status:** IMPLEMENTADA (2026-11-10)
+
+### Decisão
+
+O bloco de contexto de C2 usa o rótulo **`"Ontology Relations:"`** (mesmo rótulo de C1), seguido das relações induzidas separadas por vírgula, sem parênteses de domínio/range:
+
+```
+Ontology Relations: released_in, directed_by, genre
+```
+
+C2 **não exibe conceitos** (`Ontology Concepts:` ausente) nem **assinaturas de tipo** (`rel(domain,range)`) porque a ontologia induzida por agrupamento de embeddings (D-16/D-24) não produz tipos de entidade — apenas rótulos de relação.
+
+### Impacto na comparação de erros de formato
+
+Ao comparar `avg_fmt_error` entre C1 e C2, deve-se considerar que:
+
+- **C1** exibe conceitos + assinaturas de tipo (ex.: `director(film,human)`) — o modelo pode extrair o tipo como prefixo de entidade.
+- **C2** exibe apenas rótulos sem tipo — o modelo não recebe nomes de classe, logo a fonte principal de erro de formato (prefixo de classe) está ausente em C2.
+
+Portanto, espera-se que C2 apresente **menor `avg_fmt_error`** que C1, não por melhor instrução, mas por menor oportunidade de erro de tipo. Comparações de `avg_fmt_error` entre C1 e C2 devem ser interpretadas com essa assimetria estrutural em mente.
+
+### Implementação
+
+`formatar_contexto(ontologia, "C2", ontologia_parceira=induced)` em `ontologias.py` retorna `f"Ontology Relations: {labels}"`.
+O bloco é inserido no prompt por `montar_prompt` via `CONTEXT:\n{contexto_ontologia}` — idêntico ao C1.
