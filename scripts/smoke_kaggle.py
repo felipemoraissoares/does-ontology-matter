@@ -48,6 +48,13 @@ def run(cmd, cwd=None, env=None, check=True):
 
 
 def main():
+    # Garante UTF-8 no stdout/stderr do processo principal (Windows usa cp1252 por padrão)
+    import io
+    if hasattr(sys.stdout, "buffer"):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", line_buffering=True)
+    if hasattr(sys.stderr, "buffer"):
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", line_buffering=True)
+
     p = argparse.ArgumentParser(description="Smoke test — espelha lançador Kaggle sem GPU.")
     p.add_argument("--keep", action="store_true",
                    help="Mantém o diretório temporário após o teste.")
@@ -105,7 +112,9 @@ def main():
         else:
             print(f"OK — commit {BENCH_COMMIT[:12]}")
 
-        env = {**os.environ, "PYTHONPATH": os.path.join(repo_dir, "src")}
+        env = {**os.environ,
+               "PYTHONPATH": os.path.join(repo_dir, "src"),
+               "PYTHONIOENCODING": "utf-8"}
 
         # ------------------------------------------------------------------
         # Passo 3 — Cel 9: C2 induction (a)+(b)+(c)+(d) por tarefa
