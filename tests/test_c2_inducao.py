@@ -29,8 +29,10 @@ Kaggle (commit 213a83b). Os testes abaixo trazem cobertura retroativa e garantem
 que os bugs não regridam.
 """
 import builtins
+import json
 import os
 import pathlib
+import subprocess
 import sys
 
 import pytest
@@ -273,3 +275,87 @@ def test_contar_frases_por_grupo_membros_multiplos():
     assert grupos[0]["n_frases"] == 2, (
         f"n_frases esperado=2 (f1 via 'directed_by', f2 via 'director'), obteve {grupos[0]['n_frases']}"
     )
+
+
+# ---------------------------------------------------------------------------
+# (f) induzir_c2.py --use_definicoes como subprocesso (D-24 path end-to-end)
+# ---------------------------------------------------------------------------
+
+def test_induzir_c2_use_definicoes_subprocess(tmp_path):
+    """
+    Executa induzir_c2.py como subprocesso com --use_definicoes --from_raw_jsonl.
+
+    Verifica que:
+    1. O processo termina com código 0 (sem NameError nem outra exceção).
+    2. O arquivo induzido é gerado em saida_dir.
+    3. O metadata.use_definicoes == True no arquivo gerado.
+    4. A definição mockada é de fato usada (arquivo de definições lido corretamente).
+    """
+    saida_dir = tmp_path / "c2"
+    saida_dir.mkdir()
+
+    # Raw JSONL mínimo: 3 frases de treino com triplas extraídas livres
+    raw_jsonl = tmp_path / "raw_1_movie_treino.jsonl"
+    registros = [
+        {"id": "ont_1_movie_train_001", "sent": "Film A was directed by Person B.",
+         "response": "directed_by(Film A, Person B)", "triples": [["Film A", "directed_by", "Person B"]]},
+        {"id": "ont_1_movie_train_002", "sent": "Film C stars Actor D.",
+         "response": "stars(Film C, Actor D)", "triples": [["Film C", "stars", "Actor D"]]},
+        {"id": "ont_1_movie_train_003", "sent": "Film E was produced by Studio F.",
+         "response": "directed_by(Film E, Studio F)", "triples": [["Film E", "directed_by", "Studio F"]]},
+    ]
+    raw_jsonl.write_text(
+        "\n".join(json.dumps(r, ensure_ascii=False) for r in registros),
+        encoding="utf-8",
+    )
+
+    # Arquivo de definições D-24 mínimo (como gerar_definicoes_relacoes.py geraria)
+    definicoes_path = saida_dir / "definicoes_1_movie.json"
+    definicoes = {
+        "modelo": "mock",
+        "relacoes": {
+            "directed_by": "Indicates the person who directed a film.",
+            "stars": "Indicates an actor who appears in a film.",
+        },
+    }
+    definicoes_path.write_text(json.dumps(definicoes, ensure_ascii=False), encoding="utf-8")
+
+    script = os.path.join(REPO, "scripts", "induzir_c2.py")
+    env = {**os.environ, "PYTHONPATH": os.path.join(REPO, "src")}
+    cmd = [
+        sys.executable, script,
+        "--dataset", "tekgen",
+        "--onto", "1_movie",
+        "--threshold", "0.70",
+        "--freq_min", "1",
+        "--n_frases", "3",
+        "--seed", "42",
+        "--from_raw_jsonl", str(raw_jsonl),
+        "--saida_dir", str(saida_dir),
+        "--normalizar",
+        "--use_definicoes",
+        "--run_id", "SUBPROCESS_TEST",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+
+    assert result.returncode == 0, (
+        f"induzir_c2.py --use_definicoes saiu com rc={result.returncode}.\n"
+        f"stdout:\n{result.stdout}\n"
+        f"stderr:\n{result.stderr}"
+    )
+
+    # Verifica que o arquivo induzido foi gerado
+    induced_path = saida_dir / "tekgen_1_movie_induced.json"
+    assert induced_path.exists(), (
+        f"Arquivo induzido não gerado: {induced_path}\n"
+        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+    )
+
+    with open(induced_path, encoding="utf-8") as f:
+        induced = json.load(f)
+
+    assert induced.get("metadata", {}).get("use_definicoes") is True, (
+        "metadata.use_definicoes deve ser True quando --use_definicoes é passado."
+    )
+    assert induced.get("metadata", {}).get("run_id") == "SUBPROCESS_TEST"
+    assert "relations" in induced, "Arquivo induzido deve ter campo 'relations'"

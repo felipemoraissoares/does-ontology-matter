@@ -106,6 +106,8 @@ if __name__ == "__main__":
     p.add_argument("--modelo_llm", default="Qwen/Qwen2.5-7B-Instruct-AWQ")
     p.add_argument("--from_cache", action="store_true",
                    help="Apenas lê e exibe o cache existente, sem chamar o LLM.")
+    p.add_argument("--mock", action="store_true",
+                   help="Usa ProvedorMock em vez de vLLM (para testes locais sem GPU).")
     args = p.parse_args()
 
     cache = _carregar_cache(args.onto_id)
@@ -127,6 +129,13 @@ if __name__ == "__main__":
             print(f"  {rotulo!r}: {defn[:80]}")
         if len(cache["relacoes"]) > 20:
             print(f"  ... (+{len(cache['relacoes'])-20} mais)")
+    elif args.mock:
+        from t2kg.pipeline.provedores.mock import ProvedorMock
+        provedor = ProvedorMock(resposta_fixa="A relationship between two entities.")
+        cache = gerar_definicoes(rotulos, cache, provedor, "mock")
+        _salvar_cache(args.onto_id, cache)
+        print(f"\nDefinições (mock) salvas em: {_caminho_cache(args.onto_id)}")
+        print(f"Total de definições: {len(cache['relacoes'])}")
     else:
         from t2kg.pipeline.provedores.openai_compat import ProvedorOpenAICompat
         provedor = ProvedorOpenAICompat(url=args.url, api_key="token-nao-usado", modelo=args.modelo_llm)

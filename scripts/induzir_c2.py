@@ -367,7 +367,10 @@ def calibrar_e_salvar(
 # Main
 # ---------------------------------------------------------------------------
 
-def _build_provedor(url: str, modelo_llm: str) -> ProvedorOpenAICompat:
+def _build_provedor(url: str, modelo_llm: str, mock: bool = False):
+    if mock:
+        from t2kg.pipeline.provedores.mock import ProvedorMock
+        return ProvedorMock()
     return ProvedorOpenAICompat(url=url, api_key="token-nao-usado", modelo=modelo_llm)
 
 
@@ -407,6 +410,8 @@ if __name__ == "__main__":
     p.add_argument("--use_definicoes", action="store_true",
                    help="Usa definições D-24 no embedding (rótulo: definição). "
                         "Requer configs/c2/definicoes_{onto}.json gerado por gerar_definicoes_relacoes.py.")
+    p.add_argument("--mock", action="store_true",
+                   help="Usa ProvedorMock em vez de vLLM (para testes locais sem GPU).")
     args = p.parse_args()
 
     if not _EMBS_OK:
@@ -449,8 +454,9 @@ if __name__ == "__main__":
             if faltando:
                 print(f"  AVISO: {len(faltando)} IDs do sorteio ausentes no raw JSONL.")
     else:
-        print(f"Extraindo triplas livres (C0) com LLM: {args.modelo_llm}")
-        provedor = _build_provedor(args.url, args.modelo_llm)
+        print(f"Extraindo triplas livres (C0) com LLM: {args.modelo_llm}"
+              f"{' [MOCK]' if args.mock else ''}")
+        provedor = _build_provedor(args.url, args.modelo_llm, mock=args.mock)
         triplas_por_frase, registros_raw = extrair_triplas_com_respostas(frases, provedor)
 
         if args.saida_raw_jsonl:
@@ -474,7 +480,7 @@ if __name__ == "__main__":
     # D-24: carrega definições se --use_definicoes
     definicoes = None
     if args.use_definicoes:
-        def_path = os.path.join(REPO, "configs", "c2", f"definicoes_{args.onto}.json")
+        def_path = os.path.join(args.saida_dir, f"definicoes_{args.onto}.json")
         if os.path.exists(def_path):
             with open(def_path, encoding="utf-8") as _f:
                 definicoes = json.load(_f).get("relacoes", {})
