@@ -17,6 +17,8 @@ resultados/*
 !resultados/Logs/**
 !resultados/piloto_v3/
 !resultados/piloto_v3/**
+!resultados/avaliacao_piloto_v3/
+!resultados/avaliacao_piloto_v3/**
 
 # Python
 __pycache__/
