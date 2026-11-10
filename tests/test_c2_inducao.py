@@ -199,3 +199,34 @@ def test_inducao_nao_abre_arquivos_de_teste(monkeypatch):
     )
 
     assert len(frases) > 0, "Nenhuma frase de treino foi carregada"
+
+
+# ---------------------------------------------------------------------------
+# (d) extrair_triplas_livres retorna apenas IDs de treino
+# ---------------------------------------------------------------------------
+
+def test_induzir_c2_raw_jsonl_apenas_treino():
+    """
+    Verifica que extrair_triplas_livres() com mock produz resultados com IDs de treino.
+    Garante que o formato do dict retornado não contamina com test IDs.
+    """
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from induzir_c2 import extrair_triplas_livres
+
+    class MockProvedor:
+        def gerar(self, prompt, **kw):
+            return "director(Film A, Person B)"
+
+    frases = [
+        {"id": "ont_1_movie_train_001", "sent": "Film A was directed by Person B.", "gt_triples": []},
+        {"id": "ont_1_movie_train_002", "sent": "Film C was written by Person D.", "gt_triples": []},
+    ]
+    resultado = extrair_triplas_livres(frases, MockProvedor())
+
+    assert len(resultado) == 2, f"Esperado 2 entradas, obteve {len(resultado)}"
+    for fid in resultado:
+        assert "_train_" in fid, f"ID não é de treino: {fid!r}"
+        assert "_test_" not in fid, f"ID de teste encontrado: {fid!r}"
+    # Verifica formato das triplas
+    for fid, triplas in resultado.items():
+        assert isinstance(triplas, list), f"triplas deve ser lista, obteve {type(triplas)}"

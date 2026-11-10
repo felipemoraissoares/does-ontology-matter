@@ -27,7 +27,7 @@ DATASETS = [
     ("piloto_tkg_2_music_c1_oneshot_original_qwen25_7b_instruct_awq.jsonl", "C1_oneshot",        "2_music"),
 ]
 
-THRESHOLD = 0.80
+THRESHOLD = 0.70
 
 
 def carregar_triplas(caminho):

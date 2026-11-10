@@ -1,11 +1,9 @@
 {
   "descricao": "Parâmetros definitivos D-21 para re-indução C2 no Kaggle",
-  "threshold_agrupamento": {
-    "1_movie": 0.70,
-    "2_music": 0.80,
-    "regra": "breakpoint + 0.05; fallback 0.80 quando nenhum par de referência se funde"
-  },
+  "threshold_agrupamento": 0.70,
+  "threshold_nota": "Único para todas as ontologias: max(breakpoints observados) + 0.05 = 0.65 + 0.05. 1_movie quebra em 0.65; 2_music não quebra até 0.50 → seguro usar 0.70.",
   "freq_min": 5,
+  "freq_min_nota": "Corresponde a 10% das N=50 frases de treino: uma relação deve aparecer em pelo menos 1 a cada 10 frases.",
   "cap_tamanho": null,
   "modelo_embeddings": "all-MiniLM-L6-v2",
   "data_registro": "2026-11-09",

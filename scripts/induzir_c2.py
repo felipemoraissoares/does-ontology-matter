@@ -62,7 +62,7 @@ def sortear_frases_treino(bench: str, dataset: str, onto_id: str, n: int, seed: 
 
 def extrair_triplas_livres(
     frases: List[Dict],
-    provedor: ProvedorOpenAICompat,
+    provedor,
 ) -> Dict[str, List[List[str]]]:
     """
     Extrai triplas livres (modo C0) de cada frase de treino.
@@ -76,6 +76,25 @@ def extrair_triplas_livres(
         triplas = parsear_resposta(resp)
         triplas_por_frase[f["id"]] = triplas
     return triplas_por_frase
+
+
+def extrair_triplas_com_respostas(
+    frases: List[Dict],
+    provedor,
+) -> Tuple[Dict[str, List[List[str]]], List[Dict]]:
+    """
+    Como extrair_triplas_livres, mas também retorna lista de registros brutos para salvar
+    em JSONL: [{"id": ..., "sent": ..., "response": ..., "triples": [...]}].
+    """
+    triplas_por_frase: Dict[str, List[List[str]]] = {}
+    registros_raw: List[Dict] = []
+    for f in frases:
+        prompt = montar_prompt(sentenca=f["sent"], condicao="C0")
+        resp = provedor.gerar(prompt, max_tokens=512, temperatura=0.0)
+        triplas = parsear_resposta(resp)
+        triplas_por_frase[f["id"]] = triplas
+        registros_raw.append({"id": f["id"], "sent": f["sent"], "response": resp, "triples": triplas})
+    return triplas_por_frase, registros_raw
 
 
 # ---------------------------------------------------------------------------
@@ -343,6 +362,11 @@ if __name__ == "__main__":
     p.add_argument("--seed", type=int, default=SEED_DEFAULT)
     p.add_argument("--calibrar", action="store_true",
                    help="Calcula e salva curvas de calibracao em calibracao_{dataset}_{onto}.json")
+    p.add_argument("--freq_min", type=int, default=1,
+                   help="Frequência mínima para incluir relação na ontologia induzida. "
+                        "freq_min=5 corresponde a >=10%% de N=50 frases de treino.")
+    p.add_argument("--saida_raw_jsonl", default=None,
+                   help="Caminho para salvar respostas cruas da extração livre (JSONL).")
     p.add_argument("--saida_dir", default=os.path.join(
         os.path.dirname(__file__), "..", "configs", "c2"))
     args = p.parse_args()
@@ -369,7 +393,14 @@ if __name__ == "__main__":
 
     print(f"Extraindo triplas livres (C0) com LLM: {args.modelo_llm}")
     provedor = _build_provedor(args.url, args.modelo_llm)
-    triplas_por_frase = extrair_triplas_livres(frases, provedor)
+    triplas_por_frase, registros_raw = extrair_triplas_com_respostas(frases, provedor)
+
+    if args.saida_raw_jsonl:
+        os.makedirs(os.path.dirname(os.path.abspath(args.saida_raw_jsonl)), exist_ok=True)
+        with open(args.saida_raw_jsonl, "w", encoding="utf-8") as fout:
+            for rec in registros_raw:
+                fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        print(f"  Respostas cruas salvas em: {args.saida_raw_jsonl}")
 
     all_relacoes = [t[1] for triplas in triplas_por_frase.values() for t in triplas if len(t) >= 3]
     print(f"  Relacoes extraidas: {len(all_relacoes)} total, {len(set(all_relacoes))} unicas")
@@ -384,7 +415,12 @@ if __name__ == "__main__":
 
     print(f"\nAgrupando relacoes com threshold={args.threshold}")
     grupos = agrupar_relacoes(all_relacoes, modelo_embs, args.threshold)
-    print(f"  Grupos formados: {len(grupos)}")
+    print(f"  Grupos formados (antes de freq_min): {len(grupos)}")
+
+    if args.freq_min > 1:
+        grupos = [g for g in grupos if g["frequencia"] >= args.freq_min]
+        print(f"  Grupos apos freq_min>={args.freq_min} (>={args.freq_min/args.n_frases*100:.0f}% das frases): {len(grupos)}")
+
     for g in grupos[:10]:
         print(f"    {g['label']:30s} freq={g['frequencia']:3d}  membros={g['membros'][:3]}")
 

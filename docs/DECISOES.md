@@ -670,7 +670,10 @@ introduza viés favorável a alguma condição experimental.
    média entre 1_movie e 2_music) — menor = melhor.
 2. **Desempate:** variante mais simples (ordem A < B < C < D).
 3. **Critério de exclusão:** variante com `% de respostas prose` (response não-vazia, nenhuma
-   tripla extraída) > 20% é eliminada antes do critério 1.
+   tripla extraída) > 20% é eliminada antes do critério 1. **Exceção:** se TODAS as variantes
+   ultrapassarem 20% de prosa, o critério de exclusão é ignorado e a seleção aplica apenas os
+   critérios 1 e 2. Isso evita que o experimento fique sem vencedor caso o modelo falhe
+   generalizadamente com todas as instruções.
 
 **Por que excluir F1 do critério:**
 Instruções com terminologia mais próxima da ontologia (ex.: `relation(subject, object)` em A)
@@ -691,40 +694,63 @@ entre condições experimentais.
 
 **threshold_agrupamento:**
 - Varredura `scripts/analisar_threshold_c2.py` sweep 0.50–0.90.
-- `threshold_definitivo = breakpoint + 0.05` onde breakpoint = menor t onde algum par de relações de referência se funde.
-- **Se nenhum breakpoint em [0.50, 0.90]:** usar `threshold = 0.80` (conservador).
+- `threshold_definitivo = max(breakpoints observados) + 0.05` — único valor para todas as ontologias.
+- Justificativa para limiar único: comparabilidade entre ontologias exige o mesmo threshold em todas. Usa-se o breakpoint mais restritivo observado. Se nenhuma ontologia apresentar breakpoint, o threshold padrão de calibração é automaticamente seguro para todas.
 
-**freq_min:** `freq_min = 5`. Sem cap de tamanho (2× cap revogado).
+**freq_min:** `freq_min = 5`, correspondendo a ≥10% das N=50 frases de treino. Uma relação deve aparecer em pelo menos 1 a cada 10 frases para entrar na ontologia induzida. Este critério é derivado diretamente do tamanho do conjunto de treino e não depende da ontologia de referência. Sem cap de tamanho (2× cap revogado).
 
 ### Resultado da varredura (executada em 2026-11-09)
 
-| Onto | Pares ref que se fundem | Breakpoint | Threshold D-21 |
-|---|---|---|---|
-| **1_movie** | `director`+`screenwriter` (sim=0.658) a t=0.65; `award received`+`nominated for` (sim=0.621) a t=0.60 | **t=0.65** | **0.70** |
-| **2_music** | Nenhum par se funde até t=0.50 | nenhum | **0.80** (fallback conservador) |
+| Onto | Primeiro par de referência que se funde | Breakpoint |
+|---|---|---|
+| **1_movie** | `director`+`screenwriter` (sim=0.658) a t=0.65; `award received`+`nominated for` (sim=0.621) a t=0.60 | **t=0.65** |
+| **2_music** | Nenhum par se funde até t=0.50 | nenhum (seguro usar qualquer threshold ≤0.90) |
+
+**Threshold D-21 único = 0.70** para todas as ontologias: max(0.65, nenhum) + 0.05 = 0.70.
+
+Como 2_music não apresenta breakpoint até t=0.50, o threshold de 0.70 é seguro para ambas.
 
 Relações de referência 1_movie (15): director, screenwriter, genre, based on, cast member, award received, production company, country of origin, publication date, characters, narrative location, filming location, main subject, nominated for, cost.
 
 Relações de referência 2_music (13): composer, part of, lyrics by, publication date, language of work or name, voice type, instrumentation, tracklist, genre, performer, producer, nominated for, record label.
 
-### Tamanho da ontologia induzida C2 com freq_min=5 (a partir de C0 teste, N=200 frases)
+### Tamanho da ontologia induzida C2 com freq_min=5
 
-| Onto | freq_min=1 | freq_min=2 | freq_min=3 | freq_min=5 | freq_min=10 | Referência |
-|---|---|---|---|---|---|---|
-| 1_movie | 331 (22.1×) | 111 (7.4×) | 60 (4.0×) | **23 (1.5×)** | 12 (0.8×) | 15 |
-| 2_music | 326 (25.1×) | 91 (7.0×) | 45 (3.5×) | **19 (1.5×)** | 8 (0.6×) | 13 |
+**CORREÇÃO (2026-11-09):** A tabela a seguir mostrava análise do C0 de TESTE (200 frases → 331 rótulos). Os números estavam errados para a indução C2, que usa apenas as 50 frases de TREINO. Os dados corretos serão gerados pela re-indução D-21 no Kaggle com `--saida_raw_jsonl`, salvos em `resultados/c2_inducao/`.
 
-freq_min=5 → ~1.5× a referência para ambas as ontologias, o que é razoável para uma ontologia induzida.
+A tabela abaixo reflete o C0 de TESTE e serve apenas como contexto de ordem de grandeza — não determina o tamanho da ontologia induzida:
 
-### Alinhamento relações livres → referência (t=0.80, top-15 por frequência)
+| Fonte | Onto | freq_min=1 | freq_min=5 | freq_min=10 | Referência |
+|---|---|---|---|---|---|
+| C0 teste (200 frases) | 1_movie | 331 (22.1×) | 23 (1.5×) | 12 (0.8×) | 15 |
+| C0 teste (200 frases) | 2_music | 326 (25.1×) | 19 (1.5×) | 8 (0.6×) | 13 |
+| **C2 treino (50 frases)** | 1_movie | **a calcular** | **a calcular** | — | 15 |
+| **C2 treino (50 frases)** | 2_music | **a calcular** | **a calcular** | — | 13 |
+
+Estimativa: com 50 frases de treino e freq_min=5, a ontologia induzida terá substancialmente menos relações que as 113/102 atuais (threshold=0.80, sem freq_min).
+
+### Alinhamento relações livres → referência (t=0.80, top-15 por frequência no C0 teste)
 
 | Onto | Mapeadas (t≥0.80) | Melhor não-mapeada |
 |---|---|---|
 | 1_movie | 3/15 (`genre`=1.0, `director`=1.0, `based_on`=1.0) | `directed_by`→`director` (0.582), `produced_by`→`production company` (0.566) |
 | 2_music | 0/15 | `produced`→`producer` (0.764), `written_by`→`lyrics by` (0.583) |
 
-Conclusão: relações livres são lexicalmente muito diferentes das referências (mesmo `directed_by` ≠ `director` a t=0.80).
-Para H1 redundância, threshold=0.80 (padrão) subestima sinonímia — mas é conservador e comparável entre condições.
+Conclusão: relações livres são lexicalmente muito diferentes das referências — mesmo `directed_by` ≠ `director` a t=0.80. Isto confirma a necessidade da projeção C0→referência e justifica o uso do threshold único 0.70 para a métrica H1.
+
+### Redundância semântica H1 — piloto-v2 (threshold=0.70)
+
+| Onto | Condição | n_triplas | n_rótulos | n_grupos | taxa_pred_uniq | **red_sem (t=0.70)** |
+|---|---|---|---|---|---|---|
+| 1_movie | C0 | 716 | 331 | 232 | 0.462 | **0.299** |
+| 1_movie | C1 | 781 | 51 | 45 | 0.065 | **0.118** |
+| 1_movie | C1_oneshot | 637 | 39 | 36 | 0.061 | **0.077** |
+| 2_music | C0 | 634 | 326 | 236 | 0.514 | **0.276** |
+| 2_music | C1 | 642 | 40 | 34 | 0.062 | **0.150** |
+| 2_music | C1_oneshot | 535 | 23 | 21 | 0.043 | **0.087** |
+
+A t=0.70 (mais sensível que 0.80), C0 exibe redundância ~0.28–0.30, C1 ~0.12–0.15, C1_oneshot ~0.08–0.09.
+C0 tem ~2.5–3.5× mais redundância semântica que as condições com ontologia — sinal consistente com H1.
 
 ### Ontologia C2 atual vs. D-21
 
@@ -732,7 +758,7 @@ A indução atual (50 frases treino, threshold=0.80, sem freq_min) gerou 113/102
 "Knocking at the Door" e "eight-minute animated film" aparecem como predicados na indução atual — confirmados como
 hápax de frases de treino específicas. Com freq_min=5, seriam filtrados.
 
-**Implementação:** parâmetros definitivos `{"threshold_1_movie": 0.70, "threshold_2_music": 0.80, "freq_min": 5}`
+**Implementação:** parâmetros definitivos `{"threshold_agrupamento": 0.70, "freq_min": 5}`
 registrados em `configs/c2/params_c2.json` antes da re-indução no Kaggle.
 
 ---

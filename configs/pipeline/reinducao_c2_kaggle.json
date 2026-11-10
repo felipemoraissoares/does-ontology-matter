@@ -8,9 +8,11 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 50,
     "seed": 42,
-    "threshold": 0.80,
+    "threshold": 0.70,
+    "freq_min": 5,
     "calibrar": true,
-    "motivo": "D-17: re-inducao com dois bugs corrigidos (prompt posicional + split errado)"
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
+    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL"
   },
   {
     "id": "c2_reinducao_tkg_2_music",
@@ -21,8 +23,10 @@
     "url": "http://localhost:8000/v1",
     "n_frases": 50,
     "seed": 42,
-    "threshold": 0.80,
+    "threshold": 0.70,
+    "freq_min": 5,
     "calibrar": true,
-    "motivo": "D-17: re-inducao com dois bugs corrigidos (prompt posicional + split errado)"
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
+    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL"
   }
 ]
