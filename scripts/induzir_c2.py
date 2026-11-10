@@ -402,6 +402,11 @@ if __name__ == "__main__":
                    help="Aplica normalização D-22 aos rótulos antes do embedding.")
     p.add_argument("--saida_dir", default=os.path.join(
         os.path.dirname(__file__), "..", "configs", "c2"))
+    p.add_argument("--run_id", default=None,
+                   help="ID único desta execução (armazenado em metadata.run_id para guard check).")
+    p.add_argument("--use_definicoes", action="store_true",
+                   help="Usa definições D-24 no embedding (rótulo: definição). "
+                        "Requer configs/c2/definicoes_{onto}.json gerado por gerar_definicoes_relacoes.py.")
     args = p.parse_args()
 
     if not _EMBS_OK:
@@ -466,9 +471,22 @@ if __name__ == "__main__":
             args.saida_dir, args.dataset, args.onto,
         )
 
+    # D-24: carrega definições se --use_definicoes
+    definicoes = None
+    if args.use_definicoes:
+        def_path = os.path.join(REPO, "configs", "c2", f"definicoes_{args.onto}.json")
+        if os.path.exists(def_path):
+            with open(def_path, encoding="utf-8") as _f:
+                definicoes = json.load(_f).get("relacoes", {})
+            print(f"  Definições D-24 carregadas: {len(definicoes)} rótulos de {os.path.basename(def_path)}")
+        else:
+            print(f"  AVISO: --use_definicoes mas arquivo não encontrado: {def_path}")
+
     print(f"\nAgrupando relacoes com threshold={args.threshold}"
-          f"{' + normalizacao D-22' if args.normalizar else ''}")
-    grupos = agrupar_relacoes(all_relacoes, modelo_embs, args.threshold, normalizar=args.normalizar)
+          f"{' + normalizacao D-22' if args.normalizar else ''}"
+          f"{' + definicoes D-24' if definicoes else ''}")
+    grupos = agrupar_relacoes(all_relacoes, modelo_embs, args.threshold,
+                              normalizar=args.normalizar, definicoes=definicoes)
     print(f"  Grupos formados (antes de freq_min): {len(grupos)}")
 
     # Conta frases DISTINTAS por grupo (D-21 fix: freq_min conta frases, nao triplas)
@@ -490,10 +508,12 @@ if __name__ == "__main__":
         "threshold_agrupamento": args.threshold,
         "freq_min_frases": args.freq_min,
         "normalizar_rotulo": args.normalizar,
+        "use_definicoes": args.use_definicoes,
         "from_raw_jsonl": args.from_raw_jsonl,
         "modelo_llm": args.modelo_llm if not args.from_raw_jsonl else "(reprocessado sem LLM)",
         "modelo_embs": MODELO_EMBS,
         "ids_frases": ids_sorteados,
+        "run_id": args.run_id,
     }
     output = {"metadata": metadados, **ontologia_induzida}
     with open(saida, "w", encoding="utf-8") as fout:

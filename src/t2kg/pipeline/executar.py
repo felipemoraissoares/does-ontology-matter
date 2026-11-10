@@ -109,9 +109,12 @@ def executar(
         rng.shuffle(frases)
     ontologia = carregar_ontologia(bench_dir, dataset, ontologia_id)
 
-    # Para C5_vizinho/C5_incongruente carrega a ontologia parceira
+    # Para C2: carrega ontologia induzida (D-16); para C5_vizinho/C5_incongruente: parceira
     ontologia_parceira = None
-    if condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
+    if condicao == "C2":
+        from .ontologias import carregar_ontologia_induzida
+        ontologia_parceira = carregar_ontologia_induzida(dataset, ontologia_id)
+    elif condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
         ontologia_parceira = carregar_ontologia(bench_dir, dataset, ontologia_parceira_id)
 
     # Para C3: top-k relações extraídas dos dados de TREINO (nunca do GT de teste)

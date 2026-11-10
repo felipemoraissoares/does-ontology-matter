@@ -9,10 +9,10 @@
     "n_frases": 50,
     "seed": 42,
     "threshold": 0.7,
-    "freq_min": 5,
+    "freq_min": 3,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
-    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL",
+    "motivo": "D-21+D-24: threshold=0.70, freq_min=3, embedding rótulo+definição (EDC)",
     "ativo": true
   },
   {
@@ -25,10 +25,10 @@
     "n_frases": 50,
     "seed": 42,
     "threshold": 0.7,
-    "freq_min": 5,
+    "freq_min": 3,
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
-    "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL",
+    "motivo": "D-21+D-24: threshold=0.70, freq_min=3, embedding rótulo+definição (EDC)",
     "ativo": true
   },
   {
