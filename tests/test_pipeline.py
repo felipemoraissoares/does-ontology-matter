@@ -179,6 +179,38 @@ class TestPrompts:
         p = montar_prompt("My sentence.", "C1_oneshot_original", contexto_ontologia=ctx)
         assert "exact entity names" not in p
 
+    @pytest.mark.parametrize("condicao,extra", [
+        ("C0", {}),
+        ("C1",           {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
+        ("C2",           {"contexto_ontologia": "Relations: rel_induzida_1, rel_induzida_2"}),
+        ("C3",           {"contexto_ontologia": "Relations: rel_treino_1, rel_treino_2"}),
+        ("C5_vizinho",   {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
+        ("C5_incongruente", {"contexto_ontologia": "Ontology Concepts: X,\nOntology Relations: rel(X,Y)"}),
+    ])
+    def test_zero_shot_instrucao_d_sem_exemplo(self, condicao, extra):
+        """C0, C1, C2, C3, C5_vizinho, C5_incongruente: zero-shot e instrução D (D-12/D-20)."""
+        p = montar_prompt("My sentence.", condicao, **extra)
+        assert "Example Sentence:" not in p, (
+            f"{condicao}: não deve conter 'Example Sentence:' (viola D-12 zero-shot)"
+        )
+        assert "Example Output:" not in p, (
+            f"{condicao}: não deve conter 'Example Output:' (viola D-12 zero-shot)"
+        )
+        assert "Output the triples, one per line" in p, (
+            f"{condicao}: instrução de formato D ausente"
+        )
+
+    def test_c2_identico_a_c1_com_mesmo_contexto(self):
+        """C2 com mesmo contexto_ontologia que C1 deve produzir prompt byte-a-byte idêntico."""
+        ctx = "Ontology Concepts: film,\nOntology Relations: director(film,human)"
+        p_c1 = montar_prompt("My sentence.", "C1", contexto_ontologia=ctx)
+        p_c2 = montar_prompt("My sentence.", "C2", contexto_ontologia=ctx)
+        assert p_c1 == p_c2, (
+            "C2 e C1 com mesmo contexto devem produzir prompts byte-a-byte idênticos.\n"
+            f"C1 ({len(p_c1)} chars):\n{p_c1!r}\n\n"
+            f"C2 ({len(p_c2)} chars):\n{p_c2!r}"
+        )
+
 
 # ---------------------------------------------------------------------------
 # executar.py — integração + checkpoint

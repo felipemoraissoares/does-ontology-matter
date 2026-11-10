@@ -130,8 +130,8 @@ def montar_prompt(
             f"Test Output: "
         )
 
-    # C1 — zero-shot com ontologia completa
-    if condicao == "C1":
+    # C1 e C2 — zero-shot com ontologia (C2 usa ontologia induzida, mesmo layout que C1)
+    if condicao in ("C1", "C2"):
         return (
             f"{inst_c1}\n\n"
             f"CONTEXT:\n"
