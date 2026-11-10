@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codebase — Does Ontology Matter?</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-theme">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fa; --surface: #ffffff; --surface2: #f0f4f8; --surface3: #e8ecf0;
+    --border: #dee2e6; --text: #212529; --text2: #6c757d;
+    --accent: #2563eb; --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --green: #16a34a; --amber: #d97706; --purple: #7c3aed; --red: #dc2626;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #263347; --surface3: #2d3f55;
+    --border: #334155; --text: #e2e8f0; --text2: #94a3b8;
+    --accent: #60a5fa; --shadow: 0 2px 8px rgba(0,0,0,0.3);
+    --green: #22c55e; --amber: #fbbf24; --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  #sidebar { width: 270px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 1.5rem 1rem; flex-shrink: 0; }
+  #sidebar h2 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); margin-bottom: 0.75rem; }
+  #sidebar ul { list-style: none; }
+  #sidebar li a { display: block; padding: 0.3rem 0.75rem; border-radius: 6px; text-decoration: none; color: var(--text); font-size: 0.83rem; transition: background 0.15s; }
+  #sidebar li a:hover { background: var(--surface2); color: var(--accent); }
+  #sidebar .sep { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); padding: 0.6rem 0.75rem 0.2rem; }
+  #sidebar .icon { margin-right: 0.4rem; }
+
+  #main { flex: 1; padding: 2rem; max-width: 980px; }
+
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-size: 1.75rem; font-weight: 700; }
+  .page-header p { color: var(--text2); margin-top: 0.4rem; }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  #theme-toggle { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-size: 0.85rem; color: var(--text); }
+
+  /* Breadcrumb */
+  .breadcrumb { font-size: 0.8rem; color: var(--text2); margin-bottom: 1rem; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 0.4rem; }
+
+  /* Section */
+  .section { margin-bottom: 3.5rem; }
+  .section > h2 { font-size: 1.3rem; font-weight: 600; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+
+  /* Module card */
+  .module-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+  .module-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .module-icon { font-size: 1.4rem; }
+  .module-header h3 { font-size: 1.05rem; font-weight: 600; }
+  .module-path { font-size: 0.78rem; font-family: monospace; color: var(--accent); background: var(--surface2); padding: 0.2rem 0.6rem; border-radius: 4px; margin-left: auto; }
+  .module-purpose { color: var(--text2); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem; }
+
+  /* Function table */
+  .fn-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 0.5rem; }
+  .fn-table th { background: var(--surface2); text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; border-bottom: 2px solid var(--border); }
+  .fn-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .fn-table tr:last-child td { border-bottom: none; }
+  .fn-name { font-family: monospace; color: var(--accent); font-weight: 600; }
+  .fn-sig { font-family: monospace; font-size: 0.78rem; color: var(--text2); }
+  .fn-desc { color: var(--text); line-height: 1.5; }
+
+  /* IO block */
+  .io-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+  .io-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; }
+  .io-box h5 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.4rem; }
+  .io-box p { font-size: 0.83rem; line-height: 1.5; }
+
+  /* Code blocks */
+  pre { background: var(--surface2) !important; border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1rem; font-size: 0.8rem; overflow-x: auto; margin-top: 0.75rem; }
+  code { font-family: 'Cascadia Code', 'Fira Code', monospace !important; }
+  .code-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-top: 1rem; margin-bottom: 0.25rem; }
+
+  /* Diagram cards */
+  .diagram-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); overflow-x: auto; }
+  .diagram-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+  .mermaid { min-height: 60px; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; margin-right: 0.3rem; }
+  .tag-pipeline { background: #dbeafe; color: #1d4ed8; }
+  .tag-eval { background: #dcfce7; color: #15803d; }
+  .tag-script { background: #fef3c7; color: #92400e; }
+  .tag-kaggle { background: #ede9fe; color: #5b21b6; }
+  [data-theme="dark"] .tag-pipeline { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .tag-eval { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .tag-script { background: #451a03; color: #fde68a; }
+  [data-theme="dark"] .tag-kaggle { background: #2e1065; color: #c4b5fd; }
+
+  .deps-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .dep-tag { background: var(--surface3); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.5rem; font-family: monospace; font-size: 0.75rem; color: var(--text2); }
+
+  /* Alert box */
+  .alert { border-left: 4px solid var(--amber); background: var(--surface2); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-size: 0.85rem; margin-top: 0.75rem; }
+  .alert strong { color: var(--amber); }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    .io-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<nav id="sidebar">
+  <h2>Módulos</h2>
+  <ul>
+    <li><a href="#overview">Visão Geral</a></li>
+    <li><a href="#diagrams">Diagramas</a></li>
+    <li class="sep">Pipeline</li>
+    <li><a href="#dados"><span class="icon">📂</span>dados.py</a></li>
+    <li><a href="#ontologias"><span class="icon">🗂️</span>ontologias.py</a></li>
+    <li><a href="#prompts"><span class="icon">💬</span>prompts.py</a></li>
+    <li><a href="#executar"><span class="icon">▶️</span>executar.py</a></li>
+    <li class="sep">Avaliação</li>
+    <li><a href="#original"><span class="icon">📊</span>original.py</a></li>
+    <li><a href="#extended"><span class="icon">📈</span>extended.py</a></li>
+    <li><a href="#parser"><span class="icon">🔍</span>parser.py</a></li>
+    <li class="sep">Scripts</li>
+    <li><a href="#induzir"><span class="icon">🧬</span>induzir_c2.py</a></li>
+    <li><a href="#avaliar"><span class="icon">📉</span>avaliar_resultados.py</a></li>
+    <li class="sep">Kaggle</li>
+    <li><a href="#lancador"><span class="icon">🚀</span>lancador.ipynb</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+  <div class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Documentação do Código</h1>
+        <p>Arquitetura, módulos e fluxo de dados — Does Ontology Matter? (ITA, 2026)</p>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()">🌙 Escuro</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="section" id="overview">
+    <h2>Visão Geral</h2>
+    <div class="module-card">
+      <p style="line-height:1.7; font-size:0.9rem;">
+        O projeto é organizado em três camadas: <strong>pipeline</strong> (carrega dados, formata ontologia, monta prompt, executa inferência),
+        <strong>avaliação</strong> (espelha o avaliador do benchmark, adiciona métricas de erro de formato e métricas estendidas),
+        e <strong>scripts</strong> (orquestram tarefas de longa duração: indução C2, avaliação em lote, cálculo de pares C5).
+        A execução em GPU acontece exclusivamente no Kaggle via <code>lancador.ipynb</code>.
+        Localmente, toda a lógica de negócio pode ser testada sem GPU usando <code>ProvedorMock</code>.
+      </p>
+      <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="tag tag-eval">avaliação</span>
+        <span class="tag tag-script">scripts</span>
+        <span class="tag tag-kaggle">kaggle</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGRAMS -->
+  <section class="section" id="diagrams">
+    <h2>Diagramas de Arquitetura</h2>
+
+    <div class="diagram-card">
+      <h3>Mapa de Módulos e Dependências</h3>
+      <div class="mermaid">
+graph LR
+    subgraph PIPELINE["src/t2kg/pipeline/"]
+        DAD[dados.py]
+        ONT[ontologias.py]
+        PRO[prompts.py]
+        EXE[executar.py]
+        RUN[run.py]
+    end
+    subgraph AVAL["src/t2kg/avaliacao/"]
+        ORIG[original.py]
+        EXT[extended.py]
+    end
+    subgraph PARSER["src/t2kg/"]
+        PAR[parser.py]
+    end
+    subgraph SCRIPTS["scripts/"]
+        IND[induzir_c2.py]
+        AVS[avaliar_resultados.py]
+    end
+    subgraph KAGGLE["kaggle/"]
+        LNC[lancador.ipynb]
+    end
+
+    EXE --> DAD
+    EXE --> ONT
+    EXE --> PRO
+    EXE --> PAR
+    RUN --> EXE
+    IND --> DAD
+    IND --> PRO
+    IND --> PAR
+    IND --> EXT
+    AVS --> ORIG
+    LNC --> RUN
+    LNC --> IND
+    LNC --> AVS
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Fluxo de Dados Completo — De Benchmark a JSONL</h3>
+      <div class="mermaid">
+flowchart TD
+    BENCH["Text2KGBench\ndata/{dataset}/ground_truth/\nbaselines/prompts/\ntrain/"]
+    DAD["dados.py\ncarregar_frases()\n→ [{id, sent, gt_triples,\nexemplo_sent, exemplo_saida}]"]
+    ONT["ontologias.py\ncarregar_ontologia() ou\ncarregar_ontologia_induzida()\n→ Dict ontologia"]
+    FMT["ontologias.py\nformatar_contexto()\n→ 'Ontology Concepts: ...\nOntology Relations: ...'"]
+    PRO["prompts.py\nmontar_prompt(sentenca, condicao,\ncontexto_ontologia, ...)\n→ prompt string"]
+    LLM["vLLM API\nQwen2.5-7B-Instruct-AWQ\ntemperatura=0"]
+    PAR["parser.py\nparsear_resposta(text)\n→ [[sub, rel, obj], ...]"]
+    OUT["JSONL output\n{id, sent, prompt,\nresponse, triples}"]
+    EVAL["original.py\navaliar(config)\n→ P/R/F1, conformidade,\nalucinações, fmt_error"]
+
+    BENCH --> DAD
+    BENCH --> ONT
+    DAD --> PRO
+    ONT --> FMT
+    FMT --> PRO
+    PRO --> LLM
+    LLM --> PAR
+    PAR --> OUT
+    OUT --> EVAL
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Hierarquia de Funções — avaliar_resultados.py</h3>
+      <div class="mermaid">
+graph TD
+    MAIN["main()\nLê manifesto\nAgrupa por dataset+condicao"]
+    AC["avaliar_condicao()\nMonta config {onto_list, avg_out_file}\nChama avaliar() de original.py\nLê avg_out_file → métricas globais"]
+    ACE["avaliar_condicao_extendida()\nCalcula por ontologia:\n  avaliar_frase_estendida()\n  sumarizar_estendido()\nRetorna global + por_ontologia"]
+    AVA["original.py::avaliar()\nP/R/F1, conformidade\nalucinações, fmt_error\nparse_error"]
+    AFE["extended.py::avaliar_frase_estendida()\nprf1 sem filtro\nprf1 projetado\nfração projetada"]
+    SUM["extended.py::sumarizar_estendido()\nMédia por ontologia\ntaxa_predicados_unicos"]
+    CSV["CSV output\ntabela_piloto_v3.csv"]
+
+    MAIN --> AC
+    MAIN --> ACE
+    AC --> AVA
+    ACE --> AFE
+    ACE --> SUM
+    MAIN --> CSV
+      </div>
+    </div>
+  </section>
+
+  <!-- DADOS.PY -->
+  <section class="section" id="dados">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Pipeline<span>›</span>dados.py</div>
+    <h2>dados.py — Carregamento do Benchmark</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">📂</span>
+        <h3>src/t2kg/pipeline/dados.py</h3>
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="module-path">src/t2kg/pipeline/dados.py</span>
+      </div>
+      <p class="module-purpose">
+        Responsável por toda a leitura de dados do benchmark Text2KGBench. Conhece a estrutura exata
+        de diretórios de TekGen e DBpedia/WebNLG, incluindo formatos distintos de treino (TekGen: uma
+        tripla por linha; DBpedia: uma frase por linha com lista de triplas). Extrai automaticamente o
+        par de exemplo dos prompts originais para uso em C1_oneshot_original.
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Assinatura</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">carregar_frases</td>
+            <td class="fn-sig">(bench_dir, dataset, split, ontologia_id) → List[Dict]</td>
+            <td class="fn-desc">Carrega todas as frases de teste de uma ontologia. Cada dict contém: <code>id, sent, gt_triples, exemplo_sent, exemplo_saida, prompt_original</code>. Cruza ground-truth com prompts originais para extrair o par de exemplo.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">carregar_frases_treino</td>
+            <td class="fn-sig">(bench_dir, dataset, ontologia_id) → List[Dict]</td>
+            <td class="fn-desc">Carrega frases de TREINO para indução C2. Lê diretamente de <code>train/*.jsonl</code> sem passar por <code>_caminhos_gt()</code>. Necessário para evitar o Bug 2 (D-17): <code>split="train"</code> retornava silenciosamente o GT de teste.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">carregar_frequencias_treino</td>
+            <td class="fn-sig">(bench_dir, dataset, ontologia_id, k=3) → List[str]</td>
+            <td class="fn-desc">Retorna os k rótulos de relação mais frequentes no treino. Usado exclusivamente por C3 para evitar vazamento de informação do GT de teste (D-06).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="io-row">
+        <div class="io-box">
+          <h5>Entrada</h5>
+          <p>Arquivos JSONL do Text2KGBench:<br>
+          <code>data/wikidata_tekgen/ground_truth/ont_{onto}_ground_truth.jsonl</code><br>
+          <code>data/wikidata_tekgen/baselines/prompts/ont_{onto}_prompts.jsonl</code><br>
+          <code>data/wikidata_tekgen/train/ont_{onto}_train.jsonl</code></p>
+        </div>
+        <div class="io-box">
+          <h5>Saída</h5>
+          <p><code>[{<br>&nbsp;&nbsp;"id": "ont_1_movie_test_1",<br>&nbsp;&nbsp;"sent": "Bleach... directed by Nolan",<br>&nbsp;&nbsp;"gt_triples": [{sub, rel, obj}],<br>&nbsp;&nbsp;"exemplo_sent": "...",<br>&nbsp;&nbsp;"exemplo_saida": "director(Film, Nolan)"<br>}]</code></p>
+        </div>
+      </div>
+
+      <div class="alert"><strong>Detalhe crítico:</strong> TekGen armazena uma tripla por linha no treino (campo <code>rel_label</code>); DBpedia armazena uma frase por linha com campo <code>triples</code>. A função <code>carregar_frases_treino()</code> agrupa linhas TekGen por sentença antes de retornar.</div>
+
+      <div class="code-label">Exemplo de uso</div>
+      <pre><code class="language-python">from t2kg.pipeline.dados import carregar_frases, carregar_frequencias_treino
+
+frases = carregar_frases(BENCH, "tekgen", "test", "1_movie")
+# frases[0] = {"id": "ont_1_movie_test_1", "sent": "Bleach...", "gt_triples": [...], ...}
+
+top3 = carregar_frequencias_treino(BENCH, "tekgen", "1_movie", k=3)
+# top3 = ["director", "screenwriter", "genre"]  (do treino, nunca do GT de teste)</code></pre>
+    </div>
+  </section>
+
+  <!-- ONTOLOGIAS.PY -->
+  <section class="section" id="ontologias">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Pipeline<span>›</span>ontologias.py</div>
+    <h2>ontologias.py — Carregamento e Formatação</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">🗂️</span>
+        <h3>src/t2kg/pipeline/ontologias.py</h3>
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="module-path">src/t2kg/pipeline/ontologias.py</span>
+      </div>
+      <p class="module-purpose">
+        Carrega ontologias de referência (do benchmark) e induzidas (C2), e formata o bloco de
+        contexto correspondente para cada condição experimental. A formatação varia por condição:
+        C1 mostra conceitos + relações com assinaturas tipadas; C2 mostra apenas rótulos sem tipos;
+        C3 mostra top-k relações com domínio/range; C5* usa a ontologia parceira no mesmo formato de C1.
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Assinatura</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">carregar_ontologia</td>
+            <td class="fn-sig">(bench_dir, dataset, ontologia_id) → Dict</td>
+            <td class="fn-desc">Lê o arquivo JSON da ontologia de referência. Conhece os caminhos distintos de TekGen e DBpedia.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">carregar_ontologia_induzida</td>
+            <td class="fn-sig">(dataset, ontologia_id) → Dict</td>
+            <td class="fn-desc">Carrega <code>configs/c2/{dataset}_{onto}_induced.json</code>. Lança <code>FileNotFoundError</code> com mensagem de remediação se o arquivo não existir. <code>_REPO_DIR</code> é patchável via monkeypatch para testes.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">formatar_contexto</td>
+            <td class="fn-sig">(ontologia, condicao, top_k_rels=None, ontologia_parceira=None) → Optional[str]</td>
+            <td class="fn-desc">Função central. Retorna o bloco de contexto para cada condição. <code>None</code> para C0. Para C2: usa <code>ontologia_parceira</code> (a induzida). Para C5*: usa parceira se fornecida, senão usa alvo. Lança <code>ValueError</code> para condições desconhecidas.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-label">Saída de formatar_contexto por condição</div>
+      <pre><code class="language-python"># C0 → None
+
+# C1 / C1_oneshot_original / C5* (mesmo formato)
+"Ontology Concepts: film, human, genre,\n"
+"Ontology Relations: director(film,human), screenwriter(film,human), genre(film,genre)"
+
+# C2 (ontologia induzida, sem tipos — D-25)
+"Ontology Relations: released_in, directed_by, genre, is_a"
+
+# C3 (top-3 treino com domínio/range)
+"Relations: director(film,human), screenwriter(film,human), genre(film,genre)"</code></pre>
+
+      <div class="alert"><strong>D-25:</strong> C2 usa o rótulo <code>"Ontology Relations:"</code> (igual a C1) mas sem conceitos nem assinaturas. Isso cria uma assimetria estrutural no <code>avg_fmt_error</code> — C2 não fornece nomes de classe que o modelo possa copiar como entidade.</div>
+    </div>
+  </section>
+
+  <!-- PROMPTS.PY -->
+  <section class="section" id="prompts">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Pipeline<span>›</span>prompts.py</div>
+    <h2>prompts.py — Montagem dos Prompts</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">💬</span>
+        <h3>src/t2kg/pipeline/prompts.py</h3>
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="module-path">src/t2kg/pipeline/prompts.py</span>
+      </div>
+      <p class="module-purpose">
+        Monta o prompt completo como string para cada condição experimental. Cada condição tem um
+        ramo <code>if</code> explícito — condições desconhecidas levantam <code>ValueError</code>
+        (nunca silenciosas). Compartilha a mesma instrução (<code>inst_c1</code>) entre C1 e C2,
+        garantindo que os prompts sejam byte-a-byte idênticos dado o mesmo <code>contexto_ontologia</code>.
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Assinatura</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">montar_prompt</td>
+            <td class="fn-sig">(sentenca, condicao, contexto_ontologia=None, exemplo_sent=None, exemplo_saida=None, instrucao_formato=None) → str</td>
+            <td class="fn-desc">Função única de montagem. <code>instrucao_formato</code> permite sobrescrever <code>_INSTRUCAO_FORMATO</code> para o mini-teste D-19. Ramos explícitos para: C0, C1+C2 (compartilhado), C3, C5+C5_vizinho+C5_incongruente, C1_oneshot_original. <code>ValueError</code> ao final para qualquer condição não reconhecida.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-label">Exemplo — Prompt C1 (zero-shot, ontologia de referência)</div>
+      <pre><code class="language-python">prompt = montar_prompt(
+    sentenca="Bleach: Hell Verse is a 2010 film directed by Noriyuki Abe.",
+    condicao="C1",
+    contexto_ontologia="Ontology Concepts: film, human,\nOntology Relations: director(film,human), genre(film,genre)"
+)
+# Resultado:
+# "Given the following ontology and sentence, please extract the triples from the
+#  sentence according to the relations in the ontology. Output the triples, one per
+#  line, in this exact format: relation_name(<exact name of the first entity as written
+#  in the sentence>, <exact name of the second entity as written in the sentence>).
+#  No other text. Use as subject and object the exact entity names as written in the
+#  sentence, never the ontology class names.
+#
+#  CONTEXT:
+#  Ontology Concepts: film, human,
+#  Ontology Relations: director(film,human), genre(film,genre)
+#
+#  Test Sentence: Bleach: Hell Verse is a 2010 film directed by Noriyuki Abe.
+#  Test Output: "</code></pre>
+
+      <div class="code-label">Constantes de instrução</div>
+      <pre><code class="language-python"># D-20: Variante D — vencedora do mini-teste
+_INSTRUCAO_FORMATO = (
+    "Output the triples, one per line, in this exact format: "
+    "relation_name(<exact name of the first entity as written in the sentence>, "
+    "<exact name of the second entity as written in the sentence>). No other text."
+)
+
+# Usado apenas por C1_oneshot_original (fidelidade ao benchmark)
+_INSTRUCAO_COM_ONT_BENCH = (
+    "Given the following ontology and sentences, please extract the triples "
+    "from the sentence according to the relations in the ontology. "
+    "In the output, only include the triples in the given output format."
+)</code></pre>
+
+      <div class="alert"><strong>Invariante C1 == C2:</strong> quando o mesmo <code>contexto_ontologia</code> é passado para C1 e C2, os prompts são byte-a-byte idênticos. A diferença real está no conteúdo do contexto gerado por <code>formatar_contexto()</code>, não na estrutura do prompt.</div>
+    </div>
+  </section>
+
+  <!-- EXECUTAR.PY -->
+  <section class="section" id="executar">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Pipeline<span>›</span>executar.py</div>
+    <h2>executar.py — Execução com Checkpoint</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">▶️</span>
+        <h3>src/t2kg/pipeline/executar.py</h3>
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="module-path">src/t2kg/pipeline/executar.py</span>
+      </div>
+      <p class="module-purpose">
+        Orquestra a extração de triplas para um par (ontologia, condição). Implementa checkpoint
+        por ID: lê IDs já escritos no JSONL de saída e pula essas frases, permitindo retomada
+        após falhas no Kaggle. Suporta execução paralela via <code>ThreadPoolExecutor</code> mas
+        fixa <code>workers=1</code> em todos os manifestos por reprodutibilidade (D-23).
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">executar</td>
+            <td class="fn-desc">Função principal. Carrega frases, ontologia, contexto. Pula IDs já processados (checkpoint). Para C2: carrega ontologia induzida. Para C3: carrega frequências de treino. Para C5*: carrega ontologia parceira. Escreve JSONL linha a linha.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">_ids_ja_processados</td>
+            <td class="fn-desc">Lê IDs já escritos no JSONL de saída. Retorna set vazio se arquivo não existe. Tolerante a linhas corrompidas.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">_registrar</td>
+            <td class="fn-desc">Append-only: escreve uma linha JSON no arquivo de saída. Cria diretórios se necessário.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="io-row">
+        <div class="io-box">
+          <h5>Parâmetros chave de executar()</h5>
+          <p><code>bench_dir</code>: raiz do Text2KGBench<br>
+          <code>dataset</code>: "tekgen" | "webnlg"<br>
+          <code>condicao</code>: C0..C1_oneshot_original<br>
+          <code>frases_max</code>: limita total (inclui checkpoint)<br>
+          <code>frases_seed</code>: embaralha antes de frases_max<br>
+          <code>workers</code>: 1 = sequencial (padrão D-23)<br>
+          <code>instrucao_formato</code>: sobrescreve D-20 (mini-teste)</p>
+        </div>
+        <div class="io-box">
+          <h5>JSONL de saída (linha por frase)</h5>
+          <p><code>{<br>
+          &nbsp;"id": "ont_1_movie_test_1",<br>
+          &nbsp;"sent": "Bleach... by Nolan",<br>
+          &nbsp;"prompt": "Given the following...",<br>
+          &nbsp;"response": "director(Bleach, Nolan)",<br>
+          &nbsp;"triples": [["Bleach", "director", "Nolan"]]<br>
+          }</code></p>
+        </div>
+      </div>
+
+      <div class="code-label">Lógica de checkpoint</div>
+      <pre><code class="language-python">ja_prontos = _ids_ja_processados(saida)   # IDs já no arquivo de saída
+pendentes = []
+for frase in frases:
+    if frases_max is not None and (len(ja_prontos) + len(pendentes)) >= frases_max:
+        break
+    if frase["id"] not in ja_prontos:
+        pendentes.append(frase)
+# → pendentes conterá apenas as frases ainda não processadas</code></pre>
+    </div>
+  </section>
+
+  <!-- ORIGINAL.PY -->
+  <section class="section" id="original">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Avaliação<span>›</span>original.py</div>
+    <h2>original.py — Avaliador Espelho</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">📊</span>
+        <h3>src/t2kg/avaliacao/original.py</h3>
+        <span class="tag tag-eval">avaliação</span>
+        <span class="module-path">src/t2kg/avaliacao/original.py</span>
+      </div>
+      <p class="module-purpose">
+        Espelho fiel do avaliador original <code>run_eval.py</code> do Text2KGBench (Apache 2.0).
+        Reproduz exatamente as métricas publicadas: P/R/F1, conformidade ontológica, alucinação de
+        sujeito/objeto/relação. Adiciona três métricas: <code>avg_fmt_error</code> (D-07),
+        <code>avg_parse_error</code> (D-18), e suporte a <code>modo_amostra</code> (D-04).
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">avaliar</td>
+            <td class="fn-desc">Função principal. Recebe <code>config</code> com <code>onto_list</code> (lista de {sys, gt, onto, output}) e <code>avg_out_file</code>. Escreve resultados por ontologia e média global em JSONLs.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">calcular_precisao_recall_f1</td>
+            <td class="fn-desc">P = corretas/preditas; R = corretas/gabarito; F1 = média harmônica. Aceita sets de triplas normalizadas.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">normalizar_tripla</td>
+            <td class="fn-desc">Remove espaços e underscores, converte para minúsculas, concatena sub+rel+obj. Espelho exato do original para garantir comparabilidade.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">calcular_alucinacao_sujeito_objeto</td>
+            <td class="fn-desc">Verifica se sujeito/objeto aparece como substring de (frase + labels dos conceitos). Concatenação SEM espaço entre frase e conceitos — espelho exato que reproduz o comportamento do original (incluindo o edge case que causa divergência com 2 frases no Windows).</td>
+          </tr>
+          <tr>
+            <td class="fn-name">calcular_taxa_erro_formato</td>
+            <td class="fn-desc">Detecta sujeitos/objetos que são exatamente o label de uma classe, têm o label como prefixo com ":", ou como prefixo com aspas. Contagem por tripla, não por entidade.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert"><strong>Regra crítica de espelhamento:</strong> P/R/F1 calculados SÓ sobre triplas cujo predicado aparece no gabarito daquela frase — não sobre todas as triplas extraídas. Saída vazia → P=R=F1=0, conformidade=1, alucinações=0. Médias por ontologia dividem pelo total de frases do gabarito (não pelo número avaliado), exceto com <code>modo_amostra=True</code>.</div>
+    </div>
+  </section>
+
+  <!-- EXTENDED.PY -->
+  <section class="section" id="extended">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Avaliação<span>›</span>extended.py</div>
+    <h2>extended.py — Métricas Estendidas</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">📈</span>
+        <h3>src/t2kg/avaliacao/extended.py</h3>
+        <span class="tag tag-eval">avaliação</span>
+        <span class="module-path">src/t2kg/avaliacao/extended.py</span>
+      </div>
+      <p class="module-purpose">
+        Métricas além do avaliador original. Inclui projeção de relações livres (C0) para a ontologia
+        de referência via embedding (medida necessária para H1), redundância semântica (hipótese H1
+        principal), e normalização de rótulos antes do embedding (D-22).
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">_normalizar_rotulo</td>
+            <td class="fn-desc">Normalização antes de embedding (D-22): remove prefixos <code>has_/is_</code> e sufixos <code>_by/_of/_in/_to/_for</code>. Faz com que <code>directed_by</code>, <code>has_director</code>, <code>director_of</code> sejam mais similares após encoding.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">redundancia_semantica</td>
+            <td class="fn-desc">Para uma lista de rótulos de relação, computa a fração de rótulos que caem em grupos com cosine ≥ threshold. Mede H1: C0 deve ter maior redundância (vocabulário livre, não constrangido por ontologia).</td>
+          </tr>
+          <tr>
+            <td class="fn-name">avaliar_frase_estendida</td>
+            <td class="fn-desc">P/R/F1 sem filtro de ontologia + projeção de relações livres. Recebe <code>sys_triplas</code> e <code>gt_triplas</code>; projeta relações do sistema para o vocabulário da ontologia via embedding e recomputa P/R/F1.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PARSER.PY -->
+  <section class="section" id="parser">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>src/t2kg<span>›</span>parser.py</div>
+    <h2>parser.py — Parsing de Respostas LLM</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">🔍</span>
+        <h3>src/t2kg/parser.py</h3>
+        <span class="tag tag-pipeline">pipeline</span>
+        <span class="module-path">src/t2kg/parser.py</span>
+      </div>
+      <p class="module-purpose">
+        Converte texto livre gerado pelo LLM em lista de triplas <code>[[sub, rel, obj], ...]</code>.
+        Lida com prefácio antes das triplas, bullets numéricos, parênteses externos, vírgula final,
+        e objetos com parênteses aninhados (depth-aware desde D-19).
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">parsear_resposta</td>
+            <td class="fn-desc">Função pública. Aceita texto do LLM. Detecta padrão <code>rel(sub, obj)</code> em cada linha. Retorna lista de triplas (pode ser vazia). Remove marcadores <code>&lt;&gt;</code> adicionados pela instrução Variante D.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">_dividir_multiplas</td>
+            <td class="fn-desc">Implementação depth-aware (D-19): percorre caractere a caractere rastreando profundidade de parênteses. Divide apenas em vírgulas com profundidade == 0. Resolve <code>is_a_song_by(Pavement, Summer Babe (Winter Version))</code> corretamente.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-label">Exemplos de parsing</div>
+      <pre><code class="language-python">parsear_resposta("director(Bleach: Hell Verse, Noriyuki Abe)")
+# → [["Bleach: Hell Verse", "director", "Noriyuki Abe"]]
+
+parsear_resposta("is_a_song_by(Pavement, Summer Babe (Winter Version))")
+# → [["Pavement", "is_a_song_by", "Summer Babe (Winter Version)"]]  # depth-aware D-19
+
+parsear_resposta("director(<Bleach: Hell Verse>, <Noriyuki Abe>)")
+# → [["Bleach: Hell Verse", "director", "Noriyuki Abe"]]  # remove <> de Variante D
+
+parsear_resposta("Based on the ontology...\ndirector(Film, Nolan)")
+# → [["Film", "director", "Nolan"]]  # ignora prefácio</code></pre>
+    </div>
+  </section>
+
+  <!-- INDUZIR_C2.PY -->
+  <section class="section" id="induzir">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Scripts<span>›</span>induzir_c2.py</div>
+    <h2>induzir_c2.py — Indução da Ontologia C2</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">🧬</span>
+        <h3>scripts/induzir_c2.py</h3>
+        <span class="tag tag-script">script</span>
+        <span class="module-path">scripts/induzir_c2.py</span>
+      </div>
+      <p class="module-purpose">
+        Implementa o protocolo D-16 de indução da ontologia C2. Extrai triplas livres de frases de
+        treino em modo C0, agrupa rótulos por similaridade de embedding (all-MiniLM-L6-v2), filtra
+        por <code>freq_min</code> frases distintas (D-21), e salva a ontologia induzida com
+        <code>metadata.run_id</code> para o guard check.
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">sortear_frases_treino</td>
+            <td class="fn-desc">Sorteia N frases de treino com seed fixa. Usa <code>carregar_frases_treino()</code> (nunca <code>carregar_frases(split="train")</code> — Bug 2 D-17).</td>
+          </tr>
+          <tr>
+            <td class="fn-name">extrair_triplas_com_respostas</td>
+            <td class="fn-desc">Extrai triplas livres de cada frase via <code>montar_prompt(sentenca=f["sent"], condicao="C0")</code>. Retorna tupla (triplas_por_frase, registros_raw) para salvar o JSONL bruto.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">agrupar_relacoes</td>
+            <td class="fn-desc">Clustering greedy single-link por cosine similarity. Com <code>normalizar=True</code> (D-22) e <code>definicoes={}</code> (D-24), o embedding usa <code>"rótulo_normalizado: definição"</code>. Retorna lista de dicts com label (mais frequente do grupo), frequência e membros.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">contar_frases_por_grupo</td>
+            <td class="fn-desc">Adiciona <code>n_frases</code> a cada grupo: número de frases distintas com ≥1 tripla do grupo. <code>freq_min</code> filtra por este valor (não por contagem de triplas — corrigido em D-21).</td>
+          </tr>
+          <tr>
+            <td class="fn-name">construir_ontologia_induzida</td>
+            <td class="fn-desc">Constrói o dict da ontologia induzida: <code>concepts: []</code> (nenhum — sem domain/range), <code>relations: [{label, frequencia, membros}]</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-label">Exemplo de saída — configs/c2/tekgen_1_movie_induced.json</div>
+      <pre><code class="language-json">{
+  "metadata": {
+    "run_id": "20261110T143022Z",
+    "dataset": "tekgen",
+    "onto_id": "1_movie",
+    "threshold_agrupamento": 0.70,
+    "freq_min_frases": 3,
+    "use_definicoes": true
+  },
+  "concepts": [],
+  "relations": [
+    {"label": "released_in", "frequencia": 9, "membros": ["released_in", "has_release_year", "released"]},
+    {"label": "directed_by",  "frequencia": 6, "membros": ["directed_by", "directed"]},
+    {"label": "genre",        "frequencia": 5, "membros": ["genre"]},
+    {"label": "director",     "frequencia": 5, "membros": ["director_of", "has_director"]}
+  ]
+}</code></pre>
+
+      <div class="alert"><strong>run_id e guard check:</strong> o campo <code>metadata.run_id</code> é gerado no Cell 9 do lancador como <code>datetime.now(utc).strftime('%Y%m%dT%H%M%SZ')</code> e passado via <code>--run_id</code>. O Cell 10 compara esse valor antes de iniciar qualquer experimento C2. Ontologia gerada em sessão anterior tem <code>run_id</code> diferente e bloqueia a execução com <code>RuntimeError</code>.</div>
+    </div>
+  </section>
+
+  <!-- AVALIAR_RESULTADOS.PY -->
+  <section class="section" id="avaliar">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Scripts<span>›</span>avaliar_resultados.py</div>
+    <h2>avaliar_resultados.py — Avaliação em Lote</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">📉</span>
+        <h3>scripts/avaliar_resultados.py</h3>
+        <span class="tag tag-script">script</span>
+        <span class="module-path">scripts/avaliar_resultados.py</span>
+      </div>
+      <p class="module-purpose">
+        Script de entrada para avaliação em lote. Lê um manifesto JSON, agrupa experimentos por
+        (dataset, condição), detecta automaticamente <code>modo_amostra</code> comparando o número
+        de linhas do sistema com o total do GT, e chama <code>avaliar()</code> de <code>original.py</code>
+        para cada grupo. Com <code>--extended</code>, adiciona métricas de projeção e redundância.
+      </p>
+
+      <div class="io-row">
+        <div class="io-box">
+          <h5>Entrada</h5>
+          <p>Manifesto JSON com lista de experimentos + arquivos JSONL de saída gerados pelo pipeline</p>
+        </div>
+        <div class="io-box">
+          <h5>Saída</h5>
+          <p><code>avaliacao_piloto_v3/</code><br>
+          ├── <code>tekgen_C0_1_movie.jsonl</code><br>
+          ├── <code>tekgen_C0_avg.jsonl</code><br>
+          ├── <code>tekgen_C1_avg.jsonl</code><br>
+          └── <code>tabela_piloto_v3.csv</code></p>
+        </div>
+      </div>
+
+      <div class="code-label">Uso típico</div>
+      <pre><code class="language-bash">python scripts/avaliar_resultados.py \
+    --manifesto configs/pipeline/manifesto_piloto_v3.json \
+    --bench_dir ../Text2KGBench \
+    --avaliacao_dir resultados/avaliacao_piloto_v3 \
+    --csv resultados/avaliacao_piloto_v3/tabela_piloto_v3.csv \
+    --extended</code></pre>
+    </div>
+  </section>
+
+  <!-- LANCADOR -->
+  <section class="section" id="lancador">
+    <div class="breadcrumb"><a href="#overview">Início</a><span>›</span>Kaggle<span>›</span>lancador.ipynb</div>
+    <h2>lancador.ipynb — Orquestração Kaggle</h2>
+
+    <div class="module-card">
+      <div class="module-header">
+        <span class="module-icon">🚀</span>
+        <h3>kaggle/lancador.ipynb</h3>
+        <span class="tag tag-kaggle">kaggle</span>
+        <span class="module-path">kaggle/lancador.ipynb</span>
+      </div>
+      <p class="module-purpose">
+        Notebook de 14 células que orquestra o pipeline completo no Kaggle T4×2. Clona o repositório
+        usando GITHUB_TOKEN, inicia o vLLM server, executa a indução C2 antes dos experimentos (ordem
+        crítica após D-17), verifica os run_ids antes de rodar experimentos C2, e faz push automático
+        de todos os resultados ao GitHub.
+      </p>
+
+      <table class="fn-table">
+        <thead><tr><th>Célula</th><th>Propósito</th><th>Outputs</th></tr></thead>
+        <tbody>
+          <tr><td>1–3</td><td>Secrets (GITHUB_TOKEN, HF_TOKEN), helpers, clone repos com auth</td><td>REPO_DIR, BENCH_DIR</td></tr>
+          <tr><td>4</td><td>Restauração de outputs de sessão interrompida (copia de /kaggle/input)</td><td>arquivos restaurados</td></tr>
+          <tr><td>5</td><td>pip install: vllm, openai, sentence-transformers, nltk</td><td>dependências</td></tr>
+          <tr><td>6–7</td><td>vLLM serve em background + poll de health check (timeout=360s)</td><td>servidor porta 8000</td></tr>
+          <tr><td>8</td><td>Lê manifesto_piloto_v3.json, ajusta paths para /kaggle/working/</td><td>exps, manifesto_kaggle_path</td></tr>
+          <tr><td><strong>9</strong></td><td><strong>C2 induction: (a) extração livre → (b) definições EDC → (c) re-indução → (d) calibração → push</strong></td><td>*_induced.json, definicoes_*.json, run_id</td></tr>
+          <tr><td><strong>10</strong></td><td><strong>Guard check: RuntimeError se run_id incorreto ou arquivo ausente</strong></td><td>OK ou exceção</td></tr>
+          <tr><td>11</td><td>28 experimentos via t2kg.run, skip_existentes para checkpoint</td><td>pv3_*.jsonl</td></tr>
+          <tr><td>12</td><td>Push raw JSONLs para GitHub</td><td>git commit + push</td></tr>
+          <tr><td>13</td><td>Avaliação + push CSV com métricas</td><td>tabela_piloto_v3.csv + git push</td></tr>
+          <tr><td>14</td><td>tail -30 vllm.log para diagnóstico</td><td>log do servidor</td></tr>
+        </tbody>
+      </table>
+
+      <div class="alert"><strong>Pré-requisito:</strong> antes de executar, configurar no Kaggle: Accelerator → GPU T4 x2; Internet → On; Secrets: <code>GITHUB_TOKEN</code> e <code>HF_TOKEN</code> com "Attach to notebook" marcado. Executar via "Save Version → Save &amp; Run All" (não "Run All Cells").</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+  function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('theme-toggle');
+    const hljsTheme = document.getElementById('hljs-theme');
+    if (body.dataset.theme === 'dark') {
+      body.dataset.theme = 'light';
+      btn.textContent = '🌙 Escuro';
+      hljsTheme.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    } else {
+      body.dataset.theme = 'dark';
+      btn.textContent = '☀️ Claro';
+      hljsTheme.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+    }
+  }
+</script>
+</body>
+</html>

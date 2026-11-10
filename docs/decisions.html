@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decisões Metodológicas — Does Ontology Matter?</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fa; --surface: #ffffff; --surface2: #f0f4f8;
+    --border: #dee2e6; --text: #212529; --text2: #6c757d;
+    --accent: #2563eb; --accent2: #1d4ed8;
+    --green: #16a34a; --amber: #d97706; --blue: #1d4ed8;
+    --red: #dc2626; --purple: #7c3aed;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #263347;
+    --border: #334155; --text: #e2e8f0; --text2: #94a3b8;
+    --accent: #60a5fa; --accent2: #93c5fd;
+    --green: #22c55e; --amber: #fbbf24; --blue: #60a5fa;
+    --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  #sidebar { width: 280px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 1.5rem 1rem; flex-shrink: 0; }
+  #sidebar h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); margin-bottom: 0.75rem; }
+  #sidebar ul { list-style: none; }
+  #sidebar li a { display: block; padding: 0.35rem 0.75rem; border-radius: 6px; text-decoration: none; color: var(--text); font-size: 0.85rem; transition: background 0.15s; }
+  #sidebar li a:hover { background: var(--surface2); color: var(--accent); }
+  #sidebar .section-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); padding: 0.75rem 0.75rem 0.25rem; }
+
+  /* Main */
+  #main { flex: 1; padding: 2rem; max-width: 1000px; }
+
+  /* Header */
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text); }
+  .page-header p { color: var(--text2); margin-top: 0.4rem; font-size: 0.95rem; }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+
+  /* Theme toggle */
+  #theme-toggle { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.9rem; cursor: pointer; font-size: 0.85rem; color: var(--text); transition: background 0.2s; }
+  #theme-toggle:hover { background: var(--border); }
+
+  /* Sections */
+  .section { margin-bottom: 3rem; }
+  .section > h2 { font-size: 1.3rem; font-weight: 600; color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-bottom: 1.25rem; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .card h3 { font-size: 1rem; font-weight: 600; color: var(--text); }
+  .card p { font-size: 0.88rem; color: var(--text2); margin-top: 0.4rem; line-height: 1.6; }
+
+  /* Decision cards */
+  .decision-card { border-left: 4px solid var(--accent); }
+  .decision-card.approved { border-left-color: var(--green); }
+  .decision-card.implemented { border-left-color: var(--blue); }
+  .decision-card.planned { border-left-color: var(--amber); }
+  .decision-card.registered { border-left-color: var(--purple); }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+  .badge-approved { background: #dcfce7; color: #15803d; }
+  .badge-implemented { background: #dbeafe; color: #1d4ed8; }
+  .badge-planned { background: #fef3c7; color: #92400e; }
+  .badge-registered { background: #ede9fe; color: #5b21b6; }
+  [data-theme="dark"] .badge-approved { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .badge-implemented { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .badge-planned { background: #451a03; color: #fde68a; }
+  [data-theme="dark"] .badge-registered { background: #2e1065; color: #c4b5fd; }
+
+  /* Decision ID */
+  .decision-id { font-size: 0.8rem; font-weight: 700; color: var(--text2); font-family: monospace; background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+  /* Mermaid diagram cards */
+  .diagram-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); overflow-x: auto; }
+  .diagram-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+  .mermaid { min-height: 60px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.75rem; }
+  th { background: var(--surface2); text-align: left; padding: 0.6rem 0.8rem; font-weight: 600; border-bottom: 2px solid var(--border); color: var(--text); }
+  td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .yes { color: var(--green); font-weight: 600; }
+  .no { color: var(--text2); }
+
+  /* Arch grid */
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+  .arch-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+  .arch-box h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .arch-box ul { list-style: none; }
+  .arch-box li { font-size: 0.83rem; color: var(--text2); padding: 0.2rem 0; padding-left: 1rem; position: relative; }
+  .arch-box li::before { content: "→"; position: absolute; left: 0; color: var(--accent); }
+  .arch-local h4 { color: #15803d; }
+  .arch-kaggle h4 { color: #1d4ed8; }
+  [data-theme="dark"] .arch-local h4 { color: #86efac; }
+  [data-theme="dark"] .arch-kaggle h4 { color: #93c5fd; }
+
+  /* Timeline */
+  .timeline { margin-top: 1rem; }
+  .timeline-phase { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); margin-top: 4px; flex-shrink: 0; }
+  .timeline-content h4 { font-size: 0.9rem; font-weight: 600; }
+  .timeline-content p { font-size: 0.82rem; color: var(--text2); margin-top: 0.2rem; }
+
+  /* Code block */
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.8rem; overflow-x: auto; margin-top: 0.5rem; }
+  code { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+
+  /* Collapsible details in decision cards */
+  details { margin-top: 0.6rem; }
+  summary { cursor: pointer; font-size: 0.83rem; color: var(--accent); user-select: none; }
+  summary:hover { text-decoration: underline; }
+  details[open] summary { margin-bottom: 0.5rem; }
+  .detail-body { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    .arch-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<nav id="sidebar">
+  <h2>Navegação</h2>
+  <ul>
+    <li><a href="#arch">Arquitetura Geral</a></li>
+    <li><a href="#conditions">Condições Experimentais</a></li>
+    <li><a href="#diagrams">Diagramas</a></li>
+    <li><a href="#decisions">Decisões D-01 – D-25</a></li>
+    <li class="section-header">Fase 0 / Setup</li>
+    <li><a href="#d01">D-01 C3 top-k</a></li>
+    <li><a href="#d02">D-02 C5 perturbação</a></li>
+    <li><a href="#d03">D-03 Test Output</a></li>
+    <li><a href="#d04">D-04 modo_amostra</a></li>
+    <li><a href="#d05">D-05 instrução entidade</a></li>
+    <li><a href="#d06">D-06 C3 treino</a></li>
+    <li><a href="#d07">D-07 avg_fmt_error</a></li>
+    <li><a href="#d08">D-08 dTok covariável</a></li>
+    <li><a href="#d09">D-09 SimE contínuo</a></li>
+    <li><a href="#d10">D-10 sensibilidade</a></li>
+    <li><a href="#d11">D-11 terminologia</a></li>
+    <li><a href="#d12">D-12 zero-shot</a></li>
+    <li><a href="#d13">D-13 C0 projetada</a></li>
+    <li><a href="#d14">D-14 avaliação alvo</a></li>
+    <li><a href="#d15">D-15 parser</a></li>
+    <li class="section-header">Piloto Kaggle</li>
+    <li><a href="#d16">D-16 C2 indução</a></li>
+    <li><a href="#d17">D-17 bugs piloto</a></li>
+    <li><a href="#d18">D-18 instrução formato</a></li>
+    <li><a href="#d19">D-19 parser depth</a></li>
+    <li><a href="#d20">D-20 Variante D</a></li>
+    <li class="section-header">Piloto-v3</li>
+    <li><a href="#d21">D-21 threshold/freq_min</a></li>
+    <li><a href="#d22">D-22 normalização</a></li>
+    <li><a href="#d23">D-23 workers=1</a></li>
+    <li><a href="#d24">D-24 EDC definições</a></li>
+    <li><a href="#d25">D-25 rótulo C2</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+  <div class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Decisões Metodológicas</h1>
+        <p>Does Ontology Matter? — Dissertação ITA · Felipe Morais Soares · 2026</p>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()">🌙 Escuro</button>
+    </div>
+  </div>
+
+  <!-- ARQUITETURA -->
+  <section class="section" id="arch">
+    <h2>Arquitetura Geral — Local vs. Kaggle</h2>
+    <div class="card">
+      <p>O projeto divide responsabilidades entre a máquina local e o Kaggle por razões de custo e viabilidade computacional:</p>
+      <div class="arch-grid" style="margin-top:1rem;">
+        <div class="arch-box arch-local">
+          <h4>Máquina Local (Windows 11, Python 3.12)</h4>
+          <ul>
+            <li>Suite de testes: 612 testes pytest (ProvedorMock — sem GPU)</li>
+            <li>Avaliação de resultados: scripts/avaliar_resultados.py</li>
+            <li>Análise de threshold C2: scripts/analisar_threshold_c2.py</li>
+            <li>Configuração de pares C5: scripts/calcular_pares_c5.py</li>
+            <li>Commits e push para GitHub</li>
+          </ul>
+        </div>
+        <div class="arch-box arch-kaggle">
+          <h4>Kaggle T4 ×2 GPU (Linux, Python 3.11)</h4>
+          <ul>
+            <li>vLLM server: Qwen2.5-7B-Instruct-AWQ em 2× NVIDIA T4</li>
+            <li>Inferência LLM: 28 experimentos × 100 frases (~33 min)</li>
+            <li>Indução C2: sentence-transformers + clustering (~12 min)</li>
+            <li>Geração de definições EDC: D-24 (~10 min)</li>
+            <li>Push automático de resultados via GITHUB_TOKEN</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:1rem;">
+        <p><strong>Por que separar?</strong> vLLM requer CUDA e ≥16 GB de VRAM para o modelo AWQ-4bit de 7B parâmetros com tensor-parallel-size=2. A máquina de desenvolvimento não possui GPU adequada. O Kaggle fornece T4 ×2 gratuitamente. A avaliação e os testes são CPU-only e rodam localmente para ciclo de feedback rápido durante o desenvolvimento.</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:#15803d;"></div>
+        <div class="timeline-content">
+          <h4>Fase 0 — Reprodução do benchmark (commit 8cb1d5b)</h4>
+          <p>Implementação de original.py espelhando run_eval.py. 32 testes passando. Reprodução exata dos 6 cenários publicados.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:#1d4ed8;"></div>
+        <div class="timeline-content">
+          <h4>Fase 1 — Pipeline experimental (D-01 a D-15)</h4>
+          <p>dados.py, ontologias.py, prompts.py, executar.py. Condições C0–C5 implementadas. Pares C5 pré-registrados.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:#d97706;"></div>
+        <div class="timeline-content">
+          <h4>Piloto Kaggle (D-16 a D-20) — 2026-11-09</h4>
+          <p>D-18 identificou 39% de parse error em C1. D-19 testou 4 variantes de instrução. D-20: Variante D vence (score=0.1505). Bugs D-17 descobertos e corrigidos.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:#7c3aed;"></div>
+        <div class="timeline-content">
+          <h4>Piloto-v3 (D-21 a D-25) — 2026-11-10</h4>
+          <p>threshold=0.70, freq_min=3, EDC D-24, workers=1, C1_oneshot_original branch explícito, C2 usa "Ontology Relations:".</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONDITIONS TABLE -->
+  <section class="section" id="conditions">
+    <h2>Condições Experimentais</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Condição</th>
+            <th>Ontologia no Prompt</th>
+            <th>Zero-shot</th>
+            <th>Instrução</th>
+            <th>Contexto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>C0</strong></td>
+            <td>Nenhuma</td>
+            <td class="yes">Sim</td>
+            <td>Extrai todas as triplas relevantes</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>C1</strong></td>
+            <td>Ontologia de referência completa</td>
+            <td class="yes">Sim</td>
+            <td>Guiado pela ontologia</td>
+            <td><code>Ontology Concepts: ...\nOntology Relations: rel(dom,rng)</code></td>
+          </tr>
+          <tr>
+            <td><strong>C1_oneshot_original</strong></td>
+            <td>Ontologia de referência (formato benchmark)</td>
+            <td class="no">Não (1-shot)</td>
+            <td>Instrução original do benchmark</td>
+            <td>Igual C1 + Example Sentence/Output</td>
+          </tr>
+          <tr>
+            <td><strong>C2</strong></td>
+            <td>Ontologia induzida (C0 no treino + clustering)</td>
+            <td class="yes">Sim</td>
+            <td>Guiado pela ontologia (igual C1)</td>
+            <td><code>Ontology Relations: rel1, rel2, ...</code> (sem tipos)</td>
+          </tr>
+          <tr>
+            <td><strong>C3</strong></td>
+            <td>Top-3 relações mais frequentes no treino</td>
+            <td class="yes">Sim</td>
+            <td>Lista de relações-chave (pode usar outras)</td>
+            <td><code>Relations: rel(dom,rng), ...</code></td>
+          </tr>
+          <tr>
+            <td><strong>C5_vizinho</strong></td>
+            <td>Ontologia parceira vizinha (maior SimE)</td>
+            <td class="yes">Sim</td>
+            <td>Guiado pela ontologia fornecida</td>
+            <td>Igual C1 mas com relações erradas</td>
+          </tr>
+          <tr>
+            <td><strong>C5_incongruente</strong></td>
+            <td>Ontologia parceira incongruente (menor SimE)</td>
+            <td class="yes">Sim</td>
+            <td>Guiado pela ontologia fornecida</td>
+            <td>Igual C1 mas com relações completamente diferentes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DIAGRAMS -->
+  <section class="section" id="diagrams">
+    <h2>Diagramas de Arquitetura</h2>
+
+    <div class="diagram-card">
+      <h3>1. Fluxo do Lancador Kaggle (14 células)</h3>
+      <div class="mermaid">
+flowchart TD
+    C1["Cel 1-5\nSetup: secrets, helpers, clone repos\nrestore outputs, install deps"]
+    C6["Cel 6-7\nStart vLLM T4×2\nAguardar health check"]
+    C8["Cel 8\nCarregar manifesto\n28 experimentos"]
+    C9["Cel 9 — C2 Induction\n(a) Extração livre 50 frases treino\n(b) Definições LLM — D-24\n(c) Re-indução EDC threshold=0.70\n(d) Tabela calibração → push C2"]
+    C10{"Cel 10\nGuard Check\nrun_id == PV3_RUN_ID?"}
+    C11["Cel 11\n28 Experimentos\nC0, C1, C1os, C2, C3, C5v, C5i"]
+    C12["Cel 12\nPush raw JSONLs\nresultados/piloto_v3/"]
+    C13["Cel 13\nAvaliar resultados\n--extended → CSV\nPush avaliacao_piloto_v3/"]
+    C14["Cel 14\nvLLM log"]
+    ERR[/"RuntimeError\nC2 ausente ou\nrun_id incorreto"/]
+
+    C1 --> C6 --> C8 --> C9 --> C10
+    C10 -->|OK| C11
+    C10 -->|FALHA| ERR
+    C11 --> C12 --> C13 --> C14
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>2. Arquitetura Local vs. Kaggle</h3>
+      <div class="mermaid">
+graph LR
+    subgraph LOCAL["Local Machine — CPU only"]
+        TESTS["pytest suite\n612 testes\nProvedorMock"]
+        EVAL["avaliar_resultados.py\nscripts de análise"]
+        CONF["configs/\nmanifestos\npares_c5.json"]
+        GIT["Git repo\ngit pull results"]
+    end
+    subgraph KAGGLE["Kaggle T4×2 GPU"]
+        VLLM["vLLM server\nQwen2.5-7B-AWQ\nport 8000"]
+        INFER["t2kg.run\n28 experimentos"]
+        C2IND["induzir_c2.py\nsentence-transformers\nclustering"]
+        DEFN["gerar_definicoes.py\nLLM definitions EDC"]
+    end
+    subgraph GITHUB["GitHub Repository"]
+        RAW["resultados/piloto_v3/*.jsonl"]
+        AVAL["resultados/avaliacao_piloto_v3/"]
+        C2FILES["configs/c2/*_induced.json"]
+    end
+
+    KAGGLE -->|"git push\nGITHUB_TOKEN"| GITHUB
+    GITHUB -->|"git pull"| LOCAL
+    CONF -->|"import notebook"| KAGGLE
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>3. Pipeline de Extração — Sequência de Chamadas</h3>
+      <div class="mermaid">
+sequenceDiagram
+    participant LNC as lancador.ipynb
+    participant RUN as t2kg.run
+    participant EXE as executar.py
+    participant DAD as dados.py
+    participant ONT as ontologias.py
+    participant PRO as prompts.py
+    participant LLM as vLLM API
+    participant PAR as parser.py
+    participant SAI as JSONL output
+
+    LNC->>RUN: manifesto_kaggle.json
+    RUN->>EXE: executar(bench_dir, dataset, ontologia_id, condicao, ...)
+    EXE->>DAD: carregar_frases(bench_dir, dataset, split, ontologia_id)
+    DAD-->>EXE: List[{id, sent, gt_triples, exemplo_sent, ...}]
+    EXE->>ONT: carregar_ontologia(bench_dir, dataset, ontologia_id)
+    ONT-->>EXE: Dict ontologia
+    Note over EXE,ONT: C2: carregar_ontologia_induzida(dataset, ontologia_id)
+    EXE->>ONT: formatar_contexto(ontologia, condicao, top_k_rels, ontologia_parceira)
+    ONT-->>EXE: "Ontology Concepts: ...\nOntology Relations: ..."
+    loop Para cada frase pendente
+        EXE->>PRO: montar_prompt(sentenca, condicao, contexto_ontologia, ...)
+        PRO-->>EXE: prompt string completo
+        EXE->>LLM: POST /v1/chat/completions
+        LLM-->>EXE: response text
+        EXE->>PAR: parsear_resposta(response)
+        PAR-->>EXE: [[sub, rel, obj], ...]
+        EXE->>SAI: append JSONL line
+    end
+    EXE-->>RUN: n_processados
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>4. Condições Experimentais — Taxonomia</h3>
+      <div class="mermaid">
+graph TD
+    ROOT["Condições Experimentais\n7 variantes"]
+    ROOT --> NOONT["Sem ontologia\nC0 — extração livre"]
+    ROOT --> REFONT["Ontologia de referência"]
+    ROOT --> INDONT["Ontologia induzida\nC2 — clustering C0 treino"]
+    ROOT --> KEYONT["Relações-chave\nC3 — top-3 treino"]
+    ROOT --> PERTONT["Ontologia perturbada\nC5"]
+
+    REFONT --> C1["C1\nzero-shot\ncompleta"]
+    REFONT --> C1OS["C1_oneshot_original\n1-shot\nformato benchmark"]
+
+    PERTONT --> C5V["C5_vizinho\nSimE alta\northogonally related"]
+    PERTONT --> C5I["C5_incongruente\nSimE baixa\ncompletely different domain"]
+
+    NOONT:::cstyle
+    INDONT:::c2style
+    C1:::c1style
+    C1OS:::c1style
+
+    classDef cstyle fill:#fef3c7,stroke:#d97706,color:#92400e
+    classDef c2style fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+    classDef c1style fill:#dcfce7,stroke:#16a34a,color:#15803d
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>5. Fluxo de Indução C2 (D-16, D-21, D-22, D-24)</h3>
+      <div class="mermaid">
+flowchart LR
+    TRAIN["50 frases\nde treino\nseed=42"]
+    EXTRACT["Extração livre C0\nmontar_prompt\n'C0' apenas texto"]
+    RAW["raw_*.jsonl\nrespostas + triplas"]
+    DEFSGEN["Gerar definições EDC\nD-24: LLM define cada rótulo\n1 frase por relação"]
+    DEFS["definicoes_*.json\n{rótulo: definição}"]
+    EMBED["Embedding\nall-MiniLM-L6-v2\nencode(rótulo: definição)"]
+    CLUSTER["Clustering greedy\nthreshold=0.70 (D-21)\nfreq_min=3 frases (D-21)"]
+    INDUCED["*_induced.json\nmetadata.run_id=PV3_RUN_ID\nconcepts: []\nrelations: [{label, membros}]"]
+    GUARD{"Guard Check\nrun_id?\n== PV3_RUN_ID"}
+    EXP["Experimento C2\nprompt com\nOntology Relations:"]
+
+    TRAIN --> EXTRACT --> RAW
+    RAW --> DEFSGEN --> DEFS
+    RAW --> EMBED
+    DEFS --> EMBED
+    EMBED --> CLUSTER --> INDUCED
+    INDUCED --> GUARD
+    GUARD -->|"OK"| EXP
+    GUARD -->|"FALHA"| ERR2[/"RuntimeError"/]
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>6. Cronograma de Decisões por Fase</h3>
+      <div class="mermaid">
+timeline
+    title Fases do Projeto e Decisões Metodológicas
+    section Fase 0 — Reprodução
+        2026-11 : D-04 modo_amostra
+                : D-07 avg_fmt_error
+                : D-15 parser Categoria J
+    section Fase 1 — Pipeline
+        2026-11 : D-01 C3 top-k relações treino
+                : D-02 C5 dois níveis perturbação
+                : D-03 Test Output sufixo
+                : D-05 instrução entidade
+                : D-06 C3 dados treino
+                : D-08 dTok covariável C5
+                : D-09 SimE contínuo
+                : D-10 sensibilidade Inc2
+                : D-11 terminologia SimE
+                : D-12 zero-shot vs oneshot
+                : D-13 C0 projetada
+                : D-14 avaliação vs alvo
+    section Piloto Kaggle
+        2026-11-09 : D-16 C2 protocolo indução
+                   : D-17 bugs descobertos
+                   : D-18 instrução formato unificada
+                   : D-19 parser depth-aware
+                   : D-20 Variante D vencedora
+    section Piloto-v3
+        2026-11-10 : D-21 threshold=0.70 freq_min=3
+                   : D-22 normalização rótulos
+                   : D-23 workers=1 fixado
+                   : D-24 EDC definições semânticas
+                   : D-25 rótulo Ontology Relations C2
+      </div>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="section" id="decisions">
+    <h2>Decisões D-01 – D-25</h2>
+
+    <div id="d01" class="card decision-card approved">
+      <div class="card-header">
+        <div>
+          <span class="decision-id">D-01</span>
+          <h3>Formato do contexto para C3 — k=3 com domínio/range</h3>
+        </div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>C3 fornece ao modelo as 3 relações mais frequentes no conjunto de treino acompanhadas de seus conceitos de domínio e alcance. Formato: <code>Relations: director(film,human), screenwriter(film,human), genre(film,genre)</code>.</p>
+      <details><summary>Justificativa ↓</summary><div class="detail-body">k=3 isola o efeito de nomear as relações mais salientes sem revelar a estrutura completa da ontologia. k=0 seria indistinguível de C0 se o modelo não souber quais relações extrair. Implementação: <code>executar.py</code> computa top-3 do GT de treino via <code>carregar_frequencias_treino()</code>.</div></details>
+    </div>
+
+    <div id="d02" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-02</span><h3>Condição C5 — dois níveis de perturbação de ontologia</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>C5_vizinho usa a parceira com maior SimE (similaridade de embedding bidirecional). C5_incongruente usa a parceira com menor SimE. Pares calculados por <code>all-MiniLM-L6-v2</code> e pré-registrados em <code>configs/pipeline/pares_c5.json</code> antes de qualquer execução.</p>
+      <details><summary>Exemplo — TekGen 1_movie ↓</summary><div class="detail-body">Vizinho: 4_book (SimE=0.591, OvJ=17.4%). Incongruente: 9_nature (SimE=0.254, OvJ=0%). Avaliação sempre contra ontologia alvo (D-14).</div></details>
+    </div>
+
+    <div id="d03" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-03</span><h3>Sufixo "Test Output: " em todos os prompts</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Todos os prompts de todas as condições terminam com <code>\nTest Output: </code>. Mantém consistência com o benchmark original e sinaliza ao modelo de chat que deve listar triplas sem prefácio.</p>
+    </div>
+
+    <div id="d04" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-04</span><h3>Modo de avaliação — benchmark vs. amostra</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p><code>modo_amostra=False</code>: denominador = total GT (~400 frases). <code>modo_amostra=True</code>: denominador = frases efetivamente avaliadas. Auto-detectado quando sys &lt; GT.</p>
+    </div>
+
+    <div id="d05" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-05</span><h3>Instrução de entidade — desvio controlado do benchmark</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Adicionada em C0, C1, C2, C3, C5*: <em>"Use as subject and object the exact entity names as written in the sentence, never the ontology class names."</em> Ausente em C1_oneshot_original (fidelidade ao benchmark).</p>
+      <details><summary>Motivação ↓</summary><div class="detail-body">Sem a instrução, o qwen2.5:3b gerava <code>director(film, Noriyuki Abe)</code> usando "film" como sujeito em vez do título real. Isso causa P/R/F1=0 mesmo quando a relação está correta — artefato de prompt.</div></details>
+    </div>
+
+    <div id="d06" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-06</span><h3>Fonte de dados para C3 — treino, nunca GT de teste</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Frequências de relação para C3 calculadas exclusivamente sobre dados de treino. Usar GT de teste seria vazamento de dados. Implementação: <code>carregar_frequencias_treino()</code> em <code>dados.py</code>.</p>
+    </div>
+
+    <div id="d07" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-07</span><h3>Métrica auxiliar — avg_fmt_error</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Fração de triplas extraídas cujo sujeito OU objeto contém o nome de uma classe da ontologia como prefixo ou valor literal. Detecta o padrão <code>film:Bleach: Hell Verse</code> sem penalizar entidades capitalizadas legítimas.</p>
+    </div>
+
+    <div id="d08" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-08</span><h3>dTok como covariável em C5 (Fase 2)</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Diferença de tokens entre bloco de ontologia da parceira e do alvo (<code>dTok = #Tok_parceira - #Tok_alvo</code>) incluída como covariável contínua na análise estatística.</p>
+    </div>
+
+    <div id="d09" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-09</span><h3>SimE como variável contínua em C5 (Fase 2)</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Além da comparação discreta vizinho/incongruente, análise reportará o efeito de SimE como variável contínua via regressão com ontologia como efeito aleatório.</p>
+    </div>
+
+    <div id="d10" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-10</span><h3>Análise de sensibilidade — C5 com segunda parceira (Fase 2)</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Em 5 ontologias de amostra, executar C5_incongruente também com a segunda parceira com menor SimE (Inc2). Critério de robustez: diferença absoluta de conformidade Inc1 vs. Inc2 &lt; 0.05 para ≥4/5 ontologias.</p>
+    </div>
+
+    <div id="d11" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-11</span><h3>Terminologia — "similaridade de esquema"</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>O critério de seleção de parceiras C5 é chamado de "similaridade de esquema" (SimE) em toda a documentação. "Domínio" é reservado para o dataset inteiro.</p>
+    </div>
+
+    <div id="d12" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-12</span><h3>Distinção zero-shot vs. C1_oneshot_original</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>C0, C1, C2, C3, C5* são zero-shot. C1_oneshot_original reproduz o prompt exato do benchmark com um par de exemplo. Essa condição serve como âncora de reprodução.</p>
+    </div>
+
+    <div id="d13" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-13</span><h3>C0 bruta e C0 projetada</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>C0 avaliada em dois modos: bruta (comparação direta) e projetada (relações não-conformes descartadas antes da avaliação). C0_projetada − C0_bruta quantifica a precisão "acidental".</p>
+    </div>
+
+    <div id="d14" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-14</span><h3>Avaliação sempre contra a ontologia de referência do alvo</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Conformidade e alucinações calculadas sempre com a ontologia alvo, mesmo para C5_vizinho/C5_incongruente. Garante que a conformidade reflita o objetivo real (extração correta), não a adesão à ontologia errada fornecida.</p>
+    </div>
+
+    <div id="d15" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-15</span><h3>Correção do parser — Categoria J (trailing comma)</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Parser aceita <code>rel(sub, obj),</code> (vírgula após parêntese de fechamento) sem descartar a tripla. Padrão frequente em respostas de modelos de completamento (Vicuna/Alpaca).</p>
+    </div>
+
+    <div id="d16" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-16</span><h3>Condição C2 — ontologia induzida</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>C2 usa ontologia induzida: 50 frases de treino (seed=42) processadas em modo C0, rótulos agrupados por embedding, top-rótulo de cada grupo vira relação. Sem domain/range (desconhecido).</p>
+      <details><summary>Protocolo ↓</summary><div class="detail-body">1. Sortear 50 frases treino (seed=42). 2. Extrair triplas livres em modo C0 (sem ontologia). 3. Agrupar por embedding com threshold (D-21). 4. Filtrar por freq_min frases distintas (D-21). 5. Salvar em <code>configs/c2/{dataset}_{onto}_induced.json</code> com <code>metadata.run_id</code>.</div></details>
+    </div>
+
+    <div id="d17" class="card decision-card registered">
+      <div class="card-header">
+        <div><span class="decision-id">D-17</span><h3>Bugs do primeiro piloto Kaggle</h3></div>
+        <span class="badge badge-registered">REGISTRADO</span>
+      </div>
+      <p>Três bugs independentes descobertos no piloto de 2026-11-09, todos corrigidos.</p>
+      <details><summary>Bugs ↓</summary><div class="detail-body">
+        <strong>Bug 1:</strong> <code>montar_prompt(f, onto_vazia, "C0")</code> — passagem posicional errada fazia <code>sentenca</code> receber o dict inteiro incluindo gt_triples. Modelo copiou rótulos do gabarito para a ontologia induzida. <br>
+        <strong>Bug 2:</strong> <code>carregar_frases(..., split="train", ...)</code> caía no caminho de GT de teste. Os 50 IDs tinham padrão <code>ont_1_movie_test_*</code>. <br>
+        <strong>Bug 3:</strong> <code>.gitignore</code> com <code>resultados/</code> (trailing slash) ignorava o diretório inteiro; negações nunca eram avaliadas. Corrigido para <code>resultados/*</code>.
+      </div></details>
+    </div>
+
+    <div id="d18" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-18</span><h3>Instrução de formato unificada + avg_parse_error</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Dados do piloto mostraram 39.5% de parse error em C1 (1_movie). Substituição de instrução implícita por string explícita. Nova métrica: <code>avg_parse_error</code> = fração de frases com <code>response != ""</code> e <code>triples == []</code>.</p>
+    </div>
+
+    <div id="d19" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-19</span><h3>Parser depth-aware + workers paralelos + mini-teste instrução</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Parser corrigido para rastrear profundidade de parênteses ao dividir múltiplas triplas. Workers paralelos com <code>ThreadPoolExecutor</code>. Mini-teste com 4 variantes de instrução (A, B, C, D).</p>
+    </div>
+
+    <div id="d20" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-20</span><h3>Regra pré-registrada de escolha de instrução — Variante D vence</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Critério: menor <code>avg_fmt_error + avg_parse_error</code> sem considerar F1. Resultado: Variante D (score=0.1505) — usa angle-brackets <code>&lt;exact name of entity&gt;</code>. Atualizado em <code>prompts.py</code>.</p>
+      <details><summary>Scores ↓</summary><div class="detail-body"><table><tr><th>Variante</th><th>Score</th></tr><tr><td>A (padrão)</td><td>0.2962</td></tr><tr><td>B</td><td>0.2359</td></tr><tr><td>C</td><td>0.2405</td></tr><tr><td><strong>D</strong></td><td><strong>0.1505 ✓</strong></td></tr></table></div></details>
+    </div>
+
+    <div id="d21" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-21</span><h3>Threshold=0.70, freq_min=3 para C2</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Threshold único 0.70 para todas as ontologias (max(breakpoint 1_movie=0.65) + 0.05). freq_min=3 frases distintas para piloto-v3 (melhor compromisso: 7 rels para 1_movie, 11 para 2_music).</p>
+    </div>
+
+    <div id="d22" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-22</span><h3>Normalização de rótulos antes do embedding</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Antes do embedding: substitui <code>_/-/</code> por espaço, remove prefixos <code>has_/is_</code> e sufixos <code>_by/_of/_in/_to/_for</code>. Faz com que <code>directed_by</code>, <code>has_director</code>, <code>director_of</code> se alinhem melhor.</p>
+    </div>
+
+    <div id="d23" class="card decision-card approved">
+      <div class="card-header">
+        <div><span class="decision-id">D-23</span><h3>workers=1 fixado em todos os manifestos</h3></div>
+        <span class="badge badge-approved">APROVADA</span>
+      </div>
+      <p>Paralelismo com vLLM local (batch=1) não trouxe ganho de throughput (&lt;3%) e introduziu 7% de variação estocástica nas respostas. workers=1 garante 100% de reprodutibilidade.</p>
+    </div>
+
+    <div id="d24" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-24</span><h3>EDC — Definições semânticas para agrupamento C2</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Embedding usa <code>"rótulo: definição"</code> em vez de apenas <code>"rótulo"</code>. Definições geradas pelo próprio LLM: <em>"Define the semantic relationship '{label}' in one concise sentence."</em> Melhora alinhamento entre vocabulários livres e referência.</p>
+    </div>
+
+    <div id="d25" class="card decision-card implemented">
+      <div class="card-header">
+        <div><span class="decision-id">D-25</span><h3>C2 usa rótulo "Ontology Relations:" — sem conceitos nem assinaturas</h3></div>
+        <span class="badge badge-implemented">IMPLEMENTADA</span>
+      </div>
+      <p>Bloco C2 usa o mesmo rótulo de C1 (<code>"Ontology Relations:"</code>), sem conceitos nem domain/range. <strong>Impacto na análise:</strong> espera-se que C2 apresente menor <code>avg_fmt_error</code> que C1 estruturalmente (ausência de nomes de classe que o modelo possa copiar como entidade) — comparações entre C1 e C2 devem considerar essa assimetria.</p>
+    </div>
+
+  </section>
+</main>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+  function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('theme-toggle');
+    if (body.dataset.theme === 'dark') {
+      body.dataset.theme = 'light';
+      btn.textContent = '🌙 Escuro';
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    } else {
+      body.dataset.theme = 'dark';
+      btn.textContent = '☀️ Claro';
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+    }
+  }
+</script>
+</body>
+</html>
