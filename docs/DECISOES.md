@@ -706,6 +706,32 @@ Observações:
 - Variante A: alto parse_error em C0 (21–25% de respostas prosa sem triplas).
 - Variante B: maior fmt_error — a instrução `predicate(entity1, entity2)` confunde o modelo que usa `entity1`/`entity2` como valores literais.
 
+### Estabilidade com paralelismo (workers=16 vs workers=1)
+
+Validado em `d19_paralelismo_1movie_c1os.jsonl` (workers=16, 200 frases) contra piloto-v2 C1_oneshot_original (workers=1, 200 frases). vLLM T4×2, temperatura=0, greedy decoding.
+
+**Identidade de respostas:** 186/200 idênticas (93.0%) — 14 diferenças.
+
+**Truncamentos (`finish_reason="length"`):** 0 em ambos os arquivos — nenhuma resposta foi cortada por limite de tokens.
+
+**Natureza das 14 diferenças:** variação estocástica residual do scheduling do servidor vLLM (ordem de processamento de requests paralelas afeta seed do CUDA). Exemplo:
+- ID `ont_1_movie_test_107`: paralelo gera 1 tripla extra com comentário inline (`# Note: ...`); serial não.
+- ID `ont_1_movie_test_228`: paralelo extrai `based_on(novel)`, serial extrai `based_on(The Idiot)` — alucinação diferente, mas ambos erram.
+- ID `ont_1_movie_test_265`: mesmo conteúdo semântico, sujeito normalizado diferente ("Test Film" vs "The Film Features").
+
+**Métricas comparadas (n=200, modo_amostra, 1_movie C1_oneshot):**
+
+| Configuração | P | R | F1 | Conf | SH | RH | OH | FmtErr | ParseErr |
+|---|---|---|---|---|---|---|---|---|---|
+| workers=16 (paralelo) | 0.3875 | 0.2889 | 0.3111 | 0.9526 | 0.1596 | 0.0474 | 0.1353 | 0.0628 | 0.0050 |
+| workers=1 (piloto-v2) | 0.3784 | 0.2814 | 0.3025 | 0.9533 | 0.1487 | 0.0467 | 0.1301 | 0.0728 | 0.0050 |
+
+Diferenças absolutas < 0.01 em todas as métricas — paralelismo seguro para a fase completa.
+
+**Tempo de execução:** 540.2s → 1808.3s = 1268s para 1800 frases totais (mini-teste D-19 completo) = **0.70 s/frase** (5143 fr/h). Por-experimento não rastreável (Kaggle registra timestamp de conclusão de célula, não por linha de output).
+
+**Instrução de formato atualizada em `prompts.py`:** `_INSTRUCAO_FORMATO` substituída pela Variante D aprovada (commit pós-D-20).
+
 ---
 
 ## D-21: Regra pré-registrada — threshold de agrupamento e freq_min para C2
@@ -786,6 +812,25 @@ Reprocessado sem GPU com `--from_raw_jsonl` usando as respostas cruas de treino 
 Nota: a 2_music ficou com apenas 1 relação porque features, credited_producer e recorded ocorrem em < 5 frases distintas (apesar de aparecerem em várias triplas da mesma frase). "Knocking at the Door" e "include" do Kaggle tinham freq_triplas≥5 mas n_frases<5 — corretamente filtrados pelo fix D-21.
 
 **Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/tekgen_*_induced.json`.
+
+### Calibração C2 — grade N × freq_min (calculado sem GPU, N=50 disponível)
+
+Usando `resultados/c2_inducao/raw_tkg_*_treino.jsonl` (N=50, seed=42) com threshold=0.70 e normalização D-22. Cobertura = fração das relações únicas do gabarito de treino que têm relação induzida correspondente (cosine ≥ 0.70). Ruído = fração de relações induzidas sem correspondência no gabarito.
+
+| Onto | N | freq_min | n_ind | cob_treino | ruído | labels induzidos (top-7) |
+|---|---|---|---|---|---|---|
+| 1_movie | 50 | 2 | 21 | 0.286 | 0.810 | released_in, is_a, directed_by, director, genre, produced, follows... |
+| 1_movie | 50 | 3 | 7 | 0.143 | 0.714 | released_in, is_a, directed_by, director, genre, produced, follows |
+| **1_movie** | **50** | **5** | **4** | **0.071** | **0.750** | released_in, is_a, directed_by, director ← *configuração atual* |
+| 1_movie | 100 | — | — | — | — | *dados pendentes — Kaggle necessário* |
+| 2_music | 50 | 2 | 22 | 0.231 | 0.818 | is_a_song_by, released, recorded_for, produced by, performed, nationality, genre... |
+| 2_music | 50 | 3 | 11 | 0.154 | 0.818 | is_a_song_by, released, recorded_for, produced by, performed, nationality, genre, from_album... |
+| **2_music** | **50** | **5** | **1** | **0.000** | **1.000** | is_a_song_by ← *configuração atual* |
+| 2_music | 100 | — | — | — | — | *dados pendentes — Kaggle necessário* |
+
+**Interpretação:** A cobertura é sistematicamente baixa (7–29%) porque o LLM em modo C0 usa vocabulário radicalmente diferente do da ontologia de referência — confirmado pela análise de alinhamento C0→referência (D-21). A abordagem extração livre + clustering consegue alguns conceitos centrais (released_in, directed_by, genre) mas não reconstrói relações periféricas.
+
+Decisão para piloto-v3: usar **freq_min=3** para 1_movie (7 relações) e 2_music (11 relações) — melhor compromisso entre tamanho e ruído enquanto N=100 está pendente. Os arquivos `reinducao_c2_kaggle.json` já incluem tarefas N=100 para o próximo run Kaggle.
 
 ---
 
@@ -951,3 +996,63 @@ negativos na avaliação. O padrão é análogo à Categoria D original do bench
 
 **Implementação:** `parser.py` — `_RE_TRIPLA` inclui `,?` após `)` antes do fim da linha.
 Teste: `TestParserVirgulaFinal.test_multiplas_com_virgula_final` em `tests/test_parser.py`.
+
+
+---
+
+## D-23: Piloto-v3 — validação antes da fase completa
+
+**Status:** PLANEJADA (2026-11-09) — a rodar no próximo run Kaggle
+
+### Decisão
+
+Antes de rodar a fase completa (manifesto_7b_full.json, 174 experimentos), executar um piloto curto com:
+- **Instrução:** Variante D (D-20 aprovada)
+- **Modelo:** Qwen2.5-7B-Instruct-AWQ
+- **Frases:** 100/experimento (amostra aleatória, seed=42)
+- **Ontologias:** 4 — TekGen: `1_movie`, `2_music`; DBpedia: `1_university`, `19_film`
+- **Condições:** C0, C1, C1_oneshot_original, C2 (onde houver ontologia induzida), C3 (top-3 treino), C5_vizinho, C5_incongruente
+- **Total:** 26 experimentos × 100 frases = 2600 inferências ≈ 29 min a 5300 fr/h
+
+**Manifesto:** `configs/pipeline/manifesto_piloto_v3.json` (gerado por `scripts/gerar_piloto_v3.py`)
+
+### Condições por ontologia
+
+| Ontologia | Dataset | C0 | C1 | C1_os | C2 | C3 | C5_v | C5_i |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (4 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
+| 2_music | TekGen | ✓ | ✓ | ✓ | ✓ (1 rel) | ✓ | ✓ (4_book) | ✓ (7_space) |
+| 1_university | DBpedia | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ |
+| 19_film | DBpedia | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ |
+
+### Prompts reais (Variante D, frase: "Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.")
+
+**C3 (top-3 treino 1_movie: director, screenwriter, genre):**
+```
+Given the following sentence and list of key relations, please extract the triples. You may use
+relation names not in the list when the text explicitly indicates them. Output the triples, one
+per line, in this exact format: relation_name(<exact name of the first entity as written in the
+sentence>, <exact name of the second entity as written in the sentence>). No other text. Use as
+subject and object the exact entity names as written in the sentence, never the ontology class names.
+
+CONTEXT:
+Relations: director(film,human), screenwriter(film,human), genre(film,genre)
+
+Test Sentence: Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.
+Test Output:
+```
+
+**C5_vizinho (parceira=4_book):** fornece ontologia de livros (12 relações) no lugar da de filmes. Espera-se que o modelo extraia relações de livro para uma frase sobre filme — permite medir pressão da ontologia vs. senso comum do LLM.
+
+**C5_incongruente (parceira=9_nature):** fornece ontologia de natureza (13 relações: parent_taxon, mountain_range, tributary...) — completamente incompatível com o domínio do texto.
+
+### Lançador Kaggle — mudanças para piloto-v3
+
+Célula 8 agora usa variável `MANIFESTO` configurável (default = `manifesto_piloto_v3.json`). Célula 9 limpa os JSONLs listados no manifesto atual (não mais `d19_*.jsonl` fixo). Célula 10 (re-indução C2) inclui tarefas N=100 para 1_movie e 2_music — necessárias para completar a tabela de calibração D-21.
+
+### Objetivo do piloto-v3
+
+1. Verificar que a instrução Variante D funciona corretamente em TODAS as condições (incluindo C5 e C2 que ainda não foram testadas com D).
+2. Obter primeiras métricas de F1/conformidade/alucinação para 4 ontologias nas 7 condições.
+3. Executar re-indução C2 com N=100 para completar a tabela N×freq_min de D-21.
+4. Confirmar throughput e estabilidade antes de comprometer as 174 rodadas da fase completa.

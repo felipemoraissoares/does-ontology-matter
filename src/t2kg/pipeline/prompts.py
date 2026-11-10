@@ -14,12 +14,14 @@ _INSTRUCAO_ENTIDADE = (
     "never the ontology class names."
 )
 
-# Instrução de formato unificada (D-18): explícita sobre rel(sub,obj) e proíbe texto extra.
-# Substituiu "in the given output format" (vago) em C1 e unificou C0/C3/C5.
-# NÃO aplicada a C1_oneshot_original.
+# Instrução de formato — Variante D (D-20, aprovada 2026-11-08).
+# Substituiu D-18 (Variante A: "relation(subject, object). Do not write any other text.").
+# Vencedora do mini-teste D-19 com score=0.1505 (menor fmt+parse error).
+# NÃO aplicada a C1_oneshot_original (fidelidade ao benchmark).
 _INSTRUCAO_FORMATO = (
-    "Output only the triples, one per line, in the format relation(subject, object). "
-    "Do not write any other text."
+    "Output the triples, one per line, in this exact format: "
+    "relation_name(<exact name of the first entity as written in the sentence>, "
+    "<exact name of the second entity as written in the sentence>). No other text."
 )
 
 _INSTRUCAO_COM_ONT = (

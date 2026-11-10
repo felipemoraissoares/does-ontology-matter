@@ -28,5 +28,35 @@
     "calibrar": true,
     "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
     "motivo": "D-17+D-21: re-inducao com bugs corrigidos, threshold=0.70, freq_min=5, raw JSONL"
+  },
+  {
+    "id": "c2_reinducao_tkg_1_movie_n100",
+    "tipo": "c2_inducao",
+    "dataset": "tekgen",
+    "onto": "1_movie",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 100,
+    "seed": 42,
+    "threshold": 0.70,
+    "freq_min": 3,
+    "calibrar": true,
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino_n100.jsonl",
+    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3)"
+  },
+  {
+    "id": "c2_reinducao_tkg_2_music_n100",
+    "tipo": "c2_inducao",
+    "dataset": "tekgen",
+    "onto": "2_music",
+    "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "url": "http://localhost:8000/v1",
+    "n_frases": 100,
+    "seed": 42,
+    "threshold": 0.70,
+    "freq_min": 3,
+    "calibrar": true,
+    "saida_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino_n100.jsonl",
+    "motivo": "Calibração C2 N=100 (grade N×freq_min — completar tabela do piloto-v3)"
   }
 ]

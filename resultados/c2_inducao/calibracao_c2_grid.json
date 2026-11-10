@@ -1,0 +1,128 @@
+[
+  {
+    "onto": "1_movie",
+    "N": 50,
+    "freq_min": 2,
+    "n_ind": 21,
+    "cobertura_treino": 0.2857,
+    "ruido": 0.8095,
+    "labels": [
+      "released_in",
+      "is_a",
+      "directed_by",
+      "director",
+      "genre",
+      "produced",
+      "follows",
+      "releaseDate",
+      "is_about",
+      "played_by",
+      "written_by",
+      "set_in",
+      "feature",
+      "introduced",
+      "country",
+      "location",
+      "starring_in",
+      "belongs_to_series",
+      "has_studio",
+      "writer",
+      "based_on"
+    ]
+  },
+  {
+    "onto": "1_movie",
+    "N": 50,
+    "freq_min": 3,
+    "n_ind": 7,
+    "cobertura_treino": 0.1429,
+    "ruido": 0.7143,
+    "labels": [
+      "released_in",
+      "is_a",
+      "directed_by",
+      "director",
+      "genre",
+      "produced",
+      "follows"
+    ]
+  },
+  {
+    "onto": "1_movie",
+    "N": 50,
+    "freq_min": 5,
+    "n_ind": 4,
+    "cobertura_treino": 0.0714,
+    "ruido": 0.75,
+    "labels": [
+      "released_in",
+      "is_a",
+      "directed_by",
+      "director"
+    ]
+  },
+  {
+    "onto": "2_music",
+    "N": 50,
+    "freq_min": 2,
+    "n_ind": 22,
+    "cobertura_treino": 0.2308,
+    "ruido": 0.8182,
+    "labels": [
+      "is_a_song_by",
+      "released",
+      "recorded_for",
+      "produced by",
+      "performed",
+      "nationality",
+      "genre",
+      "from_album",
+      "title",
+      "features",
+      "written_by",
+      "location",
+      "occupation",
+      "death_date",
+      "birth_date",
+      "in",
+      "is_debut_single",
+      "single",
+      "year",
+      "was nominated for",
+      "credited_producer",
+      "has_author"
+    ]
+  },
+  {
+    "onto": "2_music",
+    "N": 50,
+    "freq_min": 3,
+    "n_ind": 11,
+    "cobertura_treino": 0.1538,
+    "ruido": 0.8182,
+    "labels": [
+      "is_a_song_by",
+      "released",
+      "recorded_for",
+      "produced by",
+      "performed",
+      "nationality",
+      "genre",
+      "from_album",
+      "title",
+      "features",
+      "written_by"
+    ]
+  },
+  {
+    "onto": "2_music",
+    "N": 50,
+    "freq_min": 5,
+    "n_ind": 1,
+    "cobertura_treino": 0.0,
+    "ruido": 1.0,
+    "labels": [
+      "is_a_song_by"
+    ]
+  }
+]
