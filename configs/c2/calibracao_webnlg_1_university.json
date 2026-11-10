@@ -1,0 +1,129 @@
+{
+  "dataset": "webnlg",
+  "onto_id": "1_university",
+  "n_frases": 50,
+  "n_relacoes_livres": 140,
+  "n_relacoes_unicas": 68,
+  "n_pares_alinhados": 37,
+  "relacoes_unicas_exemplo": [
+    "service",
+    "leader_of",
+    "located_at",
+    "has_academic_staff",
+    "number_of_doctorate_students",
+    "enrolled_at",
+    "has_students_enrolled_in_doctoral_program",
+    "hasundergraduatestudentcount",
+    "located",
+    "elevation",
+    "has_student_number",
+    "religion",
+    "establishedyear",
+    "latin_name",
+    "has_staff_number",
+    "postal_code",
+    "capital_of",
+    "patron_saint_of",
+    "led_by",
+    "has_postgraduate_students"
+  ],
+  "curva_agrupamento": {
+    "0.7": {
+      "pares_agrupados": 70,
+      "total_pares": 2278,
+      "fracao_agrupada": 0.030728709394205442,
+      "tp": 2,
+      "fp": 0,
+      "n_positivos": 6,
+      "precisao": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5
+    },
+    "0.75": {
+      "pares_agrupados": 45,
+      "total_pares": 2278,
+      "fracao_agrupada": 0.019754170324846356,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 6,
+      "precisao": 1.0,
+      "recall": 0.1667,
+      "f1": 0.2857
+    },
+    "0.8": {
+      "pares_agrupados": 26,
+      "total_pares": 2278,
+      "fracao_agrupada": 0.01141352063213345,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 6,
+      "precisao": 1.0,
+      "recall": 0.1667,
+      "f1": 0.2857
+    },
+    "0.85": {
+      "pares_agrupados": 15,
+      "total_pares": 2278,
+      "fracao_agrupada": 0.006584723441615452,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 6,
+      "precisao": 1.0,
+      "recall": 0.1667,
+      "f1": 0.2857
+    },
+    "0.9": {
+      "pares_agrupados": 5,
+      "total_pares": 2278,
+      "fracao_agrupada": 0.0021949078138718174,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 6,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "curva_projecao": {
+    "0.7": {
+      "relacoes_projetadas": 24,
+      "total_unicas": 68,
+      "fracao_projetada": 0.35294117647058826,
+      "threshold": 0.7,
+      "tp_projecao": 8,
+      "precisao_projecao": 0.3333
+    },
+    "0.75": {
+      "relacoes_projetadas": 18,
+      "total_unicas": 68,
+      "fracao_projetada": 0.2647058823529412,
+      "threshold": 0.75,
+      "tp_projecao": 7,
+      "precisao_projecao": 0.3889
+    },
+    "0.8": {
+      "relacoes_projetadas": 16,
+      "total_unicas": 68,
+      "fracao_projetada": 0.23529411764705882,
+      "threshold": 0.8,
+      "tp_projecao": 7,
+      "precisao_projecao": 0.4375
+    },
+    "0.85": {
+      "relacoes_projetadas": 11,
+      "total_unicas": 68,
+      "fracao_projetada": 0.16176470588235295,
+      "threshold": 0.85,
+      "tp_projecao": 4,
+      "precisao_projecao": 0.3636
+    },
+    "0.9": {
+      "relacoes_projetadas": 8,
+      "total_unicas": 68,
+      "fracao_projetada": 0.11764705882352941,
+      "threshold": 0.9,
+      "tp_projecao": 2,
+      "precisao_projecao": 0.25
+    }
+  }
+}

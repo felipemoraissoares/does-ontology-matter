@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "19_film",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/raw_dbp_19_film_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_19_film_train_24",
+      "ont_19_film_train_64",
+      "ont_19_film_train_136",
+      "ont_19_film_train_10",
+      "ont_19_film_train_131",
+      "ont_19_film_train_17",
+      "ont_19_film_train_75",
+      "ont_19_film_train_99",
+      "ont_19_film_train_86",
+      "ont_19_film_train_108",
+      "ont_19_film_train_2",
+      "ont_19_film_train_134",
+      "ont_19_film_train_100",
+      "ont_19_film_train_103",
+      "ont_19_film_train_67",
+      "ont_19_film_train_95",
+      "ont_19_film_train_113",
+      "ont_19_film_train_32",
+      "ont_19_film_train_19",
+      "ont_19_film_train_51",
+      "ont_19_film_train_22",
+      "ont_19_film_train_112",
+      "ont_19_film_train_8",
+      "ont_19_film_train_37",
+      "ont_19_film_train_111",
+      "ont_19_film_train_52",
+      "ont_19_film_train_40",
+      "ont_19_film_train_31",
+      "ont_19_film_train_115",
+      "ont_19_film_train_50",
+      "ont_19_film_train_33",
+      "ont_19_film_train_89",
+      "ont_19_film_train_73",
+      "ont_19_film_train_62",
+      "ont_19_film_train_56",
+      "ont_19_film_train_118",
+      "ont_19_film_train_119",
+      "ont_19_film_train_57",
+      "ont_19_film_train_3",
+      "ont_19_film_train_61",
+      "ont_19_film_train_121",
+      "ont_19_film_train_123",
+      "ont_19_film_train_15",
+      "ont_19_film_train_68",
+      "ont_19_film_train_114",
+      "ont_19_film_train_60",
+      "ont_19_film_train_77",
+      "ont_19_film_train_82",
+      "ont_19_film_train_53",
+      "ont_19_film_train_85"
+    ],
+    "run_id": "20261110T213002Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "produced",
+      "frequencia": 23,
+      "membros": [
+        "produced",
+        "producer",
+        "produced_by"
+      ]
+    },
+    {
+      "label": "directed",
+      "frequencia": 12,
+      "membros": [
+        "directed"
+      ]
+    },
+    {
+      "label": "wrote",
+      "frequencia": 12,
+      "membros": [
+        "wrote",
+        "written_by",
+        "wrote_music_for",
+        "writer"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 10,
+      "membros": [
+        "born",
+        "born_in"
+      ]
+    },
+    {
+      "label": "release_date",
+      "frequencia": 10,
+      "membros": [
+        "released_on",
+        "released",
+        "release_date"
+      ]
+    },
+    {
+      "label": "relation_name",
+      "frequencia": 10,
+      "membros": [
+        "relation_name"
+      ]
+    },
+    {
+      "label": "director",
+      "frequencia": 8,
+      "membros": [
+        "director"
+      ]
+    },
+    {
+      "label": "music_composer",
+      "frequencia": 7,
+      "membros": [
+        "music_composer",
+        "music_composed_by",
+        "composer",
+        "composer_songs_in_film"
+      ]
+    },
+    {
+      "label": "edited",
+      "frequencia": 6,
+      "membros": [
+        "edited",
+        "editing",
+        "edited_by"
+      ]
+    },
+    {
+      "label": "duration",
+      "frequencia": 6,
+      "membros": [
+        "duration",
+        "film_length",
+        "length"
+      ]
+    },
+    {
+      "label": "editor",
+      "frequencia": 5,
+      "membros": [
+        "editor_of",
+        "editor"
+      ]
+    },
+    {
+      "label": "cinematography",
+      "frequencia": 5,
+      "membros": [
+        "cinematographer",
+        "in_charge_of_cinematography",
+        "cinematography"
+      ]
+    },
+    {
+      "label": "directed_by",
+      "frequencia": 4,
+      "membros": [
+        "directed_by"
+      ]
+    },
+    {
+      "label": "composed",
+      "frequencia": 4,
+      "membros": [
+        "composing",
+        "composed"
+      ]
+    }
+  ]
+}

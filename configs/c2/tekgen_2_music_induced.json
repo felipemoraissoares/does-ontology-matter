@@ -5,9 +5,10 @@
     "n_frases_treino": 50,
     "seed": 42,
     "threshold_agrupamento": 0.7,
-    "freq_min_frases": 5,
+    "freq_min_frases": 3,
     "normalizar_rotulo": true,
-    "from_raw_jsonl": "resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/raw_tkg_2_music_treino.jsonl",
     "modelo_llm": "(reprocessado sem LLM)",
     "modelo_embs": "all-MiniLM-L6-v2",
     "ids_frases": [
@@ -61,19 +62,98 @@
       "ont_2_music_train_94",
       "ont_2_music_train_18",
       "ont_2_music_train_44"
-    ]
+    ],
+    "run_id": "20261110T213002Z"
   },
   "concepts": [],
   "relations": [
     {
-      "label": "is_a_song_by",
-      "frequencia": 6,
+      "label": "recorded",
+      "frequencia": 8,
       "membros": [
-        "is_a_song_by",
-        "is_a_song_of",
-        "has_music_by",
-        "is_a_song",
-        "is_a_set_of_songs"
+        "recorded_by",
+        "recorded_between",
+        "recorded_in",
+        "recorded"
+      ]
+    },
+    {
+      "label": "produced_by",
+      "frequencia": 8,
+      "membros": [
+        "produced_by",
+        "produced",
+        "written_and_produced_by"
+      ]
+    },
+    {
+      "label": "features",
+      "frequencia": 8,
+      "membros": [
+        "features"
+      ]
+    },
+    {
+      "label": "wrote",
+      "frequencia": 7,
+      "membros": [
+        "written",
+        "wrote",
+        "writer"
+      ]
+    },
+    {
+      "label": "genre",
+      "frequencia": 5,
+      "membros": [
+        "genre"
+      ]
+    },
+    {
+      "label": "title",
+      "frequencia": 5,
+      "membros": [
+        "title"
+      ]
+    },
+    {
+      "label": "performed_by",
+      "frequencia": 4,
+      "membros": [
+        "performed_by",
+        "performed"
+      ]
+    },
+    {
+      "label": "album",
+      "frequencia": 4,
+      "membros": [
+        "album"
+      ]
+    },
+    {
+      "label": "year",
+      "frequencia": 4,
+      "membros": [
+        "year",
+        "was_in_year",
+        "in_year"
+      ]
+    },
+    {
+      "label": "released",
+      "frequencia": 3,
+      "membros": [
+        "released",
+        "release_date",
+        "released_on"
+      ]
+    },
+    {
+      "label": "occupation",
+      "frequencia": 3,
+      "membros": [
+        "occupation"
       ]
     }
   ]

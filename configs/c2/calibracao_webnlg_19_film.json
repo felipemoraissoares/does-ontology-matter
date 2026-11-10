@@ -1,0 +1,129 @@
+{
+  "dataset": "webnlg",
+  "onto_id": "19_film",
+  "n_frases": 50,
+  "n_relacoes_livres": 153,
+  "n_relacoes_unicas": 57,
+  "n_pares_alinhados": 46,
+  "relacoes_unicas_exemplo": [
+    "registered_in",
+    "starring_in",
+    "directed",
+    "cinematography",
+    "duration",
+    "founded",
+    "distributed_by",
+    "stars",
+    "composed",
+    "sister_stations",
+    "has_running_time",
+    "editing",
+    "composer",
+    "film_length",
+    "movie_produced_and_written_by",
+    "movie_edited_by",
+    "broadcasted_by",
+    "release_date",
+    "composed_by",
+    "composer_songs_in_film"
+  ],
+  "curva_agrupamento": {
+    "0.7": {
+      "pares_agrupados": 21,
+      "total_pares": 1596,
+      "fracao_agrupada": 0.013157894736842105,
+      "tp": 9,
+      "fp": 2,
+      "n_positivos": 30,
+      "precisao": 0.8182,
+      "recall": 0.3,
+      "f1": 0.439
+    },
+    "0.75": {
+      "pares_agrupados": 10,
+      "total_pares": 1596,
+      "fracao_agrupada": 0.006265664160401002,
+      "tp": 6,
+      "fp": 1,
+      "n_positivos": 30,
+      "precisao": 0.8571,
+      "recall": 0.2,
+      "f1": 0.3243
+    },
+    "0.8": {
+      "pares_agrupados": 3,
+      "total_pares": 1596,
+      "fracao_agrupada": 0.0018796992481203006,
+      "tp": 3,
+      "fp": 0,
+      "n_positivos": 30,
+      "precisao": 1.0,
+      "recall": 0.1,
+      "f1": 0.1818
+    },
+    "0.85": {
+      "pares_agrupados": 1,
+      "total_pares": 1596,
+      "fracao_agrupada": 0.0006265664160401002,
+      "tp": 1,
+      "fp": 0,
+      "n_positivos": 30,
+      "precisao": 1.0,
+      "recall": 0.0333,
+      "f1": 0.0645
+    },
+    "0.9": {
+      "pares_agrupados": 0,
+      "total_pares": 1596,
+      "fracao_agrupada": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "n_positivos": 30,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "curva_projecao": {
+    "0.7": {
+      "relacoes_projetadas": 17,
+      "total_unicas": 57,
+      "fracao_projetada": 0.2982456140350877,
+      "threshold": 0.7,
+      "tp_projecao": 9,
+      "precisao_projecao": 0.5294
+    },
+    "0.75": {
+      "relacoes_projetadas": 12,
+      "total_unicas": 57,
+      "fracao_projetada": 0.21052631578947367,
+      "threshold": 0.75,
+      "tp_projecao": 6,
+      "precisao_projecao": 0.5
+    },
+    "0.8": {
+      "relacoes_projetadas": 8,
+      "total_unicas": 57,
+      "fracao_projetada": 0.14035087719298245,
+      "threshold": 0.8,
+      "tp_projecao": 4,
+      "precisao_projecao": 0.5
+    },
+    "0.85": {
+      "relacoes_projetadas": 7,
+      "total_unicas": 57,
+      "fracao_projetada": 0.12280701754385964,
+      "threshold": 0.85,
+      "tp_projecao": 4,
+      "precisao_projecao": 0.5714
+    },
+    "0.9": {
+      "relacoes_projetadas": 7,
+      "total_unicas": 57,
+      "fracao_projetada": 0.12280701754385964,
+      "threshold": 0.9,
+      "tp_projecao": 4,
+      "precisao_projecao": 0.5714
+    }
+  }
+}

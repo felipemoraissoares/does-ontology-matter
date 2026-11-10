@@ -5,9 +5,10 @@
     "n_frases_treino": 50,
     "seed": 42,
     "threshold_agrupamento": 0.7,
-    "freq_min_frases": 5,
+    "freq_min_frases": 3,
     "normalizar_rotulo": true,
-    "from_raw_jsonl": "resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/raw_tkg_1_movie_treino.jsonl",
     "modelo_llm": "(reprocessado sem LLM)",
     "modelo_embs": "all-MiniLM-L6-v2",
     "ids_frases": [
@@ -61,43 +62,92 @@
       "ont_1_movie_train_205",
       "ont_1_movie_train_750",
       "ont_1_movie_train_619"
-    ]
+    ],
+    "run_id": "20261110T213002Z"
   },
   "concepts": [],
   "relations": [
     {
-      "label": "released_in",
-      "frequencia": 7,
+      "label": "release_date",
+      "frequencia": 13,
       "membros": [
-        "released_in",
-        "has_release_year",
+        "release_date",
+        "release_location",
+        "release_year",
         "released",
-        "was_released_on",
-        "release_year"
+        "is_release_year",
+        "released_on"
       ]
     },
     {
-      "label": "is_a",
-      "frequencia": 6,
+      "label": "genre",
+      "frequencia": 9,
       "membros": [
-        "is_a"
+        "genre",
+        "is_genre"
       ]
     },
     {
-      "label": "directed_by",
-      "frequencia": 5,
+      "label": "year",
+      "frequencia": 8,
       "membros": [
-        "directed_by",
-        "directed"
+        "year"
       ]
     },
     {
       "label": "director",
+      "frequencia": 8,
+      "membros": [
+        "director",
+        "has_director"
+      ]
+    },
+    {
+      "label": "starring",
+      "frequencia": 8,
+      "membros": [
+        "starring",
+        "starred_in"
+      ]
+    },
+    {
+      "label": "based_on",
+      "frequencia": 7,
+      "membros": [
+        "based_on",
+        "is_based_on"
+      ]
+    },
+    {
+      "label": "written_by",
       "frequencia": 5,
       "membros": [
-        "director_of",
-        "has_director",
-        "director"
+        "written_by",
+        "has_writer",
+        "is_written_by"
+      ]
+    },
+    {
+      "label": "produced",
+      "frequencia": 4,
+      "membros": [
+        "produced",
+        "produced_by"
+      ]
+    },
+    {
+      "label": "country",
+      "frequencia": 4,
+      "membros": [
+        "country",
+        "country_of"
+      ]
+    },
+    {
+      "label": "title",
+      "frequencia": 4,
+      "membros": [
+        "title"
       ]
     }
   ]
