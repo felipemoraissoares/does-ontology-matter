@@ -962,35 +962,71 @@ Recalculado com `_normalizar_rotulo` antes do embedding (D-22 aplicada em `exten
 A t=0.70 com normalização D-22, C0 exibe redundância ~0.31–0.32, C1 ~0.12–0.15, C1_oneshot ~0.08–0.09.
 C0 tem ~2.6–4.2× mais redundância semântica que as condições com ontologia — sinal consistente com H1.
 
-### Ontologia C2 definitiva (threshold=0.70, freq_min=3 frases, normalização D-22)
+### Ontologia C2 definitiva (threshold=0.70, freq_min=3 frases, normalização D-22, embeddings D-24)
 
-Reprocessado sem GPU com `--from_raw_jsonl` usando as respostas cruas de treino (50 frases, seed=42).
+Reinduzido no Kaggle com `use_definicoes=True` e `from_raw_jsonl`, usando respostas cruas de treino
+(50 frases, seed=42). Fonte de verdade: `configs/c2/*_induced.json` (run_id `20261110T213002Z`).
+**Nota:** os labels diferem da grade de calibração abaixo, que foi calculada sem D-24 (sem definições semânticas).
 
-**1_movie** — 7 relações:
-1. `released_in` (n_frases=7) — membros: released_in, has_release_year, released
-2. `is_a` (n_frases=6) — 1 membro; "is_a" normaliza para "a" (prefix "is_" removido)
-3. `directed_by` (n_frases=5) — membros: directed_by, directed
-4. `director` (n_frases=5) — membros: director_of, has_director, director
-5. `genre` (n_frases≥3)
-6. `produced` (n_frases≥3)
-7. `follows` (n_frases≥3)
+**tekgen/1_movie** — 10 relações:
+1. `release_date` (freq=13) — membros: release_date, release_location, release_year, released, is_release_year, released_on
+2. `genre` (freq=9) — membros: genre, is_genre
+3. `year` (freq=8) — membros: year
+4. `director` (freq=8) — membros: director, has_director
+5. `starring` (freq=8) — membros: starring, starred_in
+6. `based_on` (freq=7) — membros: based_on, is_based_on
+7. `written_by` (freq=5) — membros: written_by, has_writer, is_written_by
+8. `produced` (freq=4) — membros: produced, produced_by
+9. `country` (freq=4) — membros: country, country_of
+10. `title` (freq=4) — membros: title
 
-**2_music** — 11 relações (top-8 listados; lista completa em `configs/c2/tekgen_2_music_induced.json`):
-1. `is_a_song_by` (n_frases≥6) — membros: is_a_song_by, is_a_song_of, has_music_by
-2. `released` (n_frases≥3)
-3. `recorded_for` (n_frases≥3)
-4. `produced_by` (n_frases≥3)
-5. `performed` (n_frases≥3)
-6. `nationality` (n_frases≥3)
-7. `genre` (n_frases≥3)
-8. `from_album` (n_frases≥3)
-9–11. (relações adicionais; ver arquivo de config)
+**tekgen/2_music** — 11 relações:
+1. `recorded` (freq=8) — membros: recorded_by, recorded_between, recorded_in, recorded
+2. `produced_by` (freq=8) — membros: produced_by, produced, written_and_produced_by
+3. `features` (freq=8) — membros: features
+4. `wrote` (freq=7) — membros: written, wrote, writer
+5. `genre` (freq=5) — membros: genre
+6. `title` (freq=5) — membros: title
+7. `performed_by` (freq=4) — membros: performed_by, performed
+8. `album` (freq=4) — membros: album
+9. `year` (freq=4) — membros: year, was_in_year, in_year
+10. `released` (freq=3) — membros: released, release_date, released_on
+11. `occupation` (freq=3) — membros: occupation
 
-**Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/tekgen_*_induced.json`.
+**webnlg/1_university** — 11 relações:
+1. `location` (freq=43) — membros: location, located, located_in, location_of, located in, located_at
+2. `has_staff_members` (freq=10) — membros: has_staff, has_staff_number, has_staff_members, has academic staff, has_academic_staff_number, has_academic_staff
+3. `educates` (freq=9) — membros: educates
+4. `number_of_students` (freq=7) — membros: number_of_students, number_of_doctorate_students, has_student_number, has_student_count
+5. `has_students` (freq=7) — membros: has_students, has_students_combined, has students, has_undergraduates
+6. `has_doctoral_students` (freq=6) — membros: has_postgraduate_students, has_postgraduates, has_post_graduate_students, has_undergraduate_students, has_doctoral_students
+7. `established` (freq=6) — membros: established, established_in
+8. `leader_of` (freq=4) — membros: leader, leader_of
+9. `employs` (freq=4) — membros: employs
+10. `hasStudentCount` (freq=3) — membros: hasStudentCount, hasStudentNumber
+11. `capital_of` (freq=3) — membros: capital_of
+
+**webnlg/19_film** — 14 relações:
+1. `produced` (freq=23) — membros: produced, producer, produced_by
+2. `directed` (freq=12) — membros: directed
+3. `wrote` (freq=12) — membros: wrote, written_by, wrote_music_for, writer
+4. `born` (freq=10) — membros: born, born_in
+5. `release_date` (freq=10) — membros: released_on, released, release_date
+6. `relation_name` (freq=10) — membros: relation_name ← **artefato do prompt Variante D** (modelo copiou o placeholder da instrução de formato)
+7. `director` (freq=8) — membros: director
+8. `music_composer` (freq=7) — membros: music_composer, music_composed_by, composer, composer_songs_in_film
+9. `edited` (freq=6) — membros: edited, editing, edited_by
+10. `duration` (freq=6) — membros: duration, film_length, length
+11. `editor` (freq=5) — membros: editor_of, editor
+12. `cinematography` (freq=5) — membros: cinematographer, in_charge_of_cinematography, cinematography
+13. `directed_by` (freq=4) — membros: directed_by
+14. `composed` (freq=4) — membros: composing, composed
+
+**Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/*_induced.json`.
 
 ### Calibração C2 — grade N × freq_min (calculado sem GPU, N=50 disponível)
 
-Usando `resultados/c2_inducao/raw_tkg_*_treino.jsonl` (N=50, seed=42) com threshold=0.70 e normalização D-22. Cobertura = fração das relações únicas do gabarito de treino que têm relação induzida correspondente (cosine ≥ 0.70). Ruído = fração de relações induzidas sem correspondência no gabarito.
+Usando `resultados/c2_inducao/raw_tkg_*_treino.jsonl` (N=50, seed=42) com threshold=0.70 e normalização D-22, **sem** definições semânticas D-24. Os labels desta grade diferem dos definitivos (seção acima) porque D-24 reagrupa as relações com embeddings label+definição. Cobertura = fração das relações únicas do gabarito de treino que têm relação induzida correspondente (cosine ≥ 0.70). Ruído = fração de relações induzidas sem correspondência no gabarito.
 
 | Onto | N | freq_min | n_ind | cob_treino | ruído | labels induzidos (top-7) |
 |---|---|---|---|---|---|---|
@@ -1340,10 +1376,10 @@ Antes de rodar a fase completa (manifesto_7b_full.json, 203 experimentos), execu
 
 | Ontologia | Dataset | C0 | C1 | C1_os | C2 | C3 | C5_v | C5_i |
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (7 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
+| 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (10 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
 | 2_music | TekGen | ✓ | ✓ | ✓ | ✓ (11 rels) | ✓ | ✓ (4_book) | ✓ (7_space) |
-| 1_university | DBpedia | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 19_film | DBpedia | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 1_university | DBpedia | ✓ | ✓ | ✓ | ✓ (11 rels) | ✓ | ✓ | ✓ |
+| 19_film | DBpedia | ✓ | ✓ | ✓ | ✓ (14 rels) | ✓ | ✓ | ✓ |
 
 ### Prompts reais (Variante D, frase: "Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.")
 
