@@ -104,16 +104,21 @@ def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
     """
     if not triplas:
         return 0.0
-    classes = {c["label"].lower() for c in ontologia.get("concepts", [])}
+    classes_exact = {c["label"] for c in ontologia.get("concepts", [])}
+    classes = {c.lower() for c in classes_exact}
     erros = 0
     for tr in triplas:
         tripla_tem_erro = False
         for entidade in (tr[0], tr[2]):
             e = entidade.lower().strip()
+            # Padrão 1 (exact): entidade é exatamente o label da classe.
+            # Caso 1a: entidade toda-minúscula igual ao label (cobre ontologias como webnlg).
+            # Caso 1b: entidade == label original (cobre DBpedia com classes capitalizadas,
+            #           ex.: "Film", "Person", "City").
+            if entidade.strip() in classes_exact:
+                tripla_tem_erro = True
+                break
             for cls in classes:
-                # Padrão 1 (exact): só flageia quando a entidade original é inteiramente
-                # minúscula — o modelo literalmente usou o nome da classe como entidade.
-                # Entidades capitalizadas (ex.: "Composer", "Book") são nomes legítimos.
                 padrao1 = (e == cls and not any(c.isupper() for c in entidade))
                 padrao2 = e.startswith(cls + ":")
                 padrao3 = e.startswith(cls + ' "') or e.startswith(cls + " '")
@@ -227,6 +232,7 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
         os.remove(avg_path)
 
     gp = gr = gf1 = gc = grh = gsh = goh = gef = gpe = 0.0
+    g_tc_nv = g_trh_nv = g_pct_vazias = 0.0
     resultados_por_onto = {}
 
     for onto in config["onto_list"]:
@@ -249,6 +255,8 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
 
         tp = tr_ = tf1 = tc = trh = tsh = toh = tef = tpe = 0.0
         stp = str_ = stf1 = stc = strh = stsh = stoh = stef = 0.0
+        tc_nv = trh_nv = 0.0
+        n_sem_vazias = 0
         metricas_por_frase = []
 
         for sent_id in gabarito:
@@ -304,6 +312,10 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             tp += precision; tr_ += recall; tf1 += f1
             tc += conformidade; trh += rel_hal; tsh += sub_hal; toh += obj_hal
             tef += erro_formato
+            if len(sys_triplas) > 0:
+                n_sem_vazias += 1
+                tc_nv += conformidade
+                trh_nv += rel_hal
 
             if sent_id in ids_selecionados:
                 stp += precision; str_ += recall; stf1 += f1
@@ -312,14 +324,19 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
 
         salvar_jsonl(metricas_por_frase, output_path)
 
-        # Denominador: frases efetivamente avaliadas (modo_amostra) ou GT completo (benchmark)
-        total = len(metricas_por_frase) if modo_amostra else len(gabarito)
+        # Denominador: per-onto modo_amostra overrides global; fallback to global param.
+        onto_modo_amostra = onto.get("modo_amostra", modo_amostra)
+        total = len(metricas_por_frase) if onto_modo_amostra else len(gabarito)
         if total == 0:
-            total = 1  # evita divisão por zero em ontologias sem saída
+            total = 1
+
+        n_processados = len(metricas_por_frase)
+        pct_vaz = 1.0 - (n_sem_vazias / n_processados) if n_processados > 0 else 0.0
+        nv_denom = n_sem_vazias if n_sem_vazias > 0 else 1
 
         media = {
             "onto": onto_id, "type": "all_test_cases",
-            "modo_amostra": modo_amostra,
+            "modo_amostra": onto_modo_amostra,
             "avg_precision": f"{tp/total:.2f}",
             "avg_recall": f"{tr_/total:.2f}",
             "avg_f1": f"{tf1/total:.2f}",
@@ -329,12 +346,16 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
             "avg_obj_halluc": f"{toh/total:.2f}",
             "avg_fmt_error": f"{tef/total:.2f}",
             "avg_parse_error": f"{tpe/total:.2f}",
+            "avg_onto_conf_nv": f"{tc_nv/nv_denom:.2f}",
+            "avg_rel_halluc_nv": f"{trh_nv/nv_denom:.2f}",
+            "pct_vazias": f"{pct_vaz:.2f}",
         }
         acrescentar_jsonl(media, avg_path)
 
         gp += tp/total; gr += tr_/total; gf1 += tf1/total
         gc += tc/total; grh += trh/total; gsh += tsh/total; goh += toh/total
         gef += tef/total; gpe += tpe/total
+        g_tc_nv += tc_nv/nv_denom; g_trh_nv += trh_nv/nv_denom; g_pct_vazias += pct_vaz
 
         resultados_por_onto[onto_id] = media
 
@@ -366,6 +387,9 @@ def avaliar(config: Dict, diretorio_base: str = "", modo_amostra: bool = False) 
         "avg_obj_halluc": f"{goh/n_onto:.2f}",
         "avg_fmt_error": f"{gef/n_onto:.2f}",
         "avg_parse_error": f"{gpe/n_onto:.2f}",
+        "avg_onto_conf_nv": f"{g_tc_nv/n_onto:.2f}",
+        "avg_rel_halluc_nv": f"{g_trh_nv/n_onto:.2f}",
+        "pct_vazias": f"{g_pct_vazias/n_onto:.2f}",
         "onto_list": config["onto_list"],
     }
     acrescentar_jsonl(global_metricas, avg_path)

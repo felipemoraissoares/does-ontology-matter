@@ -1148,3 +1148,86 @@ Portanto, espera-se que C2 apresente **menor `avg_fmt_error`** que C1, não por 
 
 `formatar_contexto(ontologia, "C2", ontologia_parceira=induced)` em `ontologias.py` retorna `f"Ontology Relations: {labels}"`.
 O bloco é inserido no prompt por `montar_prompt` via `CONTEXT:\n{contexto_ontologia}` — idêntico ao C1.
+
+---
+
+## D-26: Detecção de modo amostra por ontologia (não por dataset)
+
+**Status:** APROVADA
+
+### Decisão
+
+A detecção de `modo_amostra` (denominador = frases avaliadas vs. GT completo) deve ser
+feita **por ontologia individualmente**, não por dataset. Implementada em
+`avaliar_condicao()` via `_contar_registros(saida) < _contar_registros(gt)` para cada
+item, armazenando `item["modo_amostra"]: bool` na config. `avaliar()` em `original.py`
+respeita o override por item: `onto.get("modo_amostra", modo_amostra)`.
+
+**Justificativa:** `webnlg/19_film` tem 127 frases de GT mas rodamos 100 (amostra);
+`webnlg/1_university` tem 71 frases e rodamos 71 (completo). Com detecção por dataset,
+o 1_university (primeiro encontrado, n=71<71→False) determinava modo COMPLETO para
+ambos — correto para 1_university mas errado para 19_film.
+
+**Impacto piloto-v3:** 19_film agora avaliado em modo amostra em todas as condições.
+Resultados documentados em `docs/piloto_v3_resultados.md`.
+
+---
+
+## D-27: Correção de FMT_ERR para classes capitalizadas (DBpedia)
+
+**Status:** APROVADA
+
+### Decisão
+
+`calcular_taxa_erro_formato()` agora detecta entidades que são exatamente o label
+original de uma classe (qualquer capitalização) como fmt_error — adicionando verificação
+`entidade.strip() in classes_exact` além da regra existente (entidade toda-minúscula).
+
+**Justificativa:** DBpedia usa classes capitalizadas: "Film", "Person", "City". A regra
+antiga (`not any(c.isupper() ...)`) não flagueava "Film" como entidade quando a classe
+é "Film". Verificada ausência de falsos positivos: "Film Critic" (composto), "Composer"
+(nome legítimo com ontologia `composer`) continuam sem erro.
+
+**Validação:** ~0 falsos positivos confirmados nas 29 ontologias do GT completo
+(webnlg baseline). Teste adicionado em `test_avaliacao_original.py`.
+
+---
+
+## D-28: Métricas de conformidade/alucinação sem respostas vazias
+
+**Status:** APROVADA
+
+### Decisão
+
+Adicionar às métricas de avaliação: `avg_onto_conf_nv`, `avg_rel_halluc_nv` (calculados
+apenas sobre sentenças com ≥1 tripla extraída) e `pct_vazias` (fração de sentenças com
+triples=[] sobre as sentenças processadas).
+
+**Justificativa:** `calcular_conformidade_ontologica([], ...)` retorna 1.0 por default
+(ausência de triplas = sem violações). Para C5_incongruente/TekGen, 76–98% das respostas
+são vazias (modelo recusa), inflando `avg_onto_conf ≈ 0.87–0.98`. O valor correto
+`avg_onto_conf_nv = 0.00` revela que 100% das triplas produzidas são não-conformantes.
+
+**Exemplo crítico:** tekgen/C5_incongruente: `avg_onto_conf=0.87`, `pct_vazias=0.87`,
+`avg_onto_conf_nv=0.00`.
+
+---
+
+## D-29: Embeddings D-24 na projeção de relações (C0/C2/C3)
+
+**Status:** APROVADA
+
+### Decisão
+
+`projetar_relacoes()` em `extended.py` agora aceita `definicoes_ref: Optional[Dict]`
+e usa o formato D-24 `"label_normalizado: definição"` para os embeddings das relações
+de referência quando disponível. Carregado de `configs/c2/definicoes_{onto_id}.json`
+em `avaliar_condicao_extendida()`.
+
+**Justificativa:** O agrupamento C2 usa embeddings D-24 (label + definição semântica)
+para agrupar relações sinonímicas. Usar o mesmo estilo na projeção de avaliação torna
+os dois passos coerentes: a mesma representação que separa clusters na indução também
+guia o mapeamento livre→ontologia na avaliação.
+
+**Impacto observado:** F1-proj muito baixo em C0 e C2 (≤0.01 webnlg), sugerindo que
+a distância semântica livre→ontologia é alta mesmo com D-24. Ver `docs/piloto_v3_resultados.md`.

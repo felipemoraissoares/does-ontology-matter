@@ -231,6 +231,157 @@ class TestTaxaErroFormato:
         triplas = [["Film:Bleach", "director", "someone"]]
         assert calcular_taxa_erro_formato(ont, triplas) == 1.0
 
+    def test_dbpedia_classe_capitalizada_exata(self):
+        # DBpedia: classe "Film" (capitalizada), entidade exatamente "Film" → fmt_error
+        ont = self._ont(["Film"])
+        triplas = [["Film", "director", "Someone"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_dbpedia_sem_falso_positivo_entidade_capitalizada_composta(self):
+        # DBpedia: classe "Film", entidade "Film Critic" é legítima (não exatamente o label)
+        ont = self._ont(["Film"])
+        triplas = [["Film Critic", "type", "Person"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 0.0
+
+    def test_dbpedia_multiplas_classes_capitalizadas(self):
+        # DBpedia típico: "Person", "City", "Film" como classes
+        ont = self._ont(["Person", "City", "Film"])
+        triplas_erros = [
+            ["Person", "birthPlace", "City"],   # sub e obj são classes → 1 erro por tripla
+            ["Film", "director", "Someone"],    # sub é classe → erro
+        ]
+        assert calcular_taxa_erro_formato(ont, triplas_erros) == 1.0  # 2 de 2 triplas com erro
+        triplas_ok = [["Nolan", "birthPlace", "London"]]
+        assert calcular_taxa_erro_formato(ont, triplas_ok) == 0.0
+
+
+class TestAvaliarPerOntoMode:
+    """Fix 1: modo_amostra deve ser por ontologia, não global."""
+
+    def _make_fixture(self, tmp_path, n_sys, n_gt):
+        """Cria sys/gt/onto/output fixtures com n_sys e n_gt sentenças."""
+        import json as _json
+
+        onto_data = {
+            "concepts": [{"label": "entity"}],
+            "relations": [{"label": "rel_a"}, {"label": "rel_b"}],
+        }
+        onto_path = os.path.join(tmp_path, "onto.json")
+        with open(onto_path, "w") as f:
+            _json.dump(onto_data, f)
+
+        # GT: n_gt sentenças, cada uma com 1 tripla
+        gt_records = [
+            {"id": f"s{i}", "sent": f"sent {i}", "triples": [{"sub": "A", "rel": "rel_a", "obj": "B"}]}
+            for i in range(n_gt)
+        ]
+        gt_path = os.path.join(tmp_path, "gt.jsonl")
+        with open(gt_path, "w") as f:
+            for r in gt_records:
+                f.write(_json.dumps(r) + "\n")
+
+        # Sistema: n_sys primeiras sentenças, todas com 1 tripla correta
+        sys_records = [
+            {"id": f"s{i}", "sent": f"sent {i}", "triples": [["A", "rel_a", "B"]], "response": "rel_a(A, B)"}
+            for i in range(n_sys)
+        ]
+        sys_path = os.path.join(tmp_path, "sys.jsonl")
+        with open(sys_path, "w") as f:
+            for r in sys_records:
+                f.write(_json.dumps(r) + "\n")
+
+        output_path = os.path.join(tmp_path, "output.jsonl")
+        avg_path = os.path.join(tmp_path, "avg.jsonl")
+        return sys_path, gt_path, onto_path, output_path, avg_path
+
+    def test_per_onto_amostra_usa_denom_sys(self):
+        import tempfile, json as _json
+        with tempfile.TemporaryDirectory() as tmp:
+            sys_p, gt_p, onto_p, out_p, avg_p = self._make_fixture(tmp, n_sys=5, n_gt=10)
+            config = {
+                "onto_list": [{
+                    "id": "onto1",
+                    "sys": sys_p, "gt": gt_p, "onto": onto_p,
+                    "output": out_p,
+                    "modo_amostra": True,  # per-onto override
+                }],
+                "avg_out_file": avg_p,
+            }
+            result = avaliar(config, diretorio_base="")
+            media = result["por_ontologia"]["onto1"]
+            # Com modo_amostra=True e 5/5 acertos, F1 deve ser 1.0 (denom=5)
+            assert float(media["avg_f1"]) == 1.0, f"expected 1.0, got {media['avg_f1']}"
+
+    def test_per_onto_completo_usa_denom_gt(self):
+        import tempfile, json as _json
+        with tempfile.TemporaryDirectory() as tmp:
+            sys_p, gt_p, onto_p, out_p, avg_p = self._make_fixture(tmp, n_sys=5, n_gt=10)
+            config = {
+                "onto_list": [{
+                    "id": "onto1",
+                    "sys": sys_p, "gt": gt_p, "onto": onto_p,
+                    "output": out_p,
+                    "modo_amostra": False,  # denom = gt = 10
+                }],
+                "avg_out_file": avg_p,
+            }
+            result = avaliar(config, diretorio_base="")
+            media = result["por_ontologia"]["onto1"]
+            # 5 acertos / 10 GT → F1 = 0.5
+            assert abs(float(media["avg_f1"]) - 0.5) < 0.01, f"expected ~0.5, got {media['avg_f1']}"
+
+
+class TestMetricasSemVazias:
+    """Fix 3: métricas de conformidade/alucinação sem respostas vazias."""
+
+    def test_pct_vazias_e_conf_nv(self):
+        import tempfile, json as _json
+        with tempfile.TemporaryDirectory() as tmp:
+            onto_data = {
+                "concepts": [{"label": "entity"}],
+                "relations": [{"label": "rel_a"}],
+            }
+            onto_path = os.path.join(tmp, "onto.json")
+            with open(onto_path, "w") as f:
+                _json.dump(onto_data, f)
+
+            gt_records = [
+                {"id": "s0", "sent": "s", "triples": [{"sub": "A", "rel": "rel_a", "obj": "B"}]},
+                {"id": "s1", "sent": "s", "triples": [{"sub": "A", "rel": "rel_a", "obj": "B"}]},
+                {"id": "s2", "sent": "s", "triples": [{"sub": "A", "rel": "rel_a", "obj": "B"}]},
+            ]
+            gt_path = os.path.join(tmp, "gt.jsonl")
+            with open(gt_path, "w") as f:
+                for r in gt_records:
+                    f.write(_json.dumps(r) + "\n")
+
+            # s0: conformante, 1 tripla; s1: tripla não conformante; s2: vazia
+            sys_records = [
+                {"id": "s0", "sent": "s", "triples": [["A", "rel_a", "B"]], "response": "rel_a(A,B)"},
+                {"id": "s1", "sent": "s", "triples": [["A", "invented", "B"]], "response": "invented(A,B)"},
+                {"id": "s2", "sent": "s", "triples": [], "response": ""},
+            ]
+            sys_path = os.path.join(tmp, "sys.jsonl")
+            with open(sys_path, "w") as f:
+                for r in sys_records:
+                    f.write(_json.dumps(r) + "\n")
+
+            avg_path = os.path.join(tmp, "avg.jsonl")
+            config = {
+                "onto_list": [{"id": "o", "sys": sys_path, "gt": gt_path,
+                                "onto": onto_path, "output": os.path.join(tmp, "out.jsonl")}],
+                "avg_out_file": avg_path,
+            }
+            result = avaliar(config)
+            media = result["por_ontologia"]["o"]
+
+            # pct_vazias: 1 vazia de 3 processadas = 1/3 ≈ 0.33
+            assert abs(float(media["pct_vazias"]) - 1/3) < 0.01
+            # avg_onto_conf_nv: s0 e s1 têm triplas; s0 conf=1.0, s1 conf=0.0 → média=0.5
+            assert abs(float(media["avg_onto_conf_nv"]) - 0.5) < 0.01
+            # avg_rel_halluc_nv: s0 hal=0.0, s1 hal=1.0 → média=0.5
+            assert abs(float(media["avg_rel_halluc_nv"]) - 0.5) < 0.01
+
 
 # ---------------------------------------------------------------------------
 # Testes de integração: verificam que os números batem com o run_eval.py

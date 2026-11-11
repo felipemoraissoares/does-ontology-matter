@@ -117,6 +117,7 @@ def projetar_relacoes(
     triplas: List,
     ontologia_ref: Dict,
     threshold: float = THRESHOLD_PROJECAO_PROVISORIO,
+    definicoes_ref: Optional[Dict] = None,
 ) -> Tuple[List, float]:
     """
     Mapeia relações livres nas triplas para as relações da ontologia de referência.
@@ -124,20 +125,31 @@ def projetar_relacoes(
     Para cada relação extraída, computa SimE com todos os labels da ontologia e aceita
     o mapeamento se SimE >= threshold. Triplas sem mapeamento são descartadas.
 
+    definicoes_ref: dict {label: definicao} para usar embeddings D-24 ("label: def")
+    nos labels de referência. Se None, usa apenas _normalizar_rotulo(label).
+
     Retorna: (triplas_projetadas, fracao_projetada)
     """
     if not triplas:
         return [], 0.0
 
     modelo = _get_modelo()
-    rels_ref = [r["label"].replace("_", " ").lower() for r in ontologia_ref["relations"]]
     rels_ref_orig = [r["label"] for r in ontologia_ref["relations"]]
 
-    if not rels_ref:
+    if not rels_ref_orig:
         return [], 0.0
 
+    if definicoes_ref:
+        rels_ref = [
+            f"{_normalizar_rotulo(r)}: {definicoes_ref[r]}"
+            if r in definicoes_ref else _normalizar_rotulo(r)
+            for r in rels_ref_orig
+        ]
+    else:
+        rels_ref = [_normalizar_rotulo(r) for r in rels_ref_orig]
+
     rels_sistema = list({t[1] for t in triplas})
-    rels_sistema_norm = [r.replace("_", " ").lower() for r in rels_sistema]
+    rels_sistema_norm = [_normalizar_rotulo(r) for r in rels_sistema]
 
     embs_ref = modelo.encode(rels_ref, show_progress_bar=False)
     embs_sis = modelo.encode(rels_sistema_norm, show_progress_bar=False)
@@ -163,12 +175,13 @@ def prf1_projetado(
     sistema_triplas: List,
     ontologia_ref: Dict,
     threshold: float = THRESHOLD_PROJECAO_PROVISORIO,
+    definicoes_ref: Optional[Dict] = None,
 ) -> Dict:
     """
     Projeta relações do sistema na ontologia de referência e calcula P/R/F1.
     Retorna dict com p, r, f1, fracao_projetada, n_projetadas.
     """
-    projetadas, fracao = projetar_relacoes(sistema_triplas, ontologia_ref, threshold)
+    projetadas, fracao = projetar_relacoes(sistema_triplas, ontologia_ref, threshold, definicoes_ref)
     gold = {normalizar_tripla(*t) for t in gabarito_triplas}
     pred = {normalizar_tripla(*t) for t in projetadas}
     p, r, f1 = calcular_precisao_recall_f1(gold, pred)
@@ -272,17 +285,19 @@ def avaliar_frase_estendida(
     triplas_sistema: List,
     ontologia_ref: Dict,
     threshold_proj: float = THRESHOLD_PROJECAO_PROVISORIO,
+    definicoes_ref: Optional[Dict] = None,
 ) -> Dict:
     """
     Calcula métricas estendidas para uma única frase.
 
     frase: dict com chaves 'id', 'sent', 'gt_triples'
     triplas_sistema: triplas extraídas pelo modelo
+    definicoes_ref: dict {label: definicao} para D-24 embeddings na projeção
     """
     gabarito = frase.get("gt_triples", [])
 
     p_sf, r_sf, f1_sf = prf1_sem_filtro(gabarito, triplas_sistema)
-    proj = prf1_projetado(gabarito, triplas_sistema, ontologia_ref, threshold_proj)
+    proj = prf1_projetado(gabarito, triplas_sistema, ontologia_ref, threshold_proj, definicoes_ref)
     tpu = taxa_predicados_unicos(triplas_sistema)
 
     return {

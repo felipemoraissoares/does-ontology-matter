@@ -35,6 +35,7 @@ METRICAS = [
     "avg_precision", "avg_recall", "avg_f1",
     "avg_onto_conf", "avg_sub_halluc", "avg_rel_halluc", "avg_obj_halluc",
     "avg_fmt_error", "avg_parse_error",
+    "avg_onto_conf_nv", "avg_rel_halluc_nv", "pct_vazias",
 ]
 
 TEKGEN_ONTOS = [
@@ -116,12 +117,18 @@ def avaliar_condicao(experimentos_cond, bench_dir, avaliacao_dir, cond, dataset,
         if exp is None or not os.path.exists(exp["saida"]):
             continue
 
+        gt_path_onto = _gt_path(bench_dir, dataset, onto_id)
+        n_sys_onto = _contar_registros(exp["saida"])
+        n_gt_onto = _contar_registros(gt_path_onto)
+        is_amostra = (0 < n_sys_onto < n_gt_onto)
+
         item = {
             "id": onto_id,
             "sys": exp["saida"],
-            "gt": _gt_path(bench_dir, dataset, onto_id),
+            "gt": gt_path_onto,
             "onto": _onto_path(bench_dir, dataset, onto_id),
             "output": os.path.join(avaliacao_dir, f"{dataset}_{cond}_{onto_id}.jsonl"),
+            "modo_amostra": is_amostra,
         }
         sel = _selected_path(bench_dir, dataset, onto_id)
         if sel:
@@ -170,6 +177,8 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
     }
     n_onto_ok = 0
 
+    c2_dir = os.path.join(REPO_ROOT, "configs", "c2")
+
     for onto_id in ontos:
         exp = next((e for e in experimentos_cond
                     if e["ontologia_id"] == onto_id), None)
@@ -181,6 +190,18 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
         gabarito      = {r["id"]: r for r in gabarito_raw}
         ontologia     = ler_json(_onto_path(bench_dir, dataset, onto_id))
 
+        # D-24: load relation definitions for embedding-based projection
+        def_path = os.path.join(c2_dir, f"definicoes_{onto_id}.json")
+        definicoes_ref = None
+        if os.path.exists(def_path):
+            raw_def = ler_json(def_path)
+            definicoes_ref = raw_def.get("relacoes", {})
+
+        # Per-onto mode detection
+        n_sys = len(saida_sistema)
+        n_gt_onto = len(gabarito)
+        onto_modo_amostra = modo_amostra or (0 < n_sys < n_gt_onto)
+
         metricas_por_frase = []
         for sent_id, gt_rec in gabarito.items():
             if sent_id not in saida_sistema:
@@ -189,11 +210,12 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
             sys_triplas = saida_sistema[sent_id]["triples"]
             frase_dict = {"id": sent_id, "sent": gt_rec["sent"], "gt_triples": gt_triplas}
             metricas_por_frase.append(
-                avaliar_frase_estendida(frase_dict, sys_triplas, ontologia)
+                avaliar_frase_estendida(frase_dict, sys_triplas, ontologia,
+                                        definicoes_ref=definicoes_ref)
             )
 
         n_gt = len(gabarito)
-        resumo = sumarizar_estendido(metricas_por_frase, n_gt, modo_amostra=modo_amostra)
+        resumo = sumarizar_estendido(metricas_por_frase, n_gt, modo_amostra=onto_modo_amostra)
         resultados_onto[onto_id] = resumo
 
         for k in soma_global:
@@ -243,33 +265,23 @@ def main():
             print("  Nenhum resultado ainda.")
             continue
 
-        # Auto-detecção por contagem de registros (padrão)
-        detectado, n_sys, n_gt = _detectar_modo_amostra(exps, args.bench_dir, dataset)
-
-        # Legado: lê do manifesto se --auto_modo_amostra passado
+        # Legado: lê do manifesto se --auto_modo_amostra passado (modo_amostra global)
         modo_manifesto = bool(exps[0].get("modo_amostra", False)) if args.auto_modo_amostra else False
-
-        modo_amostra = detectado or modo_manifesto
-        if detectado:
-            print(f"  Modo: AMOSTRA — auto-detectado (sys={n_sys} < gt={n_gt})")
-        elif modo_manifesto:
-            print(f"  Modo: AMOSTRA — lido do manifesto")
+        if modo_manifesto:
+            print(f"  Modo global: AMOSTRA — lido do manifesto (legado)")
         else:
-            n_gt_total = n_gt or _contar_registros(
-                _gt_path(args.bench_dir, dataset, exps[0]["ontologia_id"])
-            )
-            print(f"  Modo: COMPLETO (gt={n_gt_total})")
+            print(f"  Modo: per-ontologia (auto-detectado por contagem de registros)")
 
         resultado = avaliar_condicao(
             exps, args.bench_dir, args.avaliacao_dir, cond, dataset,
-            modo_amostra=modo_amostra,
+            modo_amostra=modo_manifesto,
         )
         if resultado is None:
             print("  Avaliação retornou None.")
             continue
 
         resultado_float = {m: (float(v) if v is not None else None) for m, v in resultado.items()}
-        linha = {"dataset": dataset, "condicao": cond, "modo_amostra": modo_amostra,
+        linha = {"dataset": dataset, "condicao": cond, "modo_amostra": modo_manifesto,
                  **resultado_float}
         linhas.append(linha)
 
@@ -280,7 +292,7 @@ def main():
         # Métricas estendidas (opcional)
         if args.extended:
             ext = avaliar_condicao_extendida(
-                exps, args.bench_dir, cond, dataset, modo_amostra=modo_amostra
+                exps, args.bench_dir, cond, dataset, modo_amostra=modo_manifesto
             )
             if ext:
                 g = ext["global"]
