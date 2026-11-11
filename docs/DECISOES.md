@@ -5,6 +5,44 @@ Cada decisão substitui as propostas anteriores onde houver conflito.
 
 ---
 
+## Índice
+
+| # | Título | Status | Substituída por |
+|---|---|---|---|
+| D-01 | Formato do contexto C3 — k=3 com domínio/range | APROVADA | — |
+| D-02 | Condição C5 — dois níveis de perturbação de ontologia | APROVADA | — |
+| D-03 | Sufixo "Test Output: " em todos os prompts | APROVADA | — |
+| D-04 | Modo de avaliação — benchmark vs. amostra | APROVADA | — |
+| D-05 | Instrução de entidade — desvio controlado do prompt original | APROVADA | — |
+| D-06 | Fonte de dados para C3 k=3 — dados de treino, nunca GT | APROVADA | — |
+| D-07 | Métrica auxiliar — taxa de erro de formato (avg_fmt_error) | APROVADA | — |
+| D-08 | Diferença de tokens como covariável na análise de C5 | APROVADA | — |
+| D-09 | SimE como variável contínua na análise de C5 | APROVADA | — |
+| D-10 | Análise de sensibilidade — C5_incongruente com segunda parceira | APROVADA | — |
+| D-11 | Terminologia — "similaridade de esquema" | APROVADA | — |
+| D-12 | Distinção entre zero-shot e C1_oneshot_original | APROVADA | — |
+| D-13 | C0 bruta e C0 projetada | APROVADA | — |
+| D-14 | Avaliação sempre contra a ontologia de referência do alvo | APROVADA | — |
+| D-15 | Correção do parser — Categoria J | APROVADA | — |
+| D-16 | Condição C2 — ontologia induzida a partir de extração livre | APROVADA | — |
+| D-17 | Bugs encontrados no piloto Kaggle — C2 inválida, push falso | REGISTRADO | — |
+| D-18 | Instrução de formato unificada e métrica de erro de parse | APROVADA | D-20 (instrução) |
+| D-19 | Parser depth-aware, workers paralelos, mini-teste de instrução | IMPLEMENTADO | D-20 (instrução), D-23 (workers) |
+| D-20 | Regra pré-registrada de escolha da instrução de formato | RESULTADO APURADO | — |
+| D-21 | Threshold de agrupamento e freq_min para C2 | RESULTADO APURADO | — |
+| D-22 | Normalização de rótulos antes do embedding | APROVADA | — |
+| D-23 | Paralelismo — workers=1 fixado em todos os manifestos | APROVADA | — |
+| D-24 | Definição semântica para agrupamento e projeção C2 (EDC) | EXECUTADA | — |
+| D-25 | Formato do bloco de ontologia em C2 | IMPLEMENTADA | — |
+| D-26 | Detecção de modo amostra por ontologia | APROVADA | — |
+| D-27 | Correção de FMT_ERR para classes capitalizadas (DBpedia) | APROVADA | — |
+| D-28 | Métricas de conformidade/alucinação sem respostas vazias | APROVADA | — |
+| D-29 | Embeddings D-24 na projeção de relações (C0/C2/C3) | APROVADA | — |
+| D-30 | Recalibração do limiar de projeção para formato D-24 | APROVADA | — |
+| D-31 | Piloto-v3 — validação antes da fase completa | EXECUTADA | — |
+
+---
+
 ## D-01: Formato do contexto para a condição C3 — k=3 com domínio/range
 
 **Status:** APROVADA
@@ -27,8 +65,8 @@ a estrutura completa da ontologia. A inclusão de domain/range fornece contexto 
 sem revelar a lista completa de conceitos. k=0 seria indistinguível de C0 se o modelo
 não souber quais relações extrair.
 
-**Implementação:** `executar.py` computa as top-3 relações a partir das triplas do GT
-(all_test_cases) antes de iniciar a inferência e passa para `formatar_contexto()` via
+**Implementação:** `executar.py` computa as top-3 relações a partir dos **dados de treino**
+(`carregar_frequencias_treino`) antes de iniciar a inferência e passa para `formatar_contexto()` via
 `top_k_rels`. Constante `_K_RELS = 3` em `executar.py`.
 
 ---
@@ -140,36 +178,25 @@ não o formato do prompt.
 
 ---
 
-## D-06: Fonte de dados para C3 k=3 — dados de treino, nunca GT de teste
+## D-04: Modo de avaliação — benchmark vs. amostra
 
 **Status:** APROVADA
 
 ### Decisão
 
-As frequências de relação usadas para selecionar as k=3 relações da condição C3
-são calculadas exclusivamente sobre os **dados de treino** do benchmark
-(`data/{dataset}/train/ont_{onto}_train.jsonl`), nunca sobre o ground truth de teste.
+A função `avaliar()` em `avaliacao/original.py` aceita o parâmetro `modo_amostra: bool`.
 
-### Justificativa
+| Modo | Denominador por ontologia | Quando usar |
+|---|---|---|
+| `modo_amostra=False` (padrão) | `len(gabarito)` — total de frases do GT | Runs completos; reprodução dos valores publicados |
+| `modo_amostra=True` | `len(metricas_por_frase)` — frases efetivamente processadas | Runs parciais com `frases_max`; smoke tests; runs de desenvolvimento |
 
-Usar o GT de teste para calcular quais relações incluir no contexto seria **vazamento de dados**:
-o pipeline teria acesso direto às respostas corretas antes de executar a inferência. O conjunto
-de treino é parte pública do benchmark, disponível antes do teste, e é a fonte correta para
-qualquer estatística derivada do corpus.
+**Justificativa:** o artigo original divide pelo total de frases do GT (~400 por ontologia).
+Em runs de desenvolvimento com `frases_max=5`, isso produziria conformidade ~0.01 para
+5 frases com conformidade real 1.0 — valor sem significado. O modo amostra corrige isso
+dividindo pelas frases de fato avaliadas.
 
-**Diferença prática (1_movie TekGen):**
-| Fonte | Top-3 relações |
-|---|---|
-| GT de teste (errado) | publication_date, cast_member, director |
-| Dados de treino (correto) | director, screenwriter, genre |
-
-As distribuições diferem significativamente — `screenwriter` e `genre` lideram no treino
-mas não estão no top-3 do teste. Usar o treino é também mais realista: em produção, a
-distribuição de relações do conjunto de teste é desconhecida.
-
-**Implementação:** `dados.py` — função `carregar_frequencias_treino(bench_dir, dataset, ontologia_id, k)`.
-Teste: `test_c3_usa_dados_de_treino_nao_gt` verifica que o caminho construído contém
-`"train"` e não contém `"ground_truth"` nem `"/test/"`.
+O campo `"modo_amostra"` é registrado no JSONL de médias para garantir rastreabilidade.
 
 ---
 
@@ -207,25 +234,36 @@ o uso de nomes de entidades. O desvio é registrado aqui para transparência met
 
 ---
 
-## D-04: Modo de avaliação — benchmark vs. amostra
+## D-06: Fonte de dados para C3 k=3 — dados de treino, nunca GT de teste
 
 **Status:** APROVADA
 
 ### Decisão
 
-A função `avaliar()` em `avaliacao/original.py` aceita o parâmetro `modo_amostra: bool`.
+As frequências de relação usadas para selecionar as k=3 relações da condição C3
+são calculadas exclusivamente sobre os **dados de treino** do benchmark
+(`data/{dataset}/train/ont_{onto}_train.jsonl`), nunca sobre o ground truth de teste.
 
-| Modo | Denominador por ontologia | Quando usar |
-|---|---|---|
-| `modo_amostra=False` (padrão) | `len(gabarito)` — total de frases do GT | Runs completos; reprodução dos valores publicados |
-| `modo_amostra=True` | `len(metricas_por_frase)` — frases efetivamente processadas | Runs parciais com `frases_max`; smoke tests; runs de desenvolvimento |
+### Justificativa
 
-**Justificativa:** o artigo original divide pelo total de frases do GT (~400 por ontologia).
-Em runs de desenvolvimento com `frases_max=5`, isso produziria conformidade ~0.01 para
-5 frases com conformidade real 1.0 — valor sem significado. O modo amostra corrige isso
-dividindo pelas frases de fato avaliadas.
+Usar o GT de teste para calcular quais relações incluir no contexto seria **vazamento de dados**:
+o pipeline teria acesso direto às respostas corretas antes de executar a inferência. O conjunto
+de treino é parte pública do benchmark, disponível antes do teste, e é a fonte correta para
+qualquer estatística derivada do corpus.
 
-O campo `"modo_amostra"` é registrado no JSONL de médias para garantir rastreabilidade.
+**Diferença prática (1_movie TekGen):**
+| Fonte | Top-3 relações |
+|---|---|
+| GT de teste (errado) | publication_date, cast_member, director |
+| Dados de treino (correto) | director, screenwriter, genre |
+
+As distribuições diferem significativamente — `screenwriter` e `genre` lideram no treino
+mas não estão no top-3 do teste. Usar o treino é também mais realista: em produção, a
+distribuição de relações do conjunto de teste é desconhecida.
+
+**Implementação:** `dados.py` — função `carregar_frequencias_treino(bench_dir, dataset, ontologia_id, k)`.
+Teste: `test_c3_usa_dados_de_treino_nao_gt` verifica que o caminho construído contém
+`"train"` e não contém `"ground_truth"` nem `"/test/"`.
 
 ---
 
@@ -358,56 +396,6 @@ a julgamento editorial — nomear como "similaridade de esquema" torna isso expl
 
 ---
 
-## D-16: Condição C2 — ontologia induzida a partir de extração livre no treino
-
-**Status:** APROVADA (Fase 2; execução no piloto Kaggle)
-
-### Decisão
-
-C2 fornece ao modelo uma **ontologia induzida**: o vocabulário de relações extraído pelo
-próprio modelo ao processar 50 frases de treino em modo livre (sem ontologia, equivalente
-a C0). As relações extraídas são agrupadas por similaridade semântica e cada grupo vira uma
-relação da ontologia induzida. O formato do contexto é idêntico ao C1 (texto, não JSON).
-
-### Protocolo de indução (pré-registrado)
-
-1. **Seleção de frases:** 50 frases do conjunto de treino por ontologia, amostradas com
-   `seed=42` (mesmo seed do piloto). Registradas para reprodutibilidade.
-2. **Extração livre:** o mesmo modelo (Qwen2.5-7B-Instruct-AWQ, temperatura 0) extrai
-   triplas das 50 frases SEM ontologia e SEM triplas anotadas — condição equivalente a C0.
-   As triplas anotadas do treino **não formam** o vocabulário de C2 (isso seria vazamento);
-   são usadas apenas para calibrar os limiares (ver abaixo).
-3. **Agrupamento:** os rótulos de relação livres são agrupados por embedding bidirecional
-   (all-MiniLM-L6-v2) com limiar provisório **0.80**. O rótulo mais frequente do grupo
-   vira o nome da relação na ontologia induzida.
-4. **Ontologia induzida:** lista de relações únicas com rótulos do modelo, sem domain/range
-   (estes são desconhecidos). Salva em `configs/c2/{dataset}_{onto}_induced.json`.
-
-### Calibração dos limiares (corre junto com o piloto Kaggle)
-
-Após a extração livre das 50 frases de treino:
-- Alinhar triplas livres com triplas anotadas pelo mesmo par (sujeito, objeto).
-- Gerar pares "mesma relação" (rótulo livre ↔ relação anotada que aparece no mesmo par)
-  e "relações diferentes".
-- Testar limiares de agrupamento: 0.70, 0.75, 0.80, 0.85, 0.90 — escolher o que maximiza
-  F1 da separação "mesma vs. diferente".
-- Testar limiares de projeção: mesmos valores — escolher o que maximiza **precisão**
-  (projetar errado é pior que não projetar).
-- Registrar: limiares definitivos, curva F1/precisão, e sensibilidade com o limiar vizinho.
-- Reportar % de relações projetadas por condição (C0, C2, C3).
-
-### Limiares provisórios
-
-| Parâmetro | Provisório | Definitivo |
-|---|---|---|
-| `threshold_agrupamento` | 0.80 | a calibrar no piloto |
-| `threshold_projecao` | 0.80 | a calibrar no piloto |
-
-**Implementação:** `scripts/induzir_c2.py` — extração + clustering. Resultado em
-`configs/c2/`. Condição C2 no pipeline usa o arquivo de ontologia induzida como contexto.
-
----
-
 ## D-12: Distinção entre zero-shot e C1_oneshot_original
 
 **Status:** APROVADA
@@ -474,9 +462,181 @@ e não o quão bem o modelo seguiu a ontologia errada que fornecemos.
 
 ---
 
+## D-15: Correção do parser — Categoria J
+
+**Status:** APROVADA
+
+### Decisão
+
+O parser aceita triplas no formato `rel(sub, obj),` — com vírgula após o parêntese de
+fechamento — sem gerar erro nem descartar a tripla. A vírgula final é simplesmente ignorada.
+
+### Justificativa
+
+Modelos de completamento (Vicuna, Alpaca) geram frequentemente listas de triplas separadas
+por vírgula após o parêntese: `rel1(a,b),\nrel2(a,c),`. Sem esta correção, a tripla seria
+descartada (a regex de fechamento não encontraria `)` no final da linha), gerando falsos
+negativos na avaliação. O padrão é análogo à Categoria D original do benchmark
+("trailing comma after triple"), mas afeta o delimitador externo em vez dos argumentos.
+
+**Implementação:** `parser.py` — `_RE_TRIPLA` inclui `,?` após `)` antes do fim da linha.
+Teste: `TestParserVirgulaFinal.test_multiplas_com_virgula_final` em `tests/test_parser.py`.
+
+---
+
+## D-16: Condição C2 — ontologia induzida a partir de extração livre no treino
+
+**Status:** APROVADA (Fase 2; execução no piloto Kaggle)
+
+### Decisão
+
+C2 fornece ao modelo uma **ontologia induzida**: o vocabulário de relações extraído pelo
+próprio modelo ao processar 50 frases de treino em modo livre (sem ontologia, equivalente
+a C0). As relações extraídas são agrupadas por similaridade semântica e cada grupo vira uma
+relação da ontologia induzida. O formato do contexto é idêntico ao C1 (texto, não JSON).
+
+### Protocolo de indução (pré-registrado)
+
+1. **Seleção de frases:** 50 frases do conjunto de treino por ontologia, amostradas com
+   `seed=42` (mesmo seed do piloto). Registradas para reprodutibilidade.
+2. **Extração livre:** o mesmo modelo (Qwen2.5-7B-Instruct-AWQ, temperatura 0) extrai
+   triplas das 50 frases SEM ontologia e SEM triplas anotadas — condição equivalente a C0.
+   As triplas anotadas do treino **não formam** o vocabulário de C2 (isso seria vazamento);
+   são usadas apenas para calibrar os limiares (ver abaixo).
+3. **Agrupamento:** os rótulos de relação livres são primeiro normalizados (D-22) e,
+   opcionalmente, aumentados com definição semântica gerada pelo LLM (D-24). Em seguida,
+   agrupados por embedding bidirecional (all-MiniLM-L6-v2) com limiar definitivo **0.70**
+   (D-21). O rótulo mais frequente do grupo vira o nome da relação na ontologia induzida.
+4. **Ontologia induzida:** lista de relações únicas com rótulos do modelo, sem domain/range
+   (estes são desconhecidos). Salva em `configs/c2/{dataset}_{onto}_induced.json`.
+
+### Calibração dos limiares (corre junto com o piloto Kaggle)
+
+Após a extração livre das 50 frases de treino:
+- Alinhar triplas livres com triplas anotadas pelo mesmo par (sujeito, objeto).
+- Gerar pares "mesma relação" (rótulo livre ↔ relação anotada que aparece no mesmo par)
+  e "relações diferentes".
+- Testar limiares de agrupamento: 0.70, 0.75, 0.80, 0.85, 0.90 — escolher o que maximiza
+  F1 da separação "mesma vs. diferente".
+- Testar limiares de projeção: mesmos valores — escolher o que maximiza **precisão**
+  (projetar errado é pior que não projetar).
+- Registrar: limiares definitivos, curva F1/precisão, e sensibilidade com o limiar vizinho.
+- Reportar % de relações projetadas por condição (C0, C2, C3).
+
+### Limiares provisórios
+
+| Parâmetro | Provisório | Definitivo |
+|---|---|---|
+| `threshold_agrupamento` | 0.80 | **0.70** (D-21; breakpoint + 0.05, normalização D-22) |
+| `threshold_projecao` | 0.80 | **0.63** label+def (D-24, D-30) / **0.50** label-only (D-30) |
+
+**Implementação:** `scripts/induzir_c2.py` — extração + clustering. Resultado em
+`configs/c2/`. Condição C2 no pipeline usa o arquivo de ontologia induzida como contexto.
+
+---
+
+## D-17: Bugs encontrados no piloto Kaggle — C2 inválida, push falso
+
+**Status:** REGISTRADO (2026-11-09) — correções aplicadas em 7e74d7f e nesta sessão
+
+### Contexto
+
+O piloto Kaggle rodou em 2026-11-09 (commits cc564e8 → 213a83b). Os 6 experimentos
+C0/C1/C1_oneshot para 1_movie e 2_music produziram resultados válidos. A indução C2
+(`scripts/induzir_c2.py`) e o `auto_push` apresentaram três problemas independentes.
+
+### Bug 1 — Vazamento de gt_triples no prompt de indução C2
+
+**Código afetado:** `scripts/induzir_c2.py`, chamada a `montar_prompt()`.
+
+**Causa:** chamada com argumentos posicionais:
+```python
+# ANTES (bugado):
+prompt = montar_prompt(f, onto_vazia, "C0")
+```
+O 1.º parâmetro posicional de `montar_prompt` é `sentenca` (string). Passando o dict
+completo da frase (`f`), `sentenca` recebia `str(f)` — incluindo `gt_triples: [{'rel':
+'director', ...}]`. O 2.º parâmetro (`condicao`) recebia o dict da ontologia vazia; como
+nunca igualava à string `"C0"`, o bloco `C1_oneshot_original` era atingido por fallthrough,
+e o campo `Test Sentence:` continha literalmente `{'id': ..., 'gt_triples': [...]}`.
+
+**Efeito:** o modelo leu os rótulos de relação do gabarito diretamente no prompt → copiou
+exatamente os labels da ontologia de referência para a ontologia induzida. Os 14 grupos de
+`tekgen_1_movie_induced.json` coincidem quase perfeitamente com a ontologia oficial.
+
+**Correção:**
+```python
+# DEPOIS (correto):
+prompt = montar_prompt(sentenca=f["sent"], condicao="C0")
+```
+
+### Bug 2 — Dados de teste usados em vez de dados de treino
+
+**Código afetado:** `scripts/induzir_c2.py`, chamada a `carregar_frases()`.
+
+**Causa:** `carregar_frases(bench, dataset, "train", onto_id)` foi usada supondo que
+aceitaria `split="train"`. Mas `_caminhos_gt()` não tem caso "train" — cai no `else` e
+retorna o caminho do GT de TESTE. Os 50 IDs sorteados tinham o padrão `ont_1_movie_test_*`
+(confirmado pelo arquivo `tekgen_1_movie_frases_seed42.json` comprometido).
+
+**Efeito:** a "indução" treinou com frases de teste. Os alignamentos par(sub,obj) para
+calibração também usaram triplas do GT de teste → `curva_agrupamento` em
+`calibracao_tekgen_1_movie.json` mostra F1=0 em todos os thresholds (sinal de alinhamento
+incorreto por ID errado).
+
+**Correção:** nova função `carregar_frases_treino()` em `dados.py` que lê diretamente de
+`data/{dataset}/train/ont_{onto_id}_train.jsonl`, sem usar `_caminhos_gt()`.
+
+### Bug 3 — Push falso (`auto_push` enviou commit sem JSONL)
+
+**Causa:** `.gitignore` continha `resultados/` (trailing slash), que faz o git ignorar o
+DIRETÓRIO inteiro sem inspecionar subentradas. As negações `!resultados/piloto/**` nunca
+eram avaliadas. Resultado: `git add -A` não staged os 6 JSONL; `git commit` commit apenas
+os arquivos `configs/pipeline/manifesto_*.json` (que mudaram porque `gerar_manifesto.py`
+foi re-executado no Kaggle). A mensagem `"auto: piloto completo"` apareceu no log mas o
+JSONL não estava no commit.
+
+**Efeito:** o piloto executou com sucesso, mas os resultados não foram enviados ao GitHub
+automaticamente. Os arquivos foram recuperados manualmente do Output do Kaggle.
+
+**Correção:** `.gitignore` alterado para `resultados/*` (sem trailing slash), que permite
+o git entrar no diretório e aplicar as negações.
+
+### Dados inválidos — `configs/c2/` do piloto
+
+Os seguintes arquivos gerados pelo piloto são **INVÁLIDOS** e foram removidos do
+repositório (commit desta sessão):
+
+| Arquivo | Motivo |
+|---|---|
+| `tekgen_1_movie_induced.json` | Bug 1: relações copiadas do GT via prompt contaminado |
+| `tekgen_2_music_induced.json` | Bug 1: idem |
+| `tekgen_1_movie_frases_seed42.json` | Bug 2: IDs são `test_*`, não `train_*` |
+| `tekgen_2_music_frases_seed42.json` | Bug 2: idem |
+| `calibracao_tekgen_1_movie.json` | Bugs 1+2: alinhamentos incorretos, F1=0 artificialmente |
+| `calibracao_tekgen_2_music.json` | Bugs 1+2: precisao_projecao ~0.77 inflada pelo leak |
+
+### Por que os testes anteriores não detectaram esses bugs
+
+Os testes existentes cobrem `executar.py` via `ProvedorMock` — que usa chamadas corretas com
+keyword arguments. `induzir_c2.py` não era importado por nenhum teste; era puro `__main__`.
+A função `carregar_frases()` com `split="train"` retornava silenciosamente o GT de teste
+sem erro, então nada explodiu. Os testes para `carregar_frases_treino()` e para o
+interceptor de `open()` foram adicionados retroativamente em `tests/test_c2_inducao.py`.
+
+### Ação de remediação
+
+Re-indução C2 no Kaggle com os bugs corrigidos, usando o manifesto
+`configs/pipeline/manifesto_c2_reinducao.json`. Os 6 experimentos C0/C1/C1_oneshot NÃO
+precisam ser refeitos — estão válidos.
+
+---
+
 ## D-18: Instrução de formato unificada e métrica de erro de parse
 
 **Status:** APROVADA (2026-11-09) — implementada em prompts.py, parser.py, original.py
+
+> **Nota:** instrução de formato parcialmente substituída por D-20 (Variante D aprovada).
 
 ### Motivação — dados do piloto (Qwen2.5-7B, TekGen 1_movie + 2_music, n=200)
 
@@ -548,6 +708,8 @@ e contaminaria a análise comparativa. A instrução de formato D-18 deve elimin
 ## D-19: Parser depth-aware, workers paralelos e mini-teste de instrução de formato
 
 **Status:** IMPLEMENTADO (2026-11-09) — parser.py, executar.py, run.py, prompts.py
+
+> **Nota:** parcialmente substituída por D-20 (instrução Variante D aprovada) e D-23 (workers=1 fixo).
 
 ### Motivação
 
@@ -745,7 +907,9 @@ Diferenças absolutas < 0.01 em todas as métricas — paralelismo seguro para a
 - `threshold_definitivo = max(breakpoints observados) + 0.05` — único valor para todas as ontologias.
 - Justificativa para limiar único: comparabilidade entre ontologias exige o mesmo threshold em todas. Usa-se o breakpoint mais restritivo observado. Se nenhuma ontologia apresentar breakpoint, o threshold padrão de calibração é automaticamente seguro para todas.
 
-**freq_min:** `freq_min = 5`, correspondendo a ≥10% das N=50 frases de treino. Uma relação deve aparecer em pelo menos 1 a cada 10 frases para entrar na ontologia induzida. Este critério é derivado diretamente do tamanho do conjunto de treino e não depende da ontologia de referência. Sem cap de tamanho (2× cap revogado).
+**freq_min:** `freq_min = 3` (definitivo). Uma relação deve aparecer em pelo menos 3 frases distintas (≥6% das N=50 frases de treino) para entrar na ontologia induzida. Este critério oferece melhor equilíbrio entre cobertura e ruído do que freq_min=5 — a grade de calibração mostra que freq_min=5 produzia apenas 4 relações (1_movie) e 1 relação (2_music), cobertura insuficiente para a condição C2. Derivado do tamanho do conjunto de treino, sem dependência da ontologia de referência. Sem cap de tamanho (2× cap revogado).
+
+> **Histórico:** a especificação original desta D-21 indicava freq_min=5 (≥10% de N=50). Após análise da grade N×freq_min (ver tabela de calibração abaixo), freq_min=3 foi adotado como valor único e definitivo no piloto-v3.
 
 ### Resultado da varredura (executada em 2026-11-09)
 
@@ -757,6 +921,8 @@ Diferenças absolutas < 0.01 em todas as métricas — paralelismo seguro para a
 **Threshold D-21 único = 0.70** para todas as ontologias: max(0.65, nenhum) + 0.05 = 0.70.
 
 Como 2_music não apresenta breakpoint até t=0.50, o threshold de 0.70 é seguro para ambas.
+
+**Nota sobre escopo:** o breakpoint t=0.65 foi medido apenas nas ontologias 1_movie e 2_music (piloto-v2/v3). No experimento completo (29 ontologias), a regra `max(breakpoints) + 0.05` será reaplicada ao conjunto completo; o threshold definitivo pode ser revisto se alguma ontologia apresentar breakpoint > 0.65.
 
 Relações de referência 1_movie (15): director, screenwriter, genre, based on, cast member, award received, production company, country of origin, publication date, characters, narrative location, filming location, main subject, nominated for, cost.
 
@@ -796,20 +962,29 @@ Recalculado com `_normalizar_rotulo` antes do embedding (D-22 aplicada em `exten
 A t=0.70 com normalização D-22, C0 exibe redundância ~0.31–0.32, C1 ~0.12–0.15, C1_oneshot ~0.08–0.09.
 C0 tem ~2.6–4.2× mais redundância semântica que as condições com ontologia — sinal consistente com H1.
 
-### Ontologia C2 D-21 definitiva (threshold=0.70, freq_min=5 frases, normalização D-22)
+### Ontologia C2 definitiva (threshold=0.70, freq_min=3 frases, normalização D-22)
 
 Reprocessado sem GPU com `--from_raw_jsonl` usando as respostas cruas de treino (50 frases, seed=42).
 
-**1_movie** — 4 relações:
+**1_movie** — 7 relações:
 1. `released_in` (n_frases=7) — membros: released_in, has_release_year, released
 2. `is_a` (n_frases=6) — 1 membro; "is_a" normaliza para "a" (prefix "is_" removido)
 3. `directed_by` (n_frases=5) — membros: directed_by, directed
 4. `director` (n_frases=5) — membros: director_of, has_director, director
+5. `genre` (n_frases≥3)
+6. `produced` (n_frases≥3)
+7. `follows` (n_frases≥3)
 
-**2_music** — 1 relação:
-1. `is_a_song_by` (n_frases=6) — membros: is_a_song_by, is_a_song_of, has_music_by
-
-Nota: a 2_music ficou com apenas 1 relação porque features, credited_producer e recorded ocorrem em < 5 frases distintas (apesar de aparecerem em várias triplas da mesma frase). "Knocking at the Door" e "include" do Kaggle tinham freq_triplas≥5 mas n_frases<5 — corretamente filtrados pelo fix D-21.
+**2_music** — 11 relações (top-8 listados; lista completa em `configs/c2/tekgen_2_music_induced.json`):
+1. `is_a_song_by` (n_frases≥6) — membros: is_a_song_by, is_a_song_of, has_music_by
+2. `released` (n_frases≥3)
+3. `recorded_for` (n_frases≥3)
+4. `produced_by` (n_frases≥3)
+5. `performed` (n_frases≥3)
+6. `nationality` (n_frases≥3)
+7. `genre` (n_frases≥3)
+8. `from_album` (n_frases≥3)
+9–11. (relações adicionais; ver arquivo de config)
 
 **Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/tekgen_*_induced.json`.
 
@@ -821,16 +996,14 @@ Usando `resultados/c2_inducao/raw_tkg_*_treino.jsonl` (N=50, seed=42) com thresh
 |---|---|---|---|---|---|---|
 | 1_movie | 50 | 2 | 21 | 0.286 | 0.810 | released_in, is_a, directed_by, director, genre, produced, follows... |
 | 1_movie | 50 | 3 | 7 | 0.143 | 0.714 | released_in, is_a, directed_by, director, genre, produced, follows |
-| **1_movie** | **50** | **5** | **4** | **0.071** | **0.750** | released_in, is_a, directed_by, director ← *configuração atual* |
+| 1_movie | 50 | 5 | 4 | 0.071 | 0.750 | released_in, is_a, directed_by, director |
 | 1_movie | 100 | — | — | — | — | *dados pendentes — Kaggle necessário* |
 | 2_music | 50 | 2 | 22 | 0.231 | 0.818 | is_a_song_by, released, recorded_for, produced by, performed, nationality, genre... |
 | 2_music | 50 | 3 | 11 | 0.154 | 0.818 | is_a_song_by, released, recorded_for, produced by, performed, nationality, genre, from_album... |
-| **2_music** | **50** | **5** | **1** | **0.000** | **1.000** | is_a_song_by ← *configuração atual* |
+| 2_music | 50 | 5 | 1 | 0.000 | 1.000 | is_a_song_by |
 | 2_music | 100 | — | — | — | — | *dados pendentes — Kaggle necessário* |
 
 **Interpretação:** A cobertura é sistematicamente baixa (7–29%) porque o LLM em modo C0 usa vocabulário radicalmente diferente do da ontologia de referência — confirmado pela análise de alinhamento C0→referência (D-21). A abordagem extração livre + clustering consegue alguns conceitos centrais (released_in, directed_by, genre) mas não reconstrói relações periféricas.
-
-Decisão para piloto-v3: usar **freq_min=3** para 1_movie (7 relações) e 2_music (11 relações) — melhor compromisso entre tamanho e ruído enquanto N=100 está pendente. Os arquivos `reinducao_c2_kaggle.json` já incluem tarefas N=100 para o próximo run Kaggle.
 
 ---
 
@@ -880,126 +1053,6 @@ A razão C0/C1 se mantém (~2.6–4.2×) com ou sem normalização — o padrão
 
 ---
 
-## D-17: Bugs encontrados no piloto Kaggle — C2 inválida, push falso
-
-**Status:** REGISTRADO (2026-11-09) — correções aplicadas em 7e74d7f e nesta sessão
-
-### Contexto
-
-O piloto Kaggle rodou em 2026-11-09 (commits cc564e8 → 213a83b). Os 6 experimentos
-C0/C1/C1_oneshot para 1_movie e 2_music produziram resultados válidos. A indução C2
-(`scripts/induzir_c2.py`) e o `auto_push` apresentaram três problemas independentes.
-
-### Bug 1 — Vazamento de gt_triples no prompt de indução C2
-
-**Código afetado:** `scripts/induzir_c2.py`, chamada a `montar_prompt()`.
-
-**Causa:** chamada com argumentos posicionais:
-```python
-# ANTES (bugado):
-prompt = montar_prompt(f, onto_vazia, "C0")
-```
-O 1.º parâmetro posicional de `montar_prompt` é `sentenca` (string). Passando o dict
-completo da frase (`f`), `sentenca` recebia `str(f)` — incluindo `gt_triples: [{'rel':
-'director', ...}]`. O 2.º parâmetro (`condicao`) recebia o dict da ontologia vazia; como
-nunca igualava à string `"C0"`, o bloco `C1_oneshot_original` era atingido por fallthrough,
-e o campo `Test Sentence:` continha literalmente `{'id': ..., 'gt_triples': [...]}`.
-
-**Efeito:** o modelo leu os rótulos de relação do gabarito diretamente no prompt → copiou
-exatamente os labels da ontologia de referência para a ontologia induzida. Os 14 grupos de
-`tekgen_1_movie_induced.json` coincidem quase perfeitamente com a ontologia oficial.
-
-**Correção:**
-```python
-# DEPOIS (correto):
-prompt = montar_prompt(sentenca=f["sent"], condicao="C0")
-```
-
-### Bug 2 — Dados de teste usados em vez de dados de treino
-
-**Código afetado:** `scripts/induzir_c2.py`, chamada a `carregar_frases()`.
-
-**Causa:** `carregar_frases(bench, dataset, "train", onto_id)` foi usada supondo que
-aceitaria `split="train"`. Mas `_caminhos_gt()` não tem caso "train" — cai no `else` e
-retorna o caminho do GT de TESTE. Os 50 IDs sorteados tinham o padrão `ont_1_movie_test_*`
-(confirmado pelo arquivo `tekgen_1_movie_frases_seed42.json` comprometido).
-
-**Efeito:** a "indução" treinou com frases de teste. Os alignamentos par(sub,obj) para
-calibração também usaram triplas do GT de teste → `curva_agrupamento` em
-`calibracao_tekgen_1_movie.json` mostra F1=0 em todos os thresholds (sinal de alinhamento
-incorreto por ID errado).
-
-**Correção:** nova função `carregar_frases_treino()` em `dados.py` que lê diretamente de
-`data/{dataset}/train/ont_{onto_id}_train.jsonl`, sem usar `_caminhos_gt()`.
-
-### Bug 3 — Push falso (`auto_push` enviou commit sem JSONL)
-
-**Causa:** `.gitignore` continha `resultados/` (trailing slash), que faz o git ignorar o
-DIRETÓRIO inteiro sem inspecionar subentradas. As negações `!resultados/piloto/**` nunca
-eram avaliadas. Resultado: `git add -A` não staged os 6 JSONL; `git commit` commit apenas
-os arquivos `configs/pipeline/manifesto_*.json` (que mudaram porque `gerar_manifesto.py`
-foi re-executado no Kaggle). A mensagem `"auto: piloto completo"` apareceu no log mas o
-JSONL não estava no commit.
-
-**Efeito:** o piloto executou com sucesso, mas os resultados não foram enviados ao GitHub
-automaticamente. Os arquivos foram recuperados manualmente do Output do Kaggle.
-
-**Correção:** `.gitignore` alterado para `resultados/*` (sem trailing slash), que permite
-o git entrar no diretório e aplicar as negações.
-
-### Dados inválidos — `configs/c2/` do piloto
-
-Os seguintes arquivos gerados pelo piloto são **INVÁLIDOS** e foram removidos do
-repositório (commit desta sessão):
-
-| Arquivo | Motivo |
-|---|---|
-| `tekgen_1_movie_induced.json` | Bug 1: relações copiadas do GT via prompt contaminado |
-| `tekgen_2_music_induced.json` | Bug 1: idem |
-| `tekgen_1_movie_frases_seed42.json` | Bug 2: IDs são `test_*`, não `train_*` |
-| `tekgen_2_music_frases_seed42.json` | Bug 2: idem |
-| `calibracao_tekgen_1_movie.json` | Bugs 1+2: alinhamentos incorretos, F1=0 artificialmente |
-| `calibracao_tekgen_2_music.json` | Bugs 1+2: precisao_projecao ~0.77 inflada pelo leak |
-
-### Por que os testes anteriores não detectaram esses bugs
-
-Os testes existentes cobrem `executar.py` via `ProvedorMock` — que usa chamadas corretas com
-keyword arguments. `induzir_c2.py` não era importado por nenhum teste; era puro `__main__`.
-A função `carregar_frases()` com `split="train"` retornava silenciosamente o GT de teste
-sem erro, então nada explodiu. Os testes para `carregar_frases_treino()` e para o
-interceptor de `open()` foram adicionados retroativamente em `tests/test_c2_inducao.py`.
-
-### Ação de remediação
-
-Re-indução C2 no Kaggle com os bugs corrigidos, usando o manifesto
-`configs/pipeline/manifesto_c2_reinducao.json`. Os 6 experimentos C0/C1/C1_oneshot NÃO
-precisam ser refeitos — estão válidos.
-
----
-
-## D-15: Correção do parser — Categoria J
-
-**Status:** APROVADA
-
-### Decisão
-
-O parser aceita triplas no formato `rel(sub, obj),` — com vírgula após o parêntese de
-fechamento — sem gerar erro nem descartar a tripla. A vírgula final é simplesmente ignorada.
-
-### Justificativa
-
-Modelos de completamento (Vicuna, Alpaca) geram frequentemente listas de triplas separadas
-por vírgula após o parêntese: `rel1(a,b),\nrel2(a,c),`. Sem esta correção, a tripla seria
-descartada (a regex de fechamento não encontraria `)` no final da linha), gerando falsos
-negativos na avaliação. O padrão é análogo à Categoria D original do benchmark
-("trailing comma after triple"), mas afeta o delimitador externo em vez dos argumentos.
-
-**Implementação:** `parser.py` — `_RE_TRIPLA` inclui `,?` após `)` antes do fim da linha.
-Teste: `TestParserVirgulaFinal.test_multiplas_com_virgula_final` em `tests/test_parser.py`.
-
-
----
-
 ## D-23: Paralelismo — workers=1 fixado em todos os manifestos
 
 **Status:** APROVADA (2026-11-10)
@@ -1028,7 +1081,7 @@ Paralelismo pode ser reativado em infra com batching real sem qualquer mudança 
 
 ## D-24: Definição semântica para agrupamento e projeção C2 (estilo EDC)
 
-**Status:** IMPLEMENTADA (2026-11-10) — scripts prontos; definições a gerar no Kaggle
+**Status:** EXECUTADA (2026-11-10)
 
 ### Motivação
 
@@ -1058,66 +1111,9 @@ Hipótese: `released_in: "Indicates the year a film was released to the public."
 
 ### Status
 
-Scripts implementados. Definições serão geradas no próximo run Kaggle antes da re-indução C2 (célula 10 do lancador.ipynb). A tabela comparativa label × definição será calculada automaticamente com `--from_cache` após o run.
-
----
-
-## D-23b: Piloto-v3 — validação antes da fase completa
-
-**Status:** PLANEJADA (2026-11-10) — a rodar no próximo run Kaggle
-
-### Decisão
-
-Antes de rodar a fase completa (manifesto_7b_full.json, 174 experimentos), executar um piloto curto com:
-- **Instrução:** Variante D (D-20 aprovada)
-- **Modelo:** Qwen2.5-7B-Instruct-AWQ
-- **Frases:** 100/experimento (amostra aleatória, seed=42)
-- **Ontologias:** 4 — TekGen: `1_movie`, `2_music`; DBpedia: `1_university`, `19_film`
-- **Condições:** C0, C1, C1_oneshot_original, C2 (onde houver ontologia induzida), C3 (top-3 treino), C5_vizinho, C5_incongruente
-- **Total:** 26 experimentos × 100 frases = 2600 inferências ≈ 29 min a 5300 fr/h
-
-**Manifesto:** `configs/pipeline/manifesto_piloto_v3.json` (gerado por `scripts/gerar_piloto_v3.py`)
-
-### Condições por ontologia
-
-| Ontologia | Dataset | C0 | C1 | C1_os | C2 | C3 | C5_v | C5_i |
-|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (4 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
-| 2_music | TekGen | ✓ | ✓ | ✓ | ✓ (1 rel) | ✓ | ✓ (4_book) | ✓ (7_space) |
-| 1_university | DBpedia | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ |
-| 19_film | DBpedia | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ |
-
-### Prompts reais (Variante D, frase: "Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.")
-
-**C3 (top-3 treino 1_movie: director, screenwriter, genre):**
-```
-Given the following sentence and list of key relations, please extract the triples. You may use
-relation names not in the list when the text explicitly indicates them. Output the triples, one
-per line, in this exact format: relation_name(<exact name of the first entity as written in the
-sentence>, <exact name of the second entity as written in the sentence>). No other text. Use as
-subject and object the exact entity names as written in the sentence, never the ontology class names.
-
-CONTEXT:
-Relations: director(film,human), screenwriter(film,human), genre(film,genre)
-
-Test Sentence: Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.
-Test Output:
-```
-
-**C5_vizinho (parceira=4_book):** fornece ontologia de livros (12 relações) no lugar da de filmes. Espera-se que o modelo extraia relações de livro para uma frase sobre filme — permite medir pressão da ontologia vs. senso comum do LLM.
-
-**C5_incongruente (parceira=9_nature):** fornece ontologia de natureza (13 relações: parent_taxon, mountain_range, tributary...) — completamente incompatível com o domínio do texto.
-
-### Lançador Kaggle — mudanças para piloto-v3
-
-Célula 8 agora usa variável `MANIFESTO` configurável (default = `manifesto_piloto_v3.json`). Célula 9 limpa os JSONLs listados no manifesto atual (não mais `d19_*.jsonl` fixo). Célula 10 (re-indução C2) inclui tarefas N=100 para 1_movie e 2_music — necessárias para completar a tabela de calibração D-21.
-
-### Objetivo do piloto-v3
-
-1. Verificar que a instrução Variante D funciona corretamente em TODAS as condições (incluindo C5 e C2 que ainda não foram testadas com D).
-2. Obter primeiras métricas de F1/conformidade/alucinação para 4 ontologias nas 7 condições.
-3. Executar re-indução C2 com N=100 para completar a tabela N×freq_min de D-21.
-4. Confirmar throughput e estabilidade antes de comprometer as 174 rodadas da fase completa.
+Scripts implementados e executados no Kaggle. Definições geradas para as ontologias do piloto-v3
+e armazenadas em `configs/c2/definicoes_{onto_id}.json`. A tabela comparativa label × definição
+foi calculada com `--from_cache` após o run.
 
 ---
 
@@ -1229,8 +1225,10 @@ para agrupar relações sinonímicas. Usar o mesmo estilo na projeção de avali
 os dois passos coerentes: a mesma representação que separa clusters na indução também
 guia o mapeamento livre→ontologia na avaliação.
 
-**Impacto observado:** Com threshold=0.80 (recalibrado em D-30), F1-proj muito baixo
-porque o threshold era alto demais para o formato label+def. Ver `docs/piloto_v3_resultados.md`.
+**Impacto observado:** Com threshold=0.80, o F1-proj colapsou — o limiar original era
+alto demais para o formato label+def (embeddings de strings longas têm similaridades
+absolutas menores que embeddings de rótulos curtos). D-30 recalibrou o limiar para
+0.63 (label+def) / 0.50 (label-only). Ver `docs/piloto_v3_resultados.md`.
 
 ---
 
@@ -1319,3 +1317,62 @@ Adicionado `_embs_ref_cache: dict` em `extended.py`. Os embeddings das relaçõe
 referência são calculados uma vez por ontologia e reutilizados em todas as sentenças
 da mesma ontologia. Reduz as chamadas a `model.encode()` em ~100× para datasets com
 100 sentenças por ontologia.
+
+---
+
+## D-31: Piloto-v3 — validação antes da fase completa
+
+**Status:** EXECUTADA (2026-11-10)
+
+### Decisão
+
+Antes de rodar a fase completa (manifesto_7b_full.json, 203 experimentos), executar um piloto curto com:
+- **Instrução:** Variante D (D-20 aprovada)
+- **Modelo:** Qwen2.5-7B-Instruct-AWQ
+- **Frases:** 100/experimento (amostra aleatória, seed=42)
+- **Ontologias:** 4 — TekGen: `1_movie`, `2_music`; DBpedia: `1_university`, `19_film`
+- **Condições:** C0, C1, C1_oneshot_original, C2 (onde houver ontologia induzida), C3 (top-3 treino), C5_vizinho, C5_incongruente
+- **Total:** 28 experimentos × 100 frases = 2800 inferências ≈ 32 min a 5300 fr/h
+
+**Manifesto:** `configs/pipeline/manifesto_piloto_v3.json` (gerado por `scripts/gerar_piloto_v3.py`)
+
+### Condições por ontologia
+
+| Ontologia | Dataset | C0 | C1 | C1_os | C2 | C3 | C5_v | C5_i |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (7 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
+| 2_music | TekGen | ✓ | ✓ | ✓ | ✓ (11 rels) | ✓ | ✓ (4_book) | ✓ (7_space) |
+| 1_university | DBpedia | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 19_film | DBpedia | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+### Prompts reais (Variante D, frase: "Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.")
+
+**C3 (top-3 treino 1_movie: director, screenwriter, genre):**
+```
+Given the following sentence and list of key relations, please extract the triples. You may use
+relation names not in the list when the text explicitly indicates them. Output the triples, one
+per line, in this exact format: relation_name(<exact name of the first entity as written in the
+sentence>, <exact name of the second entity as written in the sentence>). No other text. Use as
+subject and object the exact entity names as written in the sentence, never the ontology class names.
+
+CONTEXT:
+Relations: director(film,human), screenwriter(film,human), genre(film,genre)
+
+Test Sentence: Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.
+Test Output:
+```
+
+**C5_vizinho (parceira=4_book):** fornece ontologia de livros (12 relações) no lugar da de filmes. Espera-se que o modelo extraia relações de livro para uma frase sobre filme — permite medir pressão da ontologia vs. senso comum do LLM.
+
+**C5_incongruente (parceira=9_nature):** fornece ontologia de natureza (13 relações: parent_taxon, mountain_range, tributary...) — completamente incompatível com o domínio do texto.
+
+### Lançador Kaggle — mudanças para piloto-v3
+
+Célula 8 agora usa variável `MANIFESTO` configurável (default = `manifesto_piloto_v3.json`). Célula 9 limpa os JSONLs listados no manifesto atual (não mais `d19_*.jsonl` fixo). Célula 10 (re-indução C2) inclui tarefas N=100 para 1_movie e 2_music — necessárias para completar a tabela de calibração D-21.
+
+### Objetivo do piloto-v3
+
+1. Verificar que a instrução Variante D funciona corretamente em TODAS as condições (incluindo C5 e C2 que ainda não foram testadas com D).
+2. Obter primeiras métricas de F1/conformidade/alucinação para 4 ontologias nas 7 condições.
+3. Executar re-indução C2 com N=100 para completar a tabela N×freq_min de D-21.
+4. Confirmar throughput e estabilidade antes de comprometer as 203 rodadas da fase completa.
