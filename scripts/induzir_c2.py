@@ -48,6 +48,9 @@ N_FRASES_DEFAULT = 50
 SEED_DEFAULT = 42
 THRESHOLD_PROVISORIO = 0.80
 
+# D-32: rótulos de relação que são placeholders literais da instrução Variante D — excluídos antes do agrupamento.
+PLACEHOLDER_RELS = frozenset({"relation_name"})
+
 
 # ---------------------------------------------------------------------------
 # Extração de triplas livres (C0) no treino
@@ -466,7 +469,11 @@ if __name__ == "__main__":
                     fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
             print(f"  Respostas cruas salvas em: {args.saida_raw_jsonl}")
 
-    all_relacoes = [t[1] for triplas in triplas_por_frase.values() for t in triplas if len(t) >= 3]
+    all_relacoes_raw = [t[1] for triplas in triplas_por_frase.values() for t in triplas if len(t) >= 3]
+    n_placeholder = sum(1 for r in all_relacoes_raw if r.lower().strip() in PLACEHOLDER_RELS)
+    all_relacoes = [r for r in all_relacoes_raw if r.lower().strip() not in PLACEHOLDER_RELS]  # D-32
+    if n_placeholder:
+        print(f"  D-32: {n_placeholder} triplas com placeholder filtradas ({', '.join(PLACEHOLDER_RELS)})")
     print(f"  Relacoes extraidas: {len(all_relacoes)} total, {len(set(all_relacoes))} unicas")
 
     if args.calibrar:

@@ -8,7 +8,7 @@
     "freq_min_frases": 3,
     "normalizar_rotulo": true,
     "use_definicoes": true,
-    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/raw_dbp_19_film_treino.jsonl",
+    "from_raw_jsonl": "resultados\\c2_inducao\\raw_dbp_19_film_treino.jsonl",
     "modelo_llm": "(reprocessado sem LLM)",
     "modelo_embs": "all-MiniLM-L6-v2",
     "ids_frases": [
@@ -108,13 +108,6 @@
         "released_on",
         "released",
         "release_date"
-      ]
-    },
-    {
-      "label": "relation_name",
-      "frequencia": 10,
-      "membros": [
-        "relation_name"
       ]
     },
     {

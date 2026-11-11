@@ -232,6 +232,44 @@ def test_induzir_c2_raw_jsonl_apenas_treino():
 
 
 # ---------------------------------------------------------------------------
+# (e) D-32 — filtro de placeholders antes do agrupamento
+# ---------------------------------------------------------------------------
+
+def test_placeholder_rels_excluidos_de_all_relacoes():
+    """
+    D-32: relações 'relation_name' devem ser removidas de all_relacoes antes
+    do agrupamento. Simula o trecho de código que constrói all_relacoes.
+    """
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from induzir_c2 import PLACEHOLDER_RELS
+
+    triplas_por_frase = {
+        "s1": [["Film A", "director", "Person B"], ["Film A", "relation_name", "Person C"]],
+        "s2": [["Film D", "RELATION_NAME", "Person E"], ["Film D", "wrote", "Person F"]],
+        "s3": [["Film G", "produced", "Studio H"]],
+    }
+    # Espelha o trecho de induzir_c2.py que constrói all_relacoes
+    all_relacoes_raw = [
+        t[1] for triplas in triplas_por_frase.values() for t in triplas if len(t) >= 3
+    ]
+    all_relacoes = [r for r in all_relacoes_raw if r.lower().strip() not in PLACEHOLDER_RELS]
+
+    assert "relation_name" not in [r.lower() for r in all_relacoes], \
+        "relation_name não deve aparecer em all_relacoes após filtro D-32"
+    assert "RELATION_NAME" not in [r for r in all_relacoes], \
+        "RELATION_NAME (case-insensitive) não deve aparecer após filtro D-32"
+    # Relações legítimas devem sobrar
+    assert "director" in all_relacoes
+    assert "wrote" in all_relacoes
+    assert "produced" in all_relacoes
+    # Total: 5 raw, 2 placeholders filtrados → 3 sobram
+    assert len(all_relacoes) == 3
+
+    # Garante que o conjunto PLACEHOLDER_RELS está definido
+    assert "relation_name" in PLACEHOLDER_RELS
+
+
+# ---------------------------------------------------------------------------
 # (e) contar_frases_por_grupo conta frases distintas, não triplas (D-21 fix)
 # ---------------------------------------------------------------------------
 

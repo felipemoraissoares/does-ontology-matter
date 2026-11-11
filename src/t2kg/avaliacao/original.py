@@ -25,6 +25,13 @@ from typing import List, Dict, Set, Tuple
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 
+# D-32: rótulos que são placeholders literais da instrução Variante D — tratados como fmt_error.
+PLACEHOLDER_RELS = frozenset({"relation_name"})
+PLACEHOLDER_ENTITIES = frozenset({
+    "exact name of the first entity as written in the sentence",
+    "exact name of the second entity as written in the sentence",
+})
+
 
 # ---------------------------------------------------------------------------
 # Funções de cálculo de métricas (espelho direto do run_eval.py original)
@@ -109,8 +116,16 @@ def calcular_taxa_erro_formato(ontologia: Dict, triplas: List) -> float:
     erros = 0
     for tr in triplas:
         tripla_tem_erro = False
+        # D-32: relação é placeholder literal da instrução Variante D
+        if tr[1].lower().strip() in PLACEHOLDER_RELS:
+            erros += 1
+            continue
         for entidade in (tr[0], tr[2]):
             e = entidade.lower().strip()
+            # D-32: entidade é placeholder literal da instrução Variante D
+            if e in PLACEHOLDER_ENTITIES:
+                tripla_tem_erro = True
+                break
             # Padrão 1 (exact): entidade é exatamente o label da classe.
             # Caso 1a: entidade toda-minúscula igual ao label (cobre ontologias como webnlg).
             # Caso 1b: entidade == label original (cobre DBpedia com classes capitalizadas,

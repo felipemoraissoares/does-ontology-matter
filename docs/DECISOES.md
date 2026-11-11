@@ -40,6 +40,7 @@ Cada decisão substitui as propostas anteriores onde houver conflito.
 | D-29 | Embeddings D-24 na projeção de relações (C0/C2/C3) | APROVADA | — |
 | D-30 | Recalibração do limiar de projeção para formato D-24 | APROVADA | — |
 | D-31 | Piloto-v3 — validação antes da fase completa | EXECUTADA | — |
+| D-32 | Placeholders da instrução Variante D tratados como fmt_error | IMPLEMENTADA | — |
 
 ---
 
@@ -1006,21 +1007,20 @@ Reinduzido no Kaggle com `use_definicoes=True` e `from_raw_jsonl`, usando respos
 10. `hasStudentCount` (freq=3) — membros: hasStudentCount, hasStudentNumber
 11. `capital_of` (freq=3) — membros: capital_of
 
-**webnlg/19_film** — 14 relações:
+**webnlg/19_film** — 13 relações (re-induzida após D-32; `relation_name` filtrado antes do agrupamento):
 1. `produced` (freq=23) — membros: produced, producer, produced_by
 2. `directed` (freq=12) — membros: directed
 3. `wrote` (freq=12) — membros: wrote, written_by, wrote_music_for, writer
 4. `born` (freq=10) — membros: born, born_in
 5. `release_date` (freq=10) — membros: released_on, released, release_date
-6. `relation_name` (freq=10) — membros: relation_name ← **artefato do prompt Variante D** (modelo copiou o placeholder da instrução de formato)
-7. `director` (freq=8) — membros: director
-8. `music_composer` (freq=7) — membros: music_composer, music_composed_by, composer, composer_songs_in_film
-9. `edited` (freq=6) — membros: edited, editing, edited_by
-10. `duration` (freq=6) — membros: duration, film_length, length
-11. `editor` (freq=5) — membros: editor_of, editor
-12. `cinematography` (freq=5) — membros: cinematographer, in_charge_of_cinematography, cinematography
-13. `directed_by` (freq=4) — membros: directed_by
-14. `composed` (freq=4) — membros: composing, composed
+6. `director` (freq=8) — membros: director
+7. `music_composer` (freq=7) — membros: music_composer, music_composed_by, composer, composer_songs_in_film
+8. `edited` (freq=6) — membros: edited, editing, edited_by
+9. `duration` (freq=6) — membros: duration, film_length, length
+10. `editor` (freq=5) — membros: editor_of, editor
+11. `cinematography` (freq=5) — membros: cinematographer, in_charge_of_cinematography, cinematography
+12. `directed_by` (freq=4) — membros: directed_by
+13. `composed` (freq=4) — membros: composing, composed
 
 **Implementação:** parâmetros definitivos em `configs/c2/params_c2.json`; ontologias em `configs/c2/*_induced.json`.
 
@@ -1379,7 +1379,7 @@ Antes de rodar a fase completa (manifesto_7b_full.json, 203 experimentos), execu
 | 1_movie | TekGen | ✓ | ✓ | ✓ | ✓ (10 rels) | ✓ | ✓ (4_book) | ✓ (9_nature) |
 | 2_music | TekGen | ✓ | ✓ | ✓ | ✓ (11 rels) | ✓ | ✓ (4_book) | ✓ (7_space) |
 | 1_university | DBpedia | ✓ | ✓ | ✓ | ✓ (11 rels) | ✓ | ✓ | ✓ |
-| 19_film | DBpedia | ✓ | ✓ | ✓ | ✓ (14 rels) | ✓ | ✓ | ✓ |
+| 19_film | DBpedia | ✓ | ✓ | ✓ | ✓ (13 rels) | ✓ | ✓ | ✓ |
 
 ### Prompts reais (Variante D, frase: "Bleach: Hell Verse ... is a 2010 Japanese animated film directed by Noriyuki Abe.")
 
@@ -1412,3 +1412,57 @@ Célula 8 agora usa variável `MANIFESTO` configurável (default = `manifesto_pi
 2. Obter primeiras métricas de F1/conformidade/alucinação para 4 ontologias nas 7 condições.
 3. Executar re-indução C2 com N=100 para completar a tabela N×freq_min de D-21.
 4. Confirmar throughput e estabilidade antes de comprometer as 203 rodadas da fase completa.
+
+---
+
+## D-32: Placeholders da instrução Variante D tratados como fmt_error
+
+**Status:** IMPLEMENTADA (2026-11-11)
+
+### Contexto
+
+A instrução Variante D (D-20) usa este formato de exemplo:
+
+```
+relation_name(<exact name of the first entity as written in the sentence>, <exact name of the second entity as written in the sentence>)
+```
+
+O modelo, ao operar em modo livre (C0), pode copiar literalmente o placeholder `relation_name` como rótulo de relação, em vez de extrair uma relação semântica. Analogamente, em casos raros os textos `exact name of the first entity...` aparecem como entidades.
+
+Contagem no piloto-v3 (todas as condições e ontologias):
+
+| Condição | 1_movie | 2_music | 1_university | 19_film |
+|---|---|---|---|---|
+| C0 | 8 | 15 | 0 | 18 |
+| C1, C1_oneshot, C2, C3, C5_v, C5_i | 0 | 0 | 0 | 0 |
+| Raw induction (treino C2) | 4 | 0 | 0 | 10 |
+
+Placeholders como entidade (todos os JSONLs): 7 como sujeito, 4 como objeto.
+
+### Decisão
+
+Rótulos idênticos aos placeholders literais da instrução são tratados como **erro de formato**, aplicado igualmente a todas as condições:
+
+**`PLACEHOLDER_RELS = {"relation_name"}`** — relações que são literalmente o nome do placeholder.
+
+**`PLACEHOLDER_ENTITIES`** — textos de entidade que são literalmente os descritores do placeholder (`"exact name of the first entity as written in the sentence"`, `"exact name of the second entity as written in the sentence"`).
+
+### Implementação
+
+**(a) Exclusão da indução C2** — `scripts/induzir_c2.py`:
+- Constante `PLACEHOLDER_RELS` definida após os demais constants do módulo.
+- Antes de `agrupar_relacoes()`, filtra `all_relacoes` removendo qualquer `t[1]` cujo `lower().strip()` esteja em `PLACEHOLDER_RELS`.
+- O script imprime quantas triplas foram filtradas quando `n_placeholder > 0`.
+
+**(b) Contagem como fmt_error** — `src/t2kg/avaliacao/original.py`:
+- Constantes `PLACEHOLDER_RELS` e `PLACEHOLDER_ENTITIES` no nível do módulo.
+- Em `calcular_taxa_erro_formato()`, antes do loop de entidades:
+  - Se `tr[1].lower().strip() in PLACEHOLDER_RELS` → incrementa `erros` e continua para a próxima tripla.
+- Dentro do loop de entidades:
+  - Se `e in PLACEHOLDER_ENTITIES` → `tripla_tem_erro = True; break`.
+
+### Impacto
+
+- **Métricas fmt_error**: mudam apenas para C0/1_movie (+8), C0/2_music (+15), C0/19_film (+18). C2/19_film não é afetado (C2 gerou 0 triplas com `relation_name`).
+- **Ontologia C2/19_film**: re-induzida sem `relation_name` → 13 relações (antes 14). Requer re-execução do experimento C2/19_film (100 frases) no Kaggle.
+- **Demais experimentos**: as métricas de fmt_error mudam apenas na reavaliação local; os resultados C2 dos outros três ontologias não mudam.

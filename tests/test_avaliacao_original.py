@@ -26,6 +26,8 @@ from t2kg.avaliacao.original import (
     calcular_taxa_erro_formato,
     limpar_entidade,
     avaliar,
+    PLACEHOLDER_RELS,
+    PLACEHOLDER_ENTITIES,
 )
 from nltk.stem import PorterStemmer
 
@@ -253,6 +255,41 @@ class TestTaxaErroFormato:
         assert calcular_taxa_erro_formato(ont, triplas_erros) == 1.0  # 2 de 2 triplas com erro
         triplas_ok = [["Nolan", "birthPlace", "London"]]
         assert calcular_taxa_erro_formato(ont, triplas_ok) == 0.0
+
+    # D-32: placeholders da instrução Variante D
+
+    def test_relacao_placeholder_e_fmt_error(self):
+        # "relation_name" como relação é placeholder literal — deve ser fmt_error
+        ont = self._ont([])
+        triplas = [["Bleach: Hell Verse", "relation_name", "Noriyuki Abe"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_relacao_placeholder_case_insensitive(self):
+        ont = self._ont([])
+        triplas = [["A", "Relation_Name", "B"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_entidade_placeholder_sujeito_e_fmt_error(self):
+        ont = self._ont([])
+        sub = "exact name of the first entity as written in the sentence"
+        triplas = [[sub, "director", "Noriyuki Abe"]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_entidade_placeholder_objeto_e_fmt_error(self):
+        ont = self._ont([])
+        obj = "exact name of the second entity as written in the sentence"
+        triplas = [["Bleach: Hell Verse", "director", obj]]
+        assert calcular_taxa_erro_formato(ont, triplas) == 1.0
+
+    def test_placeholder_nao_afeta_tripla_correta(self):
+        ont = self._ont(["film"])
+        triplas_ok = [["Bleach: Hell Verse", "director", "Noriyuki Abe"]]
+        assert calcular_taxa_erro_formato(ont, triplas_ok) == 0.0
+
+    def test_placeholder_rels_e_entities_nao_vazios(self):
+        # Garante que os conjuntos de placeholders estão definidos e não estão vazios
+        assert "relation_name" in PLACEHOLDER_RELS
+        assert len(PLACEHOLDER_ENTITIES) == 2
 
 
 class TestAvaliarPerOntoMode:
