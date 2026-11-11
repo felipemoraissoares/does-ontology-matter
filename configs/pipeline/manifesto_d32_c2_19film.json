@@ -1,0 +1,28 @@
+{
+  "reinduzir_c2": false,
+  "experimentos": [
+    {
+      "id": "pv3_19film_c2",
+      "dataset": "webnlg",
+      "split": "test",
+      "ontologia_id": "19_film",
+      "condicao": "C2",
+      "modelo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "quantizacao": "AWQ-4bit",
+      "chat_template": "qwen2",
+      "provedor": "openai_compat",
+      "provedor_url": "http://localhost:8000/v1",
+      "api_key": "token-nao-usado",
+      "temperatura": 0,
+      "seed": 42,
+      "max_tokens": 512,
+      "frases_max": 100,
+      "frases_seed": 42,
+      "workers": 1,
+      "git_hash": "d781b73",
+      "bench_url": "https://github.com/cenguix/Text2KGBench.git",
+      "bench_commit": "50a3d255371b8817cdff70fd88459ac82b339cfe",
+      "saida": "resultados/piloto_v3/pv3_19film_c2.jsonl"
+    }
+  ]
+}

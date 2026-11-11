@@ -155,7 +155,11 @@ def main():
         experimentos = json.load(f)
 
     if isinstance(experimentos, dict):
-        experimentos = [experimentos]
+        # Formato novo: {"reinduzir_c2": bool, "experimentos": [...]}
+        if "experimentos" in experimentos:
+            experimentos = experimentos["experimentos"]
+        else:
+            experimentos = [experimentos]
 
     # Detecta diretório do repo para auto_push
     push_repo_dir = args.push_repo_dir
