@@ -1,6 +1,6 @@
 # Resultados Piloto v3 — Métricas Corrigidas
 
-> Gerado automaticamente. Avaliação com fixes D-26 a D-29.
+> Gerado automaticamente. Avaliação com fixes D-26 a D-30.
 
 > am = modo amostra; Conf-nv / Hal-nv = excluindo respostas vazias; F1-proj = projeção D-24.
 
@@ -55,22 +55,25 @@
 
 ## Métricas de projeção (global por dataset × condição)
 
+> D-30: limiares recalibrados — label-only=0.50; label+def (D-24)=0.55.
+> Antes da calibração (thr=0.80): webnlg/C0=0.005 (frac=0.8%); C3=0.000. Após: C0=0.118 (34%), C3=0.111 (64%).
+
 | Dataset | Cond | F1-proj | %Frac-proj |
 | --- | --- | --- | --- |
-| tekgen | C0 | 0.007 | 0.044 |
-| tekgen | C1 | 0.110 | 0.558 |
-| tekgen | C1+ex | 0.171 | 0.586 |
-| tekgen | C2 | 0.013 | 0.061 |
-| tekgen | C3 | 0.055 | 0.290 |
-| tekgen | C5v | 0.007 | 0.259 |
-| tekgen | C5i | 0.000 | 0.000 |
-| webnlg | C0 | 0.005 | 0.008 |
-| webnlg | C1 | 0.073 | 0.219 |
-| webnlg | C1+ex | 0.114 | 0.241 |
-| webnlg | C2 | 0.000 | 0.010 |
-| webnlg | C3 | 0.000 | 0.067 |
-| webnlg | C5v | 0.011 | 0.072 |
-| webnlg | C5i | 0.000 | 0.009 |
+| tekgen | C0 | 0.032 | 0.246 |
+| tekgen | C1 | 0.174 | 0.894 |
+| tekgen | C1+ex | 0.278 | 0.950 |
+| tekgen | C2 | 0.063 | 0.441 |
+| tekgen | C3 | 0.125 | 0.948 |
+| tekgen | C5v | 0.014 | 0.403 |
+| tekgen | C5i | 0.000 | 0.010 |
+| webnlg | C0 | 0.118 | 0.342 |
+| webnlg | C1 | 0.139 | 0.712 |
+| webnlg | C1+ex | 0.317 | 0.765 |
+| webnlg | C2 | 0.035 | 0.275 |
+| webnlg | C3 | 0.111 | 0.637 |
+| webnlg | C5v | 0.039 | 0.353 |
+| webnlg | C5i | 0.024 | 0.141 |
 
 
 ## Fix 5: Comportamento C5_incongruente — recusa vs invenção

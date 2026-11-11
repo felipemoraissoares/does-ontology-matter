@@ -55,7 +55,14 @@ except ImportError:
     _EMBS_OK = False
 
 
-THRESHOLD_PROJECAO_PROVISORIO = 0.80
+# D-30: limiares recalibrados com pares alinhados das 50 frases de treino do piloto-v3.
+# label-only: 0.50 (F-b0.5=0.644);  label+def (D-24): 0.55 (F-b0.5=0.658, prec=0.75)
+THRESHOLD_PROJ_LABEL = 0.50
+THRESHOLD_PROJ_DEF   = 0.55
+THRESHOLD_PROJECAO_PROVISORIO = THRESHOLD_PROJ_LABEL  # backward compat
+
+# Cache de embeddings de referência: evita recomputar para a mesma ontologia × sentença
+_embs_ref_cache: dict = {}
 
 PROMPT_DEFINICAO = (
     "Define the semantic relationship '{label}' in one concise sentence. "
@@ -116,7 +123,7 @@ def prf1_sem_filtro(
 def projetar_relacoes(
     triplas: List,
     ontologia_ref: Dict,
-    threshold: float = THRESHOLD_PROJECAO_PROVISORIO,
+    threshold: Optional[float] = None,
     definicoes_ref: Optional[Dict] = None,
 ) -> Tuple[List, float]:
     """
@@ -125,13 +132,18 @@ def projetar_relacoes(
     Para cada relação extraída, computa SimE com todos os labels da ontologia e aceita
     o mapeamento se SimE >= threshold. Triplas sem mapeamento são descartadas.
 
+    threshold: se None, usa THRESHOLD_PROJ_DEF (0.55) com definicoes_ref ou
+               THRESHOLD_PROJ_LABEL (0.50) sem definicoes_ref (D-30).
     definicoes_ref: dict {label: definicao} para usar embeddings D-24 ("label: def")
-    nos labels de referência. Se None, usa apenas _normalizar_rotulo(label).
+    nos labels de referência.
 
     Retorna: (triplas_projetadas, fracao_projetada)
     """
     if not triplas:
         return [], 0.0
+
+    if threshold is None:
+        threshold = THRESHOLD_PROJ_DEF if definicoes_ref is not None else THRESHOLD_PROJ_LABEL
 
     modelo = _get_modelo()
     rels_ref_orig = [r["label"] for r in ontologia_ref["relations"]]
@@ -151,7 +163,12 @@ def projetar_relacoes(
     rels_sistema = list({t[1] for t in triplas})
     rels_sistema_norm = [_normalizar_rotulo(r) for r in rels_sistema]
 
-    embs_ref = modelo.encode(rels_ref, show_progress_bar=False)
+    # Cache de embeddings de referência: a mesma ontologia é usada em centenas de sentenças
+    cache_key = tuple(rels_ref)
+    if cache_key not in _embs_ref_cache:
+        _embs_ref_cache[cache_key] = modelo.encode(rels_ref, show_progress_bar=False)
+    embs_ref = _embs_ref_cache[cache_key]
+
     embs_sis = modelo.encode(rels_sistema_norm, show_progress_bar=False)
     sim = _cos_sim(embs_sis, embs_ref)
 
@@ -174,7 +191,7 @@ def prf1_projetado(
     gabarito_triplas: List,
     sistema_triplas: List,
     ontologia_ref: Dict,
-    threshold: float = THRESHOLD_PROJECAO_PROVISORIO,
+    threshold: Optional[float] = None,
     definicoes_ref: Optional[Dict] = None,
 ) -> Dict:
     """
@@ -284,7 +301,7 @@ def avaliar_frase_estendida(
     frase: Dict,
     triplas_sistema: List,
     ontologia_ref: Dict,
-    threshold_proj: float = THRESHOLD_PROJECAO_PROVISORIO,
+    threshold_proj: Optional[float] = None,
     definicoes_ref: Optional[Dict] = None,
 ) -> Dict:
     """

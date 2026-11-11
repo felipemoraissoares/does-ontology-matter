@@ -1229,5 +1229,52 @@ para agrupar relações sinonímicas. Usar o mesmo estilo na projeção de avali
 os dois passos coerentes: a mesma representação que separa clusters na indução também
 guia o mapeamento livre→ontologia na avaliação.
 
-**Impacto observado:** F1-proj muito baixo em C0 e C2 (≤0.01 webnlg), sugerindo que
-a distância semântica livre→ontologia é alta mesmo com D-24. Ver `docs/piloto_v3_resultados.md`.
+**Impacto observado:** Com threshold=0.80 (recalibrado em D-30), F1-proj muito baixo
+porque o threshold era alto demais para o formato label+def. Ver `docs/piloto_v3_resultados.md`.
+
+---
+
+## D-30: Recalibração do limiar de projeção para formato D-24
+
+**Status:** APROVADA
+
+### Decisão
+
+Dois limiares distintos para `projetar_relacoes()` em `extended.py`, auto-selecionados
+pelo formato de embedding:
+
+| Formato | Limiar (D-30) | Anterior |
+|---|---|---|
+| Label-only: `_normalizar_rotulo(label)` | **0.50** | 0.80 |
+| Label+def (D-24): `label: definição` | **0.55** | 0.80 |
+
+Implementado como `THRESHOLD_PROJ_LABEL = 0.50`, `THRESHOLD_PROJ_DEF = 0.55`.
+`projetar_relacoes(threshold=None)` seleciona automaticamente baseado em `definicoes_ref`.
+
+### Calibração
+
+Método: pares alinhados (relação livre, relação GT) por coincidência de par de entidades
+normalizadas (sub+obj) nas 50 frases de treino de cada ontologia do piloto-v3 (4 ontos).
+109 pares válidos no total.
+
+Critério: maximiza F-beta(0.5) — pondera precisão 2× mais que recall.
+
+| Threshold | Prec (label+def) | Rec | F-b(0.5) | N-aceitos |
+|---|---|---|---|---|
+| 0.40 | 0.522 | 0.826 | 0.564 | 90 |
+| 0.45 | 0.630 | 0.670 | 0.638 | 73 |
+| **0.55** | **0.750** | **0.440** | **0.658** | **48** |
+| 0.60 | 0.773 | 0.404 | 0.653 | 44 |
+| 0.80 | 1.000 | 0.055 | 0.226 | 6 |
+
+**Por que 0.80 causou o colapso de F1-proj após D-29?**
+O formato label+def produz embeddings mais ricos mas com escores de similaridade
+absolutos menores (strings longas vs. curtas). Com threshold=0.80, apenas 6 de 109
+pares eram aceitos (recall=5.5%) — corretos mas irrelevantes em volume.
+
+### Otimização de desempenho
+
+Adicionado `_embs_ref_cache: dict` em `extended.py`. Os embeddings das relações de
+referência são calculados uma vez por ontologia e reutilizados em todas as sentenças
+da mesma ontologia. Reduz as chamadas a `model.encode()` em ~100× para datasets com
+100 sentenças por ontologia.
