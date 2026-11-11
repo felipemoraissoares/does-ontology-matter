@@ -2,6 +2,8 @@
 
 > Avaliação com fixes D-26 a D-30. Limiar de projeção label+def: **0.63** (prec≥0.80 nos pares de treino).
 
+> **Re-run D-32** (commits d19f4b4, 9aced71): placeholders `relation_name(...)` tratados como fmt_error; C2/webnlg/19_film re-induzida sem `relation_name`. Células alteradas marcadas com ⁺.
+
 > am = modo amostra; Conf-nv / Hal-nv = excluindo respostas vazias; F1-proj = projeção D-24.
 
 
@@ -11,20 +13,20 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | tekgen | 1_movie | 0.04† | 0.25† | 0.30† | 0.12† | 0.15† | 0.02† | 0.00† |
 | tekgen | 2_music | 0.02† | 0.22† | 0.37† | 0.03† | 0.19† | 0.01† | 0.00† |
-| **tekgen** | **média** | **0.03** | **0.23** | **0.33** | **0.07** | **0.17** | **0.01** | **0.00** |
+| **tekgen** | **média** | **0.03** | **0.23** | **0.34**⁺ | **0.07** | **0.17** | **0.01** | **0.00** |
 | webnlg | 1_university | 0.05 | 0.23 | 0.41 | 0.02 | 0.14 | 0.08 | 0.01 |
 | webnlg | 19_film | 0.06† | 0.07† | 0.32† | 0.01† | 0.01† | 0.01† | 0.01† |
-| **webnlg** | **média** | **0.06** | **0.15** | **0.36** | **0.01** | **0.08** | **0.04** | **0.01** |
+| **webnlg** | **média** | **0.06** | **0.15** | **0.36** | **0.02**⁺ | **0.08** | **0.05**⁺ | **0.01** |
 
-† = modo amostra (n_sys < n_gt)
+† = modo amostra (n_sys < n_gt) | ⁺ = atualizado pelo re-run D-32
 
 
 ## Tabela detalhada: todas as métricas por ontologia × condição
 
 | Dataset | Onto | Cond | am | P | R | F1 | Conf | Conf-nv | Hal-nv | FmtErr | ParseErr | %Vaz |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| tekgen | 1_movie | C0 | S | 0.08 | 0.03 | 0.04 | 0.11 | 0.09 | 0.91 | 0.01 | 0.02 | 0.02 |
-| tekgen | 2_music | C0 | S | 0.02 | 0.01 | 0.02 | 0.06 | 0.02 | 0.98 | 0.01 | 0.04 | 0.04 |
+| tekgen | 1_movie | C0 | S | 0.08 | 0.03 | 0.04 | 0.11 | 0.09 | 0.91 | 0.05⁺ | 0.02 | 0.02 |
+| tekgen | 2_music | C0 | S | 0.02 | 0.01 | 0.02 | 0.06 | 0.02 | 0.98 | 0.04⁺ | 0.04 | 0.04 |
 | tekgen | 1_movie | C1 | S | 0.29 | 0.24 | 0.25 | 0.95 | 0.94 | 0.06 | 0.18 | 0.05 | 0.05 |
 | tekgen | 2_music | C1 | S | 0.28 | 0.19 | 0.22 | 0.94 | 0.93 | 0.07 | 0.27 | 0.08 | 0.08 |
 | tekgen | 1_movie | C1+ex | S | 0.36 | 0.29 | 0.30 | 0.97 | 0.97 | 0.03 | 0.08 | 0.01 | 0.01 |
@@ -38,13 +40,13 @@
 | tekgen | 1_movie | C5i | S | 0.00 | 0.00 | 0.00 | 0.76 | 0.00 | 1.00 | 0.01 | 0.76 | 0.76 |
 | tekgen | 2_music | C5i | S | 0.00 | 0.00 | 0.00 | 0.98 | 0.00 | 1.00 | 0.00 | 0.98 | 0.98 |
 | webnlg | 1_university | C0 | N | 0.10 | 0.04 | 0.05 | 0.27 | 0.27 | 0.73 | 0.00 | 0.00 | 0.00 |
-| webnlg | 19_film | C0 | S | 0.08 | 0.05 | 0.06 | 0.15 | 0.14 | 0.86 | 0.00 | 0.01 | 0.01 |
+| webnlg | 19_film | C0 | S | 0.08 | 0.05 | 0.06 | 0.15 | 0.14 | 0.86 | 0.05⁺ | 0.01 | 0.01 |
 | webnlg | 1_university | C1 | N | 0.29 | 0.20 | 0.23 | 0.96 | 0.96 | 0.04 | 0.03 | 0.00 | 0.00 |
 | webnlg | 19_film | C1 | S | 0.08 | 0.07 | 0.07 | 0.93 | 0.92 | 0.08 | 0.43 | 0.07 | 0.07 |
 | webnlg | 1_university | C1+ex | N | 0.50 | 0.36 | 0.41 | 0.96 | 0.96 | 0.04 | 0.00 | 0.00 | 0.00 |
 | webnlg | 19_film | C1+ex | S | 0.33 | 0.31 | 0.32 | 0.96 | 0.96 | 0.04 | 0.04 | 0.00 | 0.00 |
 | webnlg | 1_university | C2 | N | 0.04 | 0.02 | 0.02 | 0.69 | 0.69 | 0.31 | 0.00 | 0.01 | 0.01 |
-| webnlg | 19_film | C2 | S | 0.01 | 0.01 | 0.01 | 0.30 | 0.12 | 0.88 | 0.00 | 0.20 | 0.20 |
+| webnlg | 19_film | C2 | S | 0.02⁺ | 0.01 | 0.01 | 0.24⁺ | 0.10⁺ | 0.90⁺ | 0.01⁺ | 0.16⁺ | 0.16⁺ |
 | webnlg | 1_university | C3 | N | 0.23 | 0.12 | 0.14 | 0.78 | 0.78 | 0.22 | 0.01 | 0.00 | 0.00 |
 | webnlg | 19_film | C3 | S | 0.01 | 0.01 | 0.01 | 0.58 | 0.57 | 0.43 | 0.10 | 0.02 | 0.02 |
 | webnlg | 1_university | C5v | N | 0.12 | 0.06 | 0.08 | 0.70 | 0.70 | 0.30 | 0.02 | 0.01 | 0.01 |
@@ -70,10 +72,12 @@
 | webnlg | C0 | **0.063** | 0.176 | 0.118 |
 | webnlg | C1 | 0.137 | 0.583 | 0.139 |
 | webnlg | C1+ex | 0.280 | 0.631 | 0.317 |
-| webnlg | C2 | **0.016** | 0.232 | 0.035 |
+| webnlg | C2 | **0.014**⁺ | 0.234⁺ | —⁺ |
 | webnlg | C3 | **0.083** | 0.545 | 0.111 |
 | webnlg | C5v | 0.027 | 0.280 | 0.039 |
 | webnlg | C5i | 0.012 | 0.085 | 0.024 |
+
+⁺ webnlg/C2 @0.55: requer re-execução de `avaliar.py --thr_proj 0.55` sobre o novo `pv3_19film_c2.jsonl`.
 
 **Nota de sensibilidade:** a diferença entre 0.55 e 0.63 é mais pronunciada no WebNLG
 (webnlg/C0: 0.063 vs 0.118; C3: 0.083 vs 0.111) porque nessa ontologia há mais relações

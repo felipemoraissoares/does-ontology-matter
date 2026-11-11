@@ -1466,3 +1466,36 @@ Rótulos idênticos aos placeholders literais da instrução são tratados como 
 - **Métricas fmt_error**: mudam apenas para C0/1_movie (+8), C0/2_music (+15), C0/19_film (+18). C2/19_film não é afetado (C2 gerou 0 triplas com `relation_name`).
 - **Ontologia C2/19_film**: re-induzida sem `relation_name` → 13 relações (antes 14). Requer re-execução do experimento C2/19_film (100 frases) no Kaggle.
 - **Demais experimentos**: as métricas de fmt_error mudam apenas na reavaliação local; os resultados C2 dos outros três ontologias não mudam.
+
+### Resultado do re-run (commits d19f4b4, 9aced71)
+
+**webnlg / 19_film / C2 — antes (commit 6cc389b) vs depois (commit 9aced71):**
+
+| Métrica | Antes | Depois | Δ |
+|---|---|---|---|
+| Precision | 0.01 | 0.02 | +0.01 |
+| Recall | 0.01 | 0.01 | 0 |
+| F1 | 0.01 | 0.01 | 0 |
+| Conf | 0.30 | 0.24 | −0.06 |
+| Conf-nv | 0.12 | 0.10 | −0.02 |
+| RelHalluc-nv | 0.88 | 0.90 | +0.02 |
+| FmtErr | 0.00 | 0.01 | +0.01 |
+| ParseErr | 0.20 | 0.16 | −0.04 |
+| %Vaz | 0.20 | 0.16 | −0.04 |
+
+**webnlg / C2 global — projeção:**
+
+| Métrica | Antes | Depois | Δ |
+|---|---|---|---|
+| F1-proj @0.63 | 0.016 | 0.014 | −0.002 |
+| Frac-proj @0.63 | 0.474 | 0.234 | −0.240 |
+
+**FmtErr C0 — efeito colateral do filtro:**
+
+| Onto / Cond | FmtErr antes | FmtErr depois | Δ |
+|---|---|---|---|
+| tekgen / 1_movie / C0 | 0.01 | 0.05 | +0.04 |
+| tekgen / 2_music / C0 | 0.01 | 0.04 | +0.03 |
+| webnlg / 19_film / C0 | 0.00 | 0.05 | +0.05 |
+
+**Interpretação:** A conformidade caiu (0.30→0.24) porque `relation_name` era contado como relação conformante antes do filtro. A fração de projeção caiu de 0.474 para 0.234 porque a ontologia induzida sem `relation_name` tem menos falsos vizinhos no espaço de embedding. O F1 do experimento permaneceu 0.01 — sem melhoria de qualidade de extração, esperado pois a ontologia C2 continua sendo induzida do texto do modelo livre. Os aumentos em FmtErr do C0 são o efeito direto do novo filtro de placeholders.
