@@ -1236,41 +1236,82 @@ porque o threshold era alto demais para o formato label+def. Ver `docs/piloto_v3
 
 ## D-30: Recalibração do limiar de projeção para formato D-24
 
-**Status:** APROVADA
+**Status:** APROVADA (revisada — limiar label+def elevado de 0.55 para 0.63)
 
 ### Decisão
 
 Dois limiares distintos para `projetar_relacoes()` em `extended.py`, auto-selecionados
 pelo formato de embedding:
 
-| Formato | Limiar (D-30) | Anterior |
+| Formato | Limiar (D-30) | Anterior (pré-D-30) |
 |---|---|---|
 | Label-only: `_normalizar_rotulo(label)` | **0.50** | 0.80 |
-| Label+def (D-24): `label: definição` | **0.55** | 0.80 |
+| Label+def (D-24): `label: definição` | **0.63** | 0.80 |
 
-Implementado como `THRESHOLD_PROJ_LABEL = 0.50`, `THRESHOLD_PROJ_DEF = 0.55`.
+Implementado como `THRESHOLD_PROJ_LABEL = 0.50`, `THRESHOLD_PROJ_DEF = 0.63`.
 `projetar_relacoes(threshold=None)` seleciona automaticamente baseado em `definicoes_ref`.
+
+**Regra de seleção:** menor threshold em [0.40, 0.90] (passo 0.01) tal que a precisão
+agregada nos pares de treino alinhados seja ≥ 0.80. Priorizando precisão do mapeamento
+sobre cobertura — falso-positivo de projeção contamina o F1-proj com triplas erradas.
 
 ### Calibração
 
-Método: pares alinhados (relação livre, relação GT) por coincidência de par de entidades
-normalizadas (sub+obj) nas 50 frases de treino de cada ontologia do piloto-v3 (4 ontos).
-109 pares válidos no total.
+**Dados:** pares alinhados (relação livre extraída em C2, relação GT) por coincidência
+exata de par de entidades normalizadas (sub_norm, obj_norm) nas 50 frases de treino de
+cada uma das 4 ontologias do piloto-v3. **109 pares válidos** no total.
 
-Critério: maximiza F-beta(0.5) — pondera precisão 2× mais que recall.
+**Aviso de amostra pequena:** `tekgen/2_music` contribui com apenas 12 pares (poucos
+alinhamentos por sub+obj), dos quais só 1 tem GT corretamente mapeável com label+def.
+As conclusões para essa ontologia são frágeis. No experimento completo (29 ontologias),
+a calibração será refeita pela mesma regra (prec ≥ 0.80) com base em todos os pares
+de treino disponíveis.
 
-| Threshold | Prec (label+def) | Rec | F-b(0.5) | N-aceitos |
+**Tabela de calibração agregada (label+def, 109 pares):**
+
+| Threshold | Prec | Cobertura | N-aceitos | N-corretos |
 |---|---|---|---|---|
-| 0.40 | 0.522 | 0.826 | 0.564 | 90 |
-| 0.45 | 0.630 | 0.670 | 0.638 | 73 |
-| **0.55** | **0.750** | **0.440** | **0.658** | **48** |
-| 0.60 | 0.773 | 0.404 | 0.653 | 44 |
-| 0.80 | 1.000 | 0.055 | 0.226 | 6 |
+| 0.45 | 0.630 | 0.670 | 73/109 | 46 |
+| 0.50 | 0.646 | 0.596 | 65/109 | 42 |
+| 0.55 | 0.750 | 0.440 | 48/109 | 36 |
+| 0.60 | 0.773 | 0.404 | 44/109 | 34 |
+| 0.63 | **0.800** | 0.367 | **40/109** | 32 |
+| 0.65 | 0.789 | 0.349 | 38/109 | 30 |
+| 0.80 | 1.000 | 0.055 | 6/109 | 6 |
+
+**Precisão por ontologia em thr=0.63:**
+
+| Ontologia | n | Prec | Cob | Aceitos |
+|---|---|---|---|---|
+| tekgen/1_movie | 10 | 1.000 | 0.50 | 5/10 |
+| tekgen/2_music | 12 | 1.000 | 0.08 | 1/12 |
+| webnlg/1_university | 38 | 0.769 | 0.34 | 13/38 |
+| webnlg/19_film | 49 | 0.731 | 0.53 | 26/49 |
 
 **Por que 0.80 causou o colapso de F1-proj após D-29?**
-O formato label+def produz embeddings mais ricos mas com escores de similaridade
-absolutos menores (strings longas vs. curtas). Com threshold=0.80, apenas 6 de 109
-pares eram aceitos (recall=5.5%) — corretos mas irrelevantes em volume.
+O formato label+def produz embeddings com escores de similaridade absolutos menores
+(strings longas vs. curtas). Com threshold=0.80, apenas 6/109 pares eram aceitos
+(recall=5.5%) — corretos mas volume desprezível.
+
+### Sensibilidade
+
+F1-proj das condições livres (C0, C2, C3) a limiares vizinhos, medido no piloto-v3:
+
+| Dataset | Cond | thr=0.55 | **thr=0.63** | Δ |
+|---|---|---|---|---|
+| tekgen | C0 | 0.032 | **0.029** | −0.003 |
+| tekgen | C2 | 0.063 | **0.065** | +0.002 |
+| tekgen | C3 | 0.125 | **0.126** | +0.001 |
+| webnlg | C0 | 0.118 | **0.063** | −0.055 |
+| webnlg | C2 | 0.035 | **0.016** | −0.019 |
+| webnlg | C3 | 0.111 | **0.083** | −0.028 |
+
+A queda mais visível é webnlg/C0 (0.118→0.063): as projeções com sim 0.55–0.62 que eram
+aceitas em 0.55 tinham 75% de precisão, algumas corretas, e contribuíam para o F1-proj.
+Com 0.63 essas projeções são descartadas; o F1-proj cai mas o mapeamento que resta é
+mais limpo (80% precisão). O impacto em tekgen é mínimo (ontologias menores, menos
+relações ambíguas). A escolha de 0.63 é conservadora e metodologicamente mais sólida
+para a dissertação.
 
 ### Otimização de desempenho
 

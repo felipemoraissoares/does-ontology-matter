@@ -1,6 +1,6 @@
 # Resultados Piloto v3 — Métricas Corrigidas
 
-> Gerado automaticamente. Avaliação com fixes D-26 a D-30.
+> Avaliação com fixes D-26 a D-30. Limiar de projeção label+def: **0.63** (prec≥0.80 nos pares de treino).
 
 > am = modo amostra; Conf-nv / Hal-nv = excluindo respostas vazias; F1-proj = projeção D-24.
 
@@ -55,25 +55,31 @@
 
 ## Métricas de projeção (global por dataset × condição)
 
-> D-30: limiares recalibrados — label-only=0.50; label+def (D-24)=0.55.
-> Antes da calibração (thr=0.80): webnlg/C0=0.005 (frac=0.8%); C3=0.000. Após: C0=0.118 (34%), C3=0.111 (64%).
+> D-30: label-only=0.50; label+def=**0.63** (menor limiar com prec≥0.80 nos 109 pares de treino).
+> Referência pré-D-30 (thr=0.80): webnlg/C0=0.005, C2=0.000, C3=0.000.
 
-| Dataset | Cond | F1-proj | %Frac-proj |
-| --- | --- | --- | --- |
-| tekgen | C0 | 0.032 | 0.246 |
-| tekgen | C1 | 0.174 | 0.894 |
-| tekgen | C1+ex | 0.278 | 0.950 |
-| tekgen | C2 | 0.063 | 0.441 |
-| tekgen | C3 | 0.125 | 0.948 |
-| tekgen | C5v | 0.014 | 0.403 |
-| tekgen | C5i | 0.000 | 0.010 |
-| webnlg | C0 | 0.118 | 0.342 |
-| webnlg | C1 | 0.139 | 0.712 |
-| webnlg | C1+ex | 0.317 | 0.765 |
-| webnlg | C2 | 0.035 | 0.275 |
-| webnlg | C3 | 0.111 | 0.637 |
-| webnlg | C5v | 0.039 | 0.353 |
-| webnlg | C5i | 0.024 | 0.141 |
+| Dataset | Cond | F1-proj @0.63 | %Frac-proj | F1-proj @0.55 (sens.) |
+| --- | --- | --- | --- | --- |
+| tekgen | C0 | **0.029** | 0.141 | 0.032 |
+| tekgen | C1 | 0.175 | 0.870 | 0.174 |
+| tekgen | C1+ex | 0.273 | 0.934 | 0.278 |
+| tekgen | C2 | **0.065** | 0.210 | 0.063 |
+| tekgen | C3 | **0.126** | 0.927 | 0.125 |
+| tekgen | C5v | 0.013 | 0.339 | 0.014 |
+| tekgen | C5i | 0.000 | 0.010 | 0.000 |
+| webnlg | C0 | **0.063** | 0.176 | 0.118 |
+| webnlg | C1 | 0.137 | 0.583 | 0.139 |
+| webnlg | C1+ex | 0.280 | 0.631 | 0.317 |
+| webnlg | C2 | **0.016** | 0.232 | 0.035 |
+| webnlg | C3 | **0.083** | 0.545 | 0.111 |
+| webnlg | C5v | 0.027 | 0.280 | 0.039 |
+| webnlg | C5i | 0.012 | 0.085 | 0.024 |
+
+**Nota de sensibilidade:** a diferença entre 0.55 e 0.63 é mais pronunciada no WebNLG
+(webnlg/C0: 0.063 vs 0.118; C3: 0.083 vs 0.111) porque nessa ontologia há mais relações
+com similaridade no intervalo 0.55–0.62 — incluídas com 0.55, excluídas com 0.63.
+O tekgen tem variação mínima (Δ < 0.004). O limiar 0.63 garante prec=0.80 nos pares
+de treino; 0.55 garante apenas 75%. Valores com 0.55 registrados como sensibilidade.
 
 
 ## Fix 5: Comportamento C5_incongruente — recusa vs invenção

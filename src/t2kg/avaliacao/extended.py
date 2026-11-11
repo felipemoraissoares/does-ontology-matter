@@ -56,9 +56,10 @@ except ImportError:
 
 
 # D-30: limiares recalibrados com pares alinhados das 50 frases de treino do piloto-v3.
-# label-only: 0.50 (F-b0.5=0.644);  label+def (D-24): 0.55 (F-b0.5=0.658, prec=0.75)
+# label-only: 0.50 (F-b0.5=0.644, prec=1.00 em 1_movie; prec baixa em 2_music)
+# label+def (D-24): 0.63 — menor limiar com precisão agregada >= 0.80 (prec=0.800, cob=36.7%)
 THRESHOLD_PROJ_LABEL = 0.50
-THRESHOLD_PROJ_DEF   = 0.55
+THRESHOLD_PROJ_DEF   = 0.63
 THRESHOLD_PROJECAO_PROVISORIO = THRESHOLD_PROJ_LABEL  # backward compat
 
 # Cache de embeddings de referência: evita recomputar para a mesma ontologia × sentença
