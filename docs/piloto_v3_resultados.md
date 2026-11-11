@@ -1,5 +1,7 @@
 # Resultados Piloto v3 — Métricas Corrigidas
 
+> **Piloto v3 FECHADO em 11/11/2026 — nenhuma nova rodada sem decisão registrada.**
+
 > Avaliação com fixes D-26 a D-30. Limiar de projeção label+def: **0.63** (prec≥0.80 nos pares de treino).
 
 > **Re-run D-32** (commits d19f4b4, 9aced71): placeholders `relation_name(...)` tratados como fmt_error; C2/webnlg/19_film re-induzida sem `relation_name`. Células alteradas marcadas com ⁺.
@@ -13,12 +15,14 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | tekgen | 1_movie | 0.04† | 0.25† | 0.30† | 0.12† | 0.15† | 0.02† | 0.00† |
 | tekgen | 2_music | 0.02† | 0.22† | 0.37† | 0.03† | 0.19† | 0.01† | 0.00† |
-| **tekgen** | **média** | **0.03** | **0.23** | **0.34**⁺ | **0.07** | **0.17** | **0.01** | **0.00** |
+| **tekgen** | **média** | **0.03** (0.030) | **0.23** (0.235) | **0.34** (0.335) | **0.07** (0.075) | **0.17** (0.170) | **0.01** (0.015) | **0.00** (0.000) |
 | webnlg | 1_university | 0.05 | 0.23 | 0.41 | 0.02 | 0.14 | 0.08 | 0.01 |
 | webnlg | 19_film | 0.06† | 0.07† | 0.32† | 0.01† | 0.01† | 0.01† | 0.01† |
-| **webnlg** | **média** | **0.06** | **0.15** | **0.36** | **0.02**⁺ | **0.08** | **0.05**⁺ | **0.01** |
+| **webnlg** | **média** | **0.06** (0.055) | **0.15** (0.150) | **0.36** (0.365) | **0.02**⁺ (0.015) | **0.08** (0.075) | **0.05** (0.045) | **0.01** (0.010) |
 
-† = modo amostra (n_sys < n_gt) | ⁺ = atualizado pelo re-run D-32
+† = modo amostra (n_sys < n_gt) | ⁺ = atualizado pelo re-run D-32 | (3dp) = média simples das ontologias usando valores 2dp; valor real pode diferir ≤0.001.
+
+Nota: **tekgen/C1+ex (0.34)** e **webnlg/C5v (0.05)** não carregam ⁺ — a diferença em relação à versão anterior (0.33 e 0.04) deve-se a arredondamento na fronteira (médias 0.335 e 0.045), não à D-32.
 
 
 ## Tabela detalhada: todas as métricas por ontologia × condição
@@ -72,18 +76,17 @@
 | webnlg | C0 | **0.063** | 0.176 | 0.118 |
 | webnlg | C1 | 0.137 | 0.583 | 0.139 |
 | webnlg | C1+ex | 0.280 | 0.631 | 0.317 |
-| webnlg | C2 | **0.014**⁺ | 0.234⁺ | —⁺ |
+| webnlg | C2 | **0.014**⁺ | 0.234⁺ | 0.034⁺ |
 | webnlg | C3 | **0.083** | 0.545 | 0.111 |
 | webnlg | C5v | 0.027 | 0.280 | 0.039 |
 | webnlg | C5i | 0.012 | 0.085 | 0.024 |
 
-⁺ webnlg/C2 @0.55: requer re-execução de `avaliar.py --thr_proj 0.55` sobre o novo `pv3_19film_c2.jsonl`.
-
 **Nota de sensibilidade:** a diferença entre 0.55 e 0.63 é mais pronunciada no WebNLG
-(webnlg/C0: 0.063 vs 0.118; C3: 0.083 vs 0.111) porque nessa ontologia há mais relações
+(webnlg/C0: 0.063 vs 0.118; C2: 0.014 vs 0.034; C3: 0.083 vs 0.111) porque nessa ontologia há mais relações
 com similaridade no intervalo 0.55–0.62 — incluídas com 0.55, excluídas com 0.63.
 O tekgen tem variação mínima (Δ < 0.004). O limiar 0.63 garante prec=0.80 nos pares
 de treino; 0.55 garante apenas 75%. Valores com 0.55 registrados como sensibilidade.
+⁺ webnlg/C2 @0.55 calculado localmente (CPU) após re-run D-32: 1_university=0.047, 19_film=0.020, global=0.034.
 
 
 ## Fix 5: Comportamento C5_incongruente — recusa vs invenção
