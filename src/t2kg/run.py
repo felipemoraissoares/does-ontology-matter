@@ -53,6 +53,29 @@ def _criar_provedor(exp: dict):
     raise ValueError(f"Provedor desconhecido: {tipo!r}. Use 'openai_compat' ou 'mock'.")
 
 
+def _contar_registros_validos(caminho: str) -> int:
+    """Conta linhas JSON válidas com 'id' no JSONL de saída.
+
+    Ignora linhas vazias e uma eventual linha final truncada (sessão derrubada no
+    meio de uma escrita) — essas não contam como frase concluída (C-2/C-3).
+    """
+    if not os.path.exists(caminho):
+        return 0
+    n = 0
+    with open(caminho, encoding="utf-8") as f:
+        for linha in f:
+            linha = linha.strip()
+            if not linha:
+                continue
+            try:
+                obj = json.loads(linha)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(obj, dict) and "id" in obj:
+                n += 1
+    return n
+
+
 def _push_resultado(repo_dir: str, exp_id: str, saida: str) -> None:
     """git add + commit + push após um experimento concluído.
 
@@ -167,6 +190,7 @@ def main():
         push_repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
     from t2kg.pipeline.executar import executar
+    from t2kg.pipeline.dados import carregar_frases
 
     for exp in experimentos:
         exp_id = exp.get("id", "?")
@@ -176,20 +200,32 @@ def main():
         if args.saida_base:
             exp["saida"] = os.path.join(args.saida_base, os.path.basename(saida_original))
 
-        # Pula experimentos já concluídos se --skip_existentes
-        if args.skip_existentes and os.path.exists(exp["saida"]):
-            print(f"\n=== Experimento: {exp_id} [PULADO — saida existe] ===")
-            continue
+        # frases_max: CLI tem precedência; fallback para o manifesto
+        frases_max_efetivo = args.frases_max if args.frases_max is not None else exp.get("frases_max")
+        frases_seed = exp.get("frases_seed")
+
+        # --skip_existentes: só pula se o JSONL tem o número ESPERADO de frases válidas.
+        # Arquivo parcial (sessão Kaggle derrubada) é retomado pelo checkpoint de executar(),
+        # nunca dado como concluído (C-2).
+        if args.skip_existentes:
+            n_tem = _contar_registros_validos(exp["saida"])
+            if n_tem > 0:
+                n_total = len(carregar_frases(
+                    args.bench_dir, exp["dataset"], exp["split"], exp["ontologia_id"]))
+                n_esperado = (min(frases_max_efetivo, n_total)
+                              if frases_max_efetivo is not None else n_total)
+                if n_tem >= n_esperado:
+                    print(f"\n=== Experimento: {exp_id} "
+                          f"[PULADO — {n_tem}/{n_esperado} frases completas] ===")
+                    continue
+                print(f"\n=== Experimento: {exp_id} "
+                      f"[RETOMADA — {n_tem}/{n_esperado} frases já feitas] ===")
 
         print(f"\n=== Experimento: {exp_id} ===")
         print(f"    dataset={exp['dataset']}  split={exp['split']}  "
               f"onto={exp['ontologia_id']}  cond={exp['condicao']}")
 
         provedor = _criar_provedor(exp)
-
-        # frases_max: CLI tem precedência; fallback para o manifesto
-        frases_max_efetivo = args.frases_max if args.frases_max is not None else exp.get("frases_max")
-        frases_seed = exp.get("frases_seed")
 
         if frases_max_efetivo is not None:
             print(
