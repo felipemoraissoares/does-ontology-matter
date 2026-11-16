@@ -41,6 +41,9 @@ Cada decisão substitui as propostas anteriores onde houver conflito.
 | D-30 | Recalibração do limiar de projeção para formato D-24 | APROVADA | — |
 | D-31 | Piloto-v3 — validação antes da fase completa | EXECUTADA | — |
 | D-32 | Placeholders da instrução Variante D tratados como fmt_error | IMPLEMENTADA | — |
+| D-33 | Ontologia induzida C2 com dimensão de modelo (v_full/\<slug\>) | APROVADA | — |
+| D-34 | Normalização única de chaves de definição e projeção que falha sem definição | APROVADA | — |
+| D-35 | Versões travadas das dependências do Kaggle | APROVADA | — |
 
 ---
 
@@ -1499,3 +1502,148 @@ Rótulos idênticos aos placeholders literais da instrução são tratados como 
 | webnlg / 19_film / C0 | 0.00 | 0.05 | +0.05 |
 
 **Interpretação:** A conformidade caiu (0.30→0.24) porque `relation_name` era contado como relação conformante antes do filtro. A fração de projeção caiu de 0.474 para 0.234 porque a ontologia induzida sem `relation_name` tem menos falsos vizinhos no espaço de embedding. O F1 do experimento permaneceu 0.01 — sem melhoria de qualidade de extração, esperado pois a ontologia C2 continua sendo induzida do texto do modelo livre. Os aumentos em FmtErr do C0 são o efeito direto do novo filtro de placeholders.
+
+---
+
+## D-33: Ontologia induzida C2 com dimensão de modelo (v_full/\<slug\>)
+
+**Status:** APROVADA (2026-11-15) — estrutura implementada; decisão de escopo pendente do orientador
+
+### Contexto
+
+A D-16 define que a ontologia induzida da C2 usa o vocabulário extraído **pelo próprio
+modelo** em modo livre. No piloto-v3 havia um único modelo (Qwen2.5-7B), e as ontologias
+induzidas ficaram em `configs/c2/{dataset}_{onto}_induced.json` (sem dimensão de modelo).
+No experimento completo há 8 modelos — cada um induz a própria ontologia. Sem dimensão de
+modelo no caminho, as induções se sobrescreveriam ou um modelo usaria a C2 de outro
+(contaminação silenciosa). Ver C-5 da auditoria.
+
+### Decisão
+
+1. **Caminho por modelo:** as ontologias induzidas do experimento completo ficam em
+   `configs/c2/v_full/<slug>/<dataset>_<onto>_induced.json`. As definições D-24 geradas
+   por aquele modelo (rótulos induzidos **e** relações de referência, ver D-34) ficam em
+   `configs/c2/v_full/<slug>/definicoes_<onto>.json`.
+2. **Slug do modelo:** `slug_modelo(modelo)` = último componente do id (após `/`), em
+   minúsculas, removendo os sufixos de variante `-instruct`, `-chat`, `-it`, `-awq`,
+   `-gguf`, `-hf` e o sufixo de tamanho de contexto. Ex.: `Qwen/Qwen2.5-7B-Instruct-AWQ`
+   → `qwen2.5-7b`; `google/gemma-2-9b-it` → `gemma-2-9b`. Implementado em
+   `src/t2kg/modelos.py` com teste.
+3. **Compatibilidade com o piloto:** quando o caminho de subdiretório não é informado
+   (`c2_subdir=None`), o carregador usa o caminho plano legado `configs/c2/` — preserva
+   os 4 `*_induced.json` do piloto-v3 **sem alteração**.
+4. **Arquivos do piloto preservados:** os `configs/c2/{dataset}_{onto}_induced.json` e
+   `configs/c2/definicoes_{onto}.json` do piloto continuam como referência e **não** são
+   movidos nem sobrescritos. As ontologias do experimento completo vão para `v_full/`.
+5. **Geração condicional (gerador de manifestos):** a C2 de um modelo só é incluída no
+   manifesto se a ontologia induzida daquele modelo existir em `v_full/<slug>/`; caso
+   contrário o gerador avisa e pula a condição C2 daquela ontologia.
+
+### Pendência de escopo (decisão do orientador)
+
+Esta decisão fixa a **estrutura** por modelo. **Se a C2 será induzida para todos os 8
+modelos ou apenas para o Qwen 7B** é uma escolha de desenho experimental que depende do
+orientador. Esta sessão prepara apenas o Qwen 7B (`v_full/qwen2.5-7b/`).
+
+### Implementação
+
+- `src/t2kg/modelos.py` — `slug_modelo()`.
+- `src/t2kg/pipeline/ontologias.py` — `carregar_ontologia_induzida(dataset, onto, c2_subdir=None)`.
+- `src/t2kg/pipeline/executar.py` e `src/t2kg/run.py` — campo opcional `c2_subdir` no manifesto.
+- `scripts/gerar_manifesto.py` (Etapa B) — monta C2 com `c2_subdir="v_full/<slug>"` e pula se ausente.
+
+---
+
+## D-34: Normalização única de chaves de definição e projeção que falha sem definição
+
+**Status:** APROVADA (2026-11-15)
+
+### Contexto
+
+As chaves dos dicionários de definição D-24 (`definicoes_<onto>.json`) eram gravadas com
+`label.lower().replace(" ", "_")` para relações de referência, mas consultadas em
+`extended.projetar_relacoes` e `calibrar_limiar_projecao` usando o **rótulo cru** da
+ontologia (com espaço). Resultado (I-1 da auditoria): relações de referência com mais de
+uma palavra (`based on`, `cast member`, `publication date`...) **nunca** encontravam a
+definição e eram projetadas só com o rótulo, enquanto o limiar usado era o de label+def
+(0.63). Representação mista e silenciosa.
+
+No piloto a calibração (D-30) e a avaliação usaram exatamente o mesmo lookup, de modo que
+o piloto é **autoconsistente** — mas a representação label+def era parcial.
+
+### Decisão
+
+1. **Chave canônica única:** `normalizar_chave_definicao(label)` =
+   `label.strip().lower().replace(" ", "_")`, usada em **todos** os pontos — gravação das
+   definições, indução (agrupamento D-24), projeção de avaliação e calibração do limiar.
+2. **Projeção falha sem definição:** quando `projetar_relacoes` recebe `definicoes_ref`
+   (modo label+def), **toda** relação de referência deve ter definição; se faltar qualquer
+   uma, levanta `ValueError` com a lista das ausentes. Nunca mais cai em silêncio para o
+   limiar de só-rótulo. O modo só-rótulo continua válido explicitamente com
+   `definicoes_ref=None`.
+3. **Definições de referência das 29 ontologias:** serão geradas no Kaggle, na mesma
+   sessão da indução C2 do modelo (Etapa C), e gravadas em
+   `configs/c2/v_full/<slug>/definicoes_<onto>.json` (D-33).
+4. **Piloto não é refeito.** A nota correspondente foi acrescentada a
+   `docs/piloto_v3_resultados.md`.
+
+### Implementação
+
+- `src/t2kg/avaliacao/extended.py` — `normalizar_chave_definicao()`; `projetar_relacoes` e
+  `redundancia_semantica` normalizam chaves e exigem definição completa.
+- `scripts/gerar_definicoes_relacoes.py` — grava sob chave canônica.
+- `scripts/calibrar_limiar_projecao.py` — consulta sob chave canônica.
+- `scripts/induzir_c2.py` — agrupamento D-24 consulta sob chave canônica.
+
+---
+
+## D-35: Versões travadas das dependências do Kaggle
+
+**Status:** APROVADA (2026-11-15)
+
+### Contexto
+
+O lançador instalava `vllm openai sentence-transformers scikit-learn nltk scipy numpy
+pandas statsmodels` **sem versões** (C-6 da auditoria). O experimento completo roda em
+muitas sessões ao longo de semanas; um upgrade do vLLM (kernels/scheduler) entre sessões
+mudaria a geração em fp16/AWQ e quebraria a comparabilidade entre modelos/condições
+rodados em sessões diferentes.
+
+### Decisão
+
+1. **Arquivo de requisitos travado:** `requirements-kaggle.txt` fixa as versões diretas.
+   O lançador instala a partir dele (ou do *wheelhouse* da Etapa A, que congela também a
+   árvore transitiva de dependências).
+2. **Versões diretas fixadas** (conjunto coerente com T4 fp16 + Qwen2.5-AWQ + Gemma 2 +
+   modelos 14B/32B via tensor-parallel):
+
+   | Pacote | Versão |
+   |---|---|
+   | vllm | 0.6.3.post1 |
+   | torch | 2.4.0 |
+   | transformers | 4.45.2 |
+   | openai | 1.54.4 |
+   | sentence-transformers | 3.2.1 |
+   | scikit-learn | 1.5.2 |
+   | nltk | 3.9.1 |
+   | scipy | 1.14.1 |
+   | numpy | 1.26.4 |
+   | pandas | 2.2.3 |
+   | statsmodels | 0.14.4 |
+
+3. **Lock definitivo = wheelhouse.** O *wheelhouse* (Etapa A) resolve e baixa a árvore
+   transitiva completa como *wheels*; a instalação `--no-index --find-links` reproduz
+   exatamente esse conjunto, independente do que o PyPI sirva depois. O conjunto congelado
+   do wheelhouse é o lock definitivo.
+4. **Verificação na 1ª sessão.** Antes de comprometer horas de GPU, a primeira sessão do
+   experimento completo deve rodar o smoke de poucas frases por modelo (I-11) e confirmar
+   que a pilha instalada gera saídas sãs. Se alguma versão acima for incompatível com o
+   ambiente do Kaggle no momento, ajustar `requirements-kaggle.txt`, regenerar o wheelhouse
+   e registrar a correção aqui.
+
+### Implementação
+
+- `requirements-kaggle.txt` (raiz do repo).
+- `kaggle/lancador.ipynb` — célula de instalação usa o wheelhouse quando anexado, com
+  *fallback* para `pip install -r requirements-kaggle.txt` (Etapa A).
+- `scripts/montar_wheelhouse.py` e `docs/kaggle_wheelhouse.md` (Etapa A).

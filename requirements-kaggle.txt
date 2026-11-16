@@ -1,0 +1,19 @@
+# Dependências travadas do experimento completo no Kaggle (D-35).
+# O lançador instala a partir deste arquivo (ou do wheelhouse da Etapa A, que
+# congela também a árvore transitiva). Reprodutibilidade entre sessões/semanas.
+#
+# Conjunto coerente com T4 fp16 + Qwen2.5-AWQ + Gemma 2 + modelos 14B/32B (tensor-parallel).
+# Lock definitivo = wheelhouse (pip download resolve a árvore transitiva completa).
+# Verificar com o smoke de poucas frases por modelo antes de comprometer GPU (I-11 da auditoria).
+
+vllm==0.6.3.post1
+torch==2.4.0
+transformers==4.45.2
+openai==1.54.4
+sentence-transformers==3.2.1
+scikit-learn==1.5.2
+nltk==3.9.1
+scipy==1.14.1
+numpy==1.26.4
+pandas==2.2.3
+statsmodels==0.14.4
