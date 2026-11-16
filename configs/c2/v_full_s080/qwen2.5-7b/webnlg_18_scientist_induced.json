@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "18_scientist",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_18_scientist_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_18_scientist_train_62",
+      "ont_18_scientist_train_10",
+      "ont_18_scientist_train_2",
+      "ont_18_scientist_train_51",
+      "ont_18_scientist_train_105",
+      "ont_18_scientist_train_16",
+      "ont_18_scientist_train_57",
+      "ont_18_scientist_train_69",
+      "ont_18_scientist_train_77",
+      "ont_18_scientist_train_27",
+      "ont_18_scientist_train_100",
+      "ont_18_scientist_train_71",
+      "ont_18_scientist_train_31",
+      "ont_18_scientist_train_33",
+      "ont_18_scientist_train_64",
+      "ont_18_scientist_train_59",
+      "ont_18_scientist_train_63",
+      "ont_18_scientist_train_85",
+      "ont_18_scientist_train_56",
+      "ont_18_scientist_train_53",
+      "ont_18_scientist_train_50",
+      "ont_18_scientist_train_48",
+      "ont_18_scientist_train_86",
+      "ont_18_scientist_train_83",
+      "ont_18_scientist_train_79",
+      "ont_18_scientist_train_81",
+      "ont_18_scientist_train_23",
+      "ont_18_scientist_train_9",
+      "ont_18_scientist_train_22",
+      "ont_18_scientist_train_38",
+      "ont_18_scientist_train_68",
+      "ont_18_scientist_train_34",
+      "ont_18_scientist_train_11",
+      "ont_18_scientist_train_67",
+      "ont_18_scientist_train_80",
+      "ont_18_scientist_train_103",
+      "ont_18_scientist_train_75",
+      "ont_18_scientist_train_7",
+      "ont_18_scientist_train_42",
+      "ont_18_scientist_train_110",
+      "ont_18_scientist_train_61",
+      "ont_18_scientist_train_109",
+      "ont_18_scientist_train_43",
+      "ont_18_scientist_train_60",
+      "ont_18_scientist_train_94",
+      "ont_18_scientist_train_89",
+      "ont_18_scientist_train_66",
+      "ont_18_scientist_train_37",
+      "ont_18_scientist_train_24",
+      "ont_18_scientist_train_40"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "born",
+      "frequencia": 24,
+      "membros": [
+        "born",
+        "born_in"
+      ]
+    },
+    {
+      "label": "resides_in",
+      "frequencia": 9,
+      "membros": [
+        "resides",
+        "resides_in"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 6,
+      "membros": [
+        "nationality"
+      ]
+    },
+    {
+      "label": "has_total_area",
+      "frequencia": 5,
+      "membros": [
+        "has_area",
+        "has_total_area",
+        "area_is",
+        "area_of"
+      ]
+    },
+    {
+      "label": "died_in",
+      "frequencia": 5,
+      "membros": [
+        "died_in",
+        "died_on"
+      ]
+    },
+    {
+      "label": "known_for",
+      "frequencia": 5,
+      "membros": [
+        "was_known_for",
+        "known_for",
+        "is_known_for"
+      ]
+    },
+    {
+      "label": "citizen_of",
+      "frequencia": 4,
+      "membros": [
+        "citizen_of",
+        "citizen"
+      ]
+    },
+    {
+      "label": "won",
+      "frequencia": 3,
+      "membros": [
+        "won"
+      ]
+    },
+    {
+      "label": "graduated_from",
+      "frequencia": 3,
+      "membros": [
+        "graduated_from",
+        "graduated"
+      ]
+    }
+  ]
+}

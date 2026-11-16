@@ -65,11 +65,11 @@ class TestGerarCompleto:
         assert all("ontologia_parceira_id" in e for e in c5)
 
     def test_exigir_c2_omite_sem_induzida(self):
-        # Sem ontologias induzidas em v_full/, modo estrito omite as 29 C2.
+        # Modelo cujo v_full/<slug> não existe: modo estrito omite as 29 C2.
         with open(PARES, encoding="utf-8") as f:
             pares = json.load(f)
         exp, avisos = gm.gerar_completo(
-            ["Qwen/Qwen2.5-7B-Instruct-AWQ"], gm.TODAS_CONDICOES,
+            ["fake/Modelo-Inexistente-7B"], gm.TODAS_CONDICOES,
             ["tekgen", "webnlg"], pares, url="http://x/v1", git="d", exigir_c2=True,
         )
         assert not any(e["condicao"] == "C2" for e in exp)

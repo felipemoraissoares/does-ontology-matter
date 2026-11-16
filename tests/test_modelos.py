@@ -26,10 +26,11 @@ class TestSlugModelo:
 
 class TestC2Subdir:
     def test_subdir_compoe_caminho_v_full(self):
+        # slug inexistente garante FileNotFoundError independente de v_full já induzido
         with pytest.raises(FileNotFoundError) as e:
-            carregar_ontologia_induzida("tekgen", "1_movie", c2_subdir="v_full/qwen2.5-7b")
+            carregar_ontologia_induzida("tekgen", "1_movie", c2_subdir="v_full/modelo_inexistente")
         msg = str(e.value).replace("\\", "/")
-        assert "configs/c2/v_full/qwen2.5-7b/tekgen_1_movie_induced.json" in msg
+        assert "configs/c2/v_full/modelo_inexistente/tekgen_1_movie_induced.json" in msg
 
     def test_legado_sem_subdir_carrega_piloto(self):
         # O arquivo do piloto existe em configs/c2/ — carregamento legado inalterado.

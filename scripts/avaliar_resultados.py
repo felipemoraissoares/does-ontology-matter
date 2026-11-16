@@ -154,10 +154,14 @@ def avaliar_condicao(experimentos_cond, bench_dir, avaliacao_dir, cond, dataset,
 
 
 def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
-                                modo_amostra: bool = False):
+                                modo_amostra: bool = False, threshold_proj=None):
     """
     Calcula métricas estendidas (prf1_projetado, prf1_sem_filtro, redundancia) para
     uma condição. Retorna dict com médias por ontologia e global, ou None se indisponível.
+
+    threshold_proj : float | None
+        Limiar de projeção de relações. None = padrão por formato (0.63 label+def, D-30/piloto).
+        No experimento completo usar 0.45 (D-36, recalibrado sobre as 29 ontologias).
 
     Requer sentence-transformers; retorna None silenciosamente se ausente.
     """
@@ -211,6 +215,7 @@ def avaliar_condicao_extendida(experimentos_cond, bench_dir, cond, dataset,
             frase_dict = {"id": sent_id, "sent": gt_rec["sent"], "gt_triples": gt_triplas}
             metricas_por_frase.append(
                 avaliar_frase_estendida(frase_dict, sys_triplas, ontologia,
+                                        threshold_proj=threshold_proj,
                                         definicoes_ref=definicoes_ref)
             )
 
@@ -246,6 +251,11 @@ def main():
         "--extended", action="store_true",
         help="Inclui métricas estendidas: P/R/F1 sem filtro, projeção de relações (C0/C2/C3), "
              "redundância de esquema. Requer sentence-transformers.",
+    )
+    p.add_argument(
+        "--threshold_proj", type=float, default=None,
+        help="Limiar de projeção de relações. Padrão: 0.63 label+def (D-30/piloto). "
+             "Experimento completo: 0.45 (D-36, recalibrado sobre as 29 ontologias).",
     )
     args = p.parse_args()
 
@@ -292,7 +302,8 @@ def main():
         # Métricas estendidas (opcional)
         if args.extended:
             ext = avaliar_condicao_extendida(
-                exps, args.bench_dir, cond, dataset, modo_amostra=modo_manifesto
+                exps, args.bench_dir, cond, dataset, modo_amostra=modo_manifesto,
+                threshold_proj=args.threshold_proj,
             )
             if ext:
                 g = ext["global"]

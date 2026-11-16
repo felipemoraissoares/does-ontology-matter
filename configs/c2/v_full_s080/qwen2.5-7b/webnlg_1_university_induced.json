@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "1_university",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_1_university_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_1_university_train_63",
+      "ont_1_university_train_59",
+      "ont_1_university_train_40",
+      "ont_1_university_train_31",
+      "ont_1_university_train_50",
+      "ont_1_university_train_67",
+      "ont_1_university_train_81",
+      "ont_1_university_train_20",
+      "ont_1_university_train_69",
+      "ont_1_university_train_27",
+      "ont_1_university_train_74",
+      "ont_1_university_train_60",
+      "ont_1_university_train_21",
+      "ont_1_university_train_57",
+      "ont_1_university_train_16",
+      "ont_1_university_train_34",
+      "ont_1_university_train_72",
+      "ont_1_university_train_84",
+      "ont_1_university_train_9",
+      "ont_1_university_train_13",
+      "ont_1_university_train_68",
+      "ont_1_university_train_37",
+      "ont_1_university_train_66",
+      "ont_1_university_train_51",
+      "ont_1_university_train_85",
+      "ont_1_university_train_48",
+      "ont_1_university_train_2",
+      "ont_1_university_train_41",
+      "ont_1_university_train_42",
+      "ont_1_university_train_44",
+      "ont_1_university_train_33",
+      "ont_1_university_train_24",
+      "ont_1_university_train_19",
+      "ont_1_university_train_46",
+      "ont_1_university_train_75",
+      "ont_1_university_train_8",
+      "ont_1_university_train_35",
+      "ont_1_university_train_77",
+      "ont_1_university_train_3",
+      "ont_1_university_train_17",
+      "ont_1_university_train_39",
+      "ont_1_university_train_43",
+      "ont_1_university_train_23",
+      "ont_1_university_train_47",
+      "ont_1_university_train_25",
+      "ont_1_university_train_6",
+      "ont_1_university_train_7",
+      "ont_1_university_train_53",
+      "ont_1_university_train_64",
+      "ont_1_university_train_78"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "location",
+      "frequencia": 27,
+      "membros": [
+        "location",
+        "located",
+        "location_of"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 16,
+      "membros": [
+        "located_in",
+        "located in",
+        "located_at"
+      ]
+    },
+    {
+      "label": "educates",
+      "frequencia": 9,
+      "membros": [
+        "educates"
+      ]
+    },
+    {
+      "label": "has_students",
+      "frequencia": 8,
+      "membros": [
+        "has_student_number",
+        "has_students",
+        "has students",
+        "hasStudentNumber"
+      ]
+    },
+    {
+      "label": "has_staff_members",
+      "frequencia": 7,
+      "membros": [
+        "has_staff",
+        "has_staff_number",
+        "has_staff_members"
+      ]
+    },
+    {
+      "label": "established",
+      "frequencia": 6,
+      "membros": [
+        "established",
+        "established_in"
+      ]
+    },
+    {
+      "label": "leader_of",
+      "frequencia": 4,
+      "membros": [
+        "leader",
+        "leader_of"
+      ]
+    },
+    {
+      "label": "number_of_students",
+      "frequencia": 4,
+      "membros": [
+        "number_of_students",
+        "has_student_count"
+      ]
+    },
+    {
+      "label": "employs",
+      "frequencia": 4,
+      "membros": [
+        "employs"
+      ]
+    },
+    {
+      "label": "has academic staff",
+      "frequencia": 3,
+      "membros": [
+        "has academic staff",
+        "has_academic_staff_number",
+        "has_academic_staff"
+      ]
+    },
+    {
+      "label": "has_doctoral_students",
+      "frequencia": 3,
+      "membros": [
+        "has_doctoral_students",
+        "has_students_enrolled_in_doctoral_program"
+      ]
+    },
+    {
+      "label": "capital_of",
+      "frequencia": 3,
+      "membros": [
+        "capital_of"
+      ]
+    }
+  ]
+}

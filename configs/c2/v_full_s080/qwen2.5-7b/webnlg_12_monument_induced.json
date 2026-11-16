@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "12_monument",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_12_monument_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_12_monument_train_52",
+      "ont_12_monument_train_19",
+      "ont_12_monument_train_56",
+      "ont_12_monument_train_30",
+      "ont_12_monument_train_8",
+      "ont_12_monument_train_31",
+      "ont_12_monument_train_17",
+      "ont_12_monument_train_21",
+      "ont_12_monument_train_48",
+      "ont_12_monument_train_58",
+      "ont_12_monument_train_16",
+      "ont_12_monument_train_64",
+      "ont_12_monument_train_70",
+      "ont_12_monument_train_50",
+      "ont_12_monument_train_44",
+      "ont_12_monument_train_43",
+      "ont_12_monument_train_47",
+      "ont_12_monument_train_34",
+      "ont_12_monument_train_66",
+      "ont_12_monument_train_40",
+      "ont_12_monument_train_51",
+      "ont_12_monument_train_3",
+      "ont_12_monument_train_65",
+      "ont_12_monument_train_72",
+      "ont_12_monument_train_41",
+      "ont_12_monument_train_49",
+      "ont_12_monument_train_24",
+      "ont_12_monument_train_57",
+      "ont_12_monument_train_26",
+      "ont_12_monument_train_9",
+      "ont_12_monument_train_20",
+      "ont_12_monument_train_59",
+      "ont_12_monument_train_23",
+      "ont_12_monument_train_37",
+      "ont_12_monument_train_25",
+      "ont_12_monument_train_62",
+      "ont_12_monument_train_7",
+      "ont_12_monument_train_53",
+      "ont_12_monument_train_61",
+      "ont_12_monument_train_10",
+      "ont_12_monument_train_54",
+      "ont_12_monument_train_22",
+      "ont_12_monument_train_28",
+      "ont_12_monument_train_11",
+      "ont_12_monument_train_1",
+      "ont_12_monument_train_68",
+      "ont_12_monument_train_38",
+      "ont_12_monument_train_69",
+      "ont_12_monument_train_60",
+      "ont_12_monument_train_27"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "located_in",
+      "frequencia": 32,
+      "membros": [
+        "located_in",
+        "located",
+        "location_of",
+        "locatedIn",
+        "is_placed_in",
+        "location of",
+        "located_in_state",
+        "is_located_in"
+      ]
+    },
+    {
+      "label": "established_in",
+      "frequencia": 15,
+      "membros": [
+        "established_in",
+        "established",
+        "was_established_in"
+      ]
+    },
+    {
+      "label": "location",
+      "frequencia": 14,
+      "membros": [
+        "location"
+      ]
+    },
+    {
+      "label": "categorized_as",
+      "frequencia": 9,
+      "membros": [
+        "categorized_as",
+        "classified_as",
+        "is_categorized_as",
+        "categorised_as",
+        "is_categorised_as"
+      ]
+    },
+    {
+      "label": "north_of",
+      "frequencia": 8,
+      "membros": [
+        "north_of",
+        "has_north",
+        "is_north_of",
+        "is north of"
+      ]
+    },
+    {
+      "label": "southeast_of",
+      "frequencia": 7,
+      "membros": [
+        "southeast_of",
+        "is_southeast_of",
+        "is southeast of",
+        "lies_to_the_southeast_of"
+      ]
+    },
+    {
+      "label": "west_of",
+      "frequencia": 6,
+      "membros": [
+        "west_of",
+        "north_west"
+      ]
+    },
+    {
+      "label": "stands_in",
+      "frequencia": 5,
+      "membros": [
+        "stands_in",
+        "stands",
+        "stands_in_state"
+      ]
+    },
+    {
+      "label": "falls_under",
+      "frequencia": 4,
+      "membros": [
+        "falls_under",
+        "falls_under_category"
+      ]
+    },
+    {
+      "label": "is_home_to",
+      "frequencia": 3,
+      "membros": [
+        "home_of",
+        "is_home_to"
+      ]
+    },
+    {
+      "label": "erected_in",
+      "frequencia": 3,
+      "membros": [
+        "erected_in"
+      ]
+    },
+    {
+      "label": "southwest_of",
+      "frequencia": 3,
+      "membros": [
+        "southwest_of",
+        "southwestOf",
+        "is_southwest_of"
+      ]
+    }
+  ]
+}

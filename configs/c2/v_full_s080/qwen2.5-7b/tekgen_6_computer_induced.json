@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "6_computer",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_6_computer_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_6_computer_train_246",
+      "ont_6_computer_train_6",
+      "ont_6_computer_train_287",
+      "ont_6_computer_train_259",
+      "ont_6_computer_train_202",
+      "ont_6_computer_train_97",
+      "ont_6_computer_train_80",
+      "ont_6_computer_train_10",
+      "ont_6_computer_train_7",
+      "ont_6_computer_train_253",
+      "ont_6_computer_train_251",
+      "ont_6_computer_train_148",
+      "ont_6_computer_train_254",
+      "ont_6_computer_train_201",
+      "ont_6_computer_train_112",
+      "ont_6_computer_train_106",
+      "ont_6_computer_train_85",
+      "ont_6_computer_train_51",
+      "ont_6_computer_train_117",
+      "ont_6_computer_train_134",
+      "ont_6_computer_train_166",
+      "ont_6_computer_train_131",
+      "ont_6_computer_train_223",
+      "ont_6_computer_train_49",
+      "ont_6_computer_train_108",
+      "ont_6_computer_train_258",
+      "ont_6_computer_train_229",
+      "ont_6_computer_train_218",
+      "ont_6_computer_train_141",
+      "ont_6_computer_train_199",
+      "ont_6_computer_train_277",
+      "ont_6_computer_train_187",
+      "ont_6_computer_train_257",
+      "ont_6_computer_train_66",
+      "ont_6_computer_train_43",
+      "ont_6_computer_train_132",
+      "ont_6_computer_train_164",
+      "ont_6_computer_train_83",
+      "ont_6_computer_train_35",
+      "ont_6_computer_train_115",
+      "ont_6_computer_train_160",
+      "ont_6_computer_train_238",
+      "ont_6_computer_train_155",
+      "ont_6_computer_train_33",
+      "ont_6_computer_train_271",
+      "ont_6_computer_train_79",
+      "ont_6_computer_train_212",
+      "ont_6_computer_train_288",
+      "ont_6_computer_train_74",
+      "ont_6_computer_train_4"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "platform",
+      "frequencia": 15,
+      "membros": [
+        "platform"
+      ]
+    },
+    {
+      "label": "developed_by",
+      "frequencia": 14,
+      "membros": [
+        "developed_by",
+        "developed_for"
+      ]
+    },
+    {
+      "label": "released_on",
+      "frequencia": 6,
+      "membros": [
+        "released_on",
+        "released",
+        "was_released_on",
+        "release_date"
+      ]
+    },
+    {
+      "label": "created_by",
+      "frequencia": 6,
+      "membros": [
+        "created",
+        "created_by"
+      ]
+    },
+    {
+      "label": "published_by",
+      "frequencia": 5,
+      "membros": [
+        "published_by"
+      ]
+    },
+    {
+      "label": "initially_released_in",
+      "frequencia": 3,
+      "membros": [
+        "initially_released_in",
+        "released_in",
+        "was_released_in"
+      ]
+    }
+  ]
+}

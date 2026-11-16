@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "1_movie",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_1_movie_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_1_movie_train_317",
+      "ont_1_movie_train_816",
+      "ont_1_movie_train_993",
+      "ont_1_movie_train_204",
+      "ont_1_movie_train_875",
+      "ont_1_movie_train_826",
+      "ont_1_movie_train_244",
+      "ont_1_movie_train_663",
+      "ont_1_movie_train_119",
+      "ont_1_movie_train_196",
+      "ont_1_movie_train_330",
+      "ont_1_movie_train_351",
+      "ont_1_movie_train_309",
+      "ont_1_movie_train_751",
+      "ont_1_movie_train_210",
+      "ont_1_movie_train_555",
+      "ont_1_movie_train_189",
+      "ont_1_movie_train_186",
+      "ont_1_movie_train_851",
+      "ont_1_movie_train_733",
+      "ont_1_movie_train_540",
+      "ont_1_movie_train_736",
+      "ont_1_movie_train_871",
+      "ont_1_movie_train_893",
+      "ont_1_movie_train_892",
+      "ont_1_movie_train_34",
+      "ont_1_movie_train_148",
+      "ont_1_movie_train_416",
+      "ont_1_movie_train_296",
+      "ont_1_movie_train_692",
+      "ont_1_movie_train_496",
+      "ont_1_movie_train_35",
+      "ont_1_movie_train_275",
+      "ont_1_movie_train_383",
+      "ont_1_movie_train_19",
+      "ont_1_movie_train_861",
+      "ont_1_movie_train_572",
+      "ont_1_movie_train_827",
+      "ont_1_movie_train_500",
+      "ont_1_movie_train_1056",
+      "ont_1_movie_train_719",
+      "ont_1_movie_train_672",
+      "ont_1_movie_train_924",
+      "ont_1_movie_train_1007",
+      "ont_1_movie_train_302",
+      "ont_1_movie_train_702",
+      "ont_1_movie_train_314",
+      "ont_1_movie_train_205",
+      "ont_1_movie_train_750",
+      "ont_1_movie_train_619"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "genre",
+      "frequencia": 9,
+      "membros": [
+        "genre"
+      ]
+    },
+    {
+      "label": "year",
+      "frequencia": 9,
+      "membros": [
+        "year"
+      ]
+    },
+    {
+      "label": "director",
+      "frequencia": 8,
+      "membros": [
+        "director"
+      ]
+    },
+    {
+      "label": "starring",
+      "frequencia": 8,
+      "membros": [
+        "starring",
+        "starred_in"
+      ]
+    },
+    {
+      "label": "based_on",
+      "frequencia": 7,
+      "membros": [
+        "based_on",
+        "is_based_on"
+      ]
+    },
+    {
+      "label": "release_date",
+      "frequencia": 5,
+      "membros": [
+        "release_date",
+        "released_on"
+      ]
+    },
+    {
+      "label": "title",
+      "frequencia": 5,
+      "membros": [
+        "title"
+      ]
+    },
+    {
+      "label": "produced",
+      "frequencia": 4,
+      "membros": [
+        "produced",
+        "produced_by"
+      ]
+    },
+    {
+      "label": "country",
+      "frequencia": 4,
+      "membros": [
+        "country",
+        "country_of"
+      ]
+    },
+    {
+      "label": "release_year",
+      "frequencia": 4,
+      "membros": [
+        "release_year"
+      ]
+    }
+  ]
+}

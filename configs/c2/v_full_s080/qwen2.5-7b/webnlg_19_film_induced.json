@@ -1,0 +1,183 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "19_film",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_19_film_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_19_film_train_24",
+      "ont_19_film_train_64",
+      "ont_19_film_train_136",
+      "ont_19_film_train_10",
+      "ont_19_film_train_131",
+      "ont_19_film_train_17",
+      "ont_19_film_train_75",
+      "ont_19_film_train_99",
+      "ont_19_film_train_86",
+      "ont_19_film_train_108",
+      "ont_19_film_train_2",
+      "ont_19_film_train_134",
+      "ont_19_film_train_100",
+      "ont_19_film_train_103",
+      "ont_19_film_train_67",
+      "ont_19_film_train_95",
+      "ont_19_film_train_113",
+      "ont_19_film_train_32",
+      "ont_19_film_train_19",
+      "ont_19_film_train_51",
+      "ont_19_film_train_22",
+      "ont_19_film_train_112",
+      "ont_19_film_train_8",
+      "ont_19_film_train_37",
+      "ont_19_film_train_111",
+      "ont_19_film_train_52",
+      "ont_19_film_train_40",
+      "ont_19_film_train_31",
+      "ont_19_film_train_115",
+      "ont_19_film_train_50",
+      "ont_19_film_train_33",
+      "ont_19_film_train_89",
+      "ont_19_film_train_73",
+      "ont_19_film_train_62",
+      "ont_19_film_train_56",
+      "ont_19_film_train_118",
+      "ont_19_film_train_119",
+      "ont_19_film_train_57",
+      "ont_19_film_train_3",
+      "ont_19_film_train_61",
+      "ont_19_film_train_121",
+      "ont_19_film_train_123",
+      "ont_19_film_train_15",
+      "ont_19_film_train_68",
+      "ont_19_film_train_114",
+      "ont_19_film_train_60",
+      "ont_19_film_train_77",
+      "ont_19_film_train_82",
+      "ont_19_film_train_53",
+      "ont_19_film_train_85"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "produced",
+      "frequencia": 17,
+      "membros": [
+        "produced",
+        "produced_by"
+      ]
+    },
+    {
+      "label": "directed",
+      "frequencia": 12,
+      "membros": [
+        "directed"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 10,
+      "membros": [
+        "born",
+        "born_in"
+      ]
+    },
+    {
+      "label": "release_date",
+      "frequencia": 10,
+      "membros": [
+        "released_on",
+        "released",
+        "release_date"
+      ]
+    },
+    {
+      "label": "director",
+      "frequencia": 8,
+      "membros": [
+        "director"
+      ]
+    },
+    {
+      "label": "wrote",
+      "frequencia": 6,
+      "membros": [
+        "wrote"
+      ]
+    },
+    {
+      "label": "music_composer",
+      "frequencia": 6,
+      "membros": [
+        "music_composer",
+        "music_composed_by",
+        "composer"
+      ]
+    },
+    {
+      "label": "producer",
+      "frequencia": 6,
+      "membros": [
+        "producer"
+      ]
+    },
+    {
+      "label": "composed",
+      "frequencia": 5,
+      "membros": [
+        "composed",
+        "composed_by"
+      ]
+    },
+    {
+      "label": "edited",
+      "frequencia": 4,
+      "membros": [
+        "edited"
+      ]
+    },
+    {
+      "label": "directed_by",
+      "frequencia": 4,
+      "membros": [
+        "directed_by"
+      ]
+    },
+    {
+      "label": "editor",
+      "frequencia": 4,
+      "membros": [
+        "editor"
+      ]
+    },
+    {
+      "label": "writer",
+      "frequencia": 4,
+      "membros": [
+        "writer"
+      ]
+    },
+    {
+      "label": "cinematography",
+      "frequencia": 3,
+      "membros": [
+        "cinematography"
+      ]
+    },
+    {
+      "label": "duration",
+      "frequencia": 3,
+      "membros": [
+        "duration"
+      ]
+    }
+  ]
+}

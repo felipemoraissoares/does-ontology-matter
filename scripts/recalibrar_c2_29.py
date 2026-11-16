@@ -52,21 +52,43 @@ def _onto_json(ds, onto):
     return os.path.join(BENCH, "data", sub, "ontologies", f"{onto}_ontology.json")
 
 
-def _max_sim_ref(onto_rels, defs, usar_def):
-    """Maior similaridade entre duas relações de referência (breakpoint D-21)."""
-    if len(onto_rels) < 2:
-        return 0.0
-    modelo = _get_modelo()
+# sim >= isto entre dois rótulos DISTINTOS = embeddings idênticos (relação/definição
+# duplicada na ontologia de referência), não uma "primeira fusão" real.
+_DEGENERADO = 0.999
+
+
+def _textos_ref(onto_rels, defs, usar_def):
     if usar_def and defs:
-        textos = [f"{_normalizar_rotulo(r)}: {defs[normalizar_chave_definicao(r)]}"
-                  if normalizar_chave_definicao(r) in defs else _normalizar_rotulo(r)
-                  for r in onto_rels]
-    else:
-        textos = [_normalizar_rotulo(r) for r in onto_rels]
-    embs = modelo.encode(textos, show_progress_bar=False)
+        return [f"{_normalizar_rotulo(r)}: {defs[normalizar_chave_definicao(r)]}"
+                if normalizar_chave_definicao(r) in defs else _normalizar_rotulo(r)
+                for r in onto_rels]
+    return [_normalizar_rotulo(r) for r in onto_rels]
+
+
+def _pares_ref(onto_rels, defs, usar_def):
+    """Pares (sim, rel_i, rel_j) de relações de referência, ordenados por sim desc."""
+    if len(onto_rels) < 2:
+        return []
+    modelo = _get_modelo()
+    embs = modelo.encode(_textos_ref(onto_rels, defs, usar_def), show_progress_bar=False)
     sim = _cos(embs, embs)
-    np.fill_diagonal(sim, -1.0)
-    return float(sim.max())
+    pares = []
+    n = len(onto_rels)
+    for i in range(n):
+        for j in range(i + 1, n):
+            pares.append((float(sim[i, j]), onto_rels[i], onto_rels[j]))
+    pares.sort(key=lambda x: -x[0])
+    return pares
+
+
+def _breakpoint(pares, excluir_degenerado=True):
+    """Primeiro par que se fundiria = maior sim. Com excluir_degenerado, ignora pares de
+    embeddings idênticos (sim >= _DEGENERADO), que são relações/definições duplicadas."""
+    for s, a, b in pares:
+        if excluir_degenerado and s >= _DEGENERADO:
+            continue
+        return (s, a, b)
+    return None
 
 
 def main():
@@ -82,10 +104,10 @@ def main():
               f"Rode a indução no Kaggle (Etapa C) primeiro.", file=sys.stderr)
         sys.exit(1)
 
-    breakpoints_label, breakpoints_def = [], []
+    registros = []
     todas_linhas = []
-    print(f"{'ontologia':>26} | {'nref':>4} | {'bp(label)':>9} | {'bp(def)':>9} | {'pares':>5}")
-    print("-" * 70)
+    print(f"{'ontologia':>26} | {'nref':>4} | {'bp(def)':>9} | {'degen?':>6} | {'pares':>5}")
+    print("-" * 72)
 
     for ds, ontos in (("tekgen", TEK), ("webnlg", WEB)):
         for onto in ontos:
@@ -103,10 +125,12 @@ def main():
                 defs_raw = json.load(f).get("relacoes", {})
             defs = {normalizar_chave_definicao(k): v for k, v in defs_raw.items()}
 
-            bp_l = _max_sim_ref(onto_rels, defs, usar_def=False)
-            bp_d = _max_sim_ref(onto_rels, defs, usar_def=True)
-            breakpoints_label.append(bp_l)
-            breakpoints_def.append(bp_d)
+            pares_def = _pares_ref(onto_rels, defs, usar_def=True)
+            pares_lab = _pares_ref(onto_rels, defs, usar_def=False)
+            top_def = pares_def[0] if pares_def else None
+            bp_def_real = _breakpoint(pares_def, excluir_degenerado=True)
+            bp_lab_real = _breakpoint(pares_lab, excluir_degenerado=True)
+            degenerado = bool(top_def and top_def[0] >= _DEGENERADO)
 
             n_pares = 0
             if os.path.exists(raw) and os.path.exists(frases_p):
@@ -118,19 +142,42 @@ def main():
                 pares = build_alignment_pairs(gt, free)
                 n_pares = len(pares)
                 if n_pares:
-                    res = calibrate(pares, onto_rels, defs, "label_def")
-                    todas_linhas.extend(res)
-            print(f"{ds+'/'+onto:>26} | {len(onto_rels):>4} | {bp_l:>9.3f} | {bp_d:>9.3f} | {n_pares:>5}")
+                    todas_linhas.extend(calibrate(pares, onto_rels, defs, "label_def"))
 
-    if not breakpoints_label:
+            registros.append({
+                "label": f"{ds}/{onto}", "n": len(onto_rels), "top_def": top_def,
+                "bp_def_real": bp_def_real, "bp_lab_real": bp_lab_real, "degen": degenerado,
+            })
+            bp_show = top_def[0] if top_def else 0.0
+            print(f"{ds+'/'+onto:>26} | {len(onto_rels):>4} | {bp_show:>9.3f} | "
+                  f"{('SIM' if degenerado else '-'):>6} | {n_pares:>5}")
+
+    if not registros:
         print("\nNenhuma ontologia induzida encontrada.")
         return
 
-    thr_label = max(breakpoints_label) + 0.05
-    thr_def = max(breakpoints_def) + 0.05
-    print("\n=== Agrupamento (D-21) ===")
-    print(f"  max breakpoint (só-rótulo)   = {max(breakpoints_label):.3f}  ->  threshold = {thr_label:.3f}")
-    print(f"  max breakpoint (rótulo+def)  = {max(breakpoints_def):.3f}  ->  threshold = {thr_def:.3f}")
+    # (2) Par de breakpoint por ontologia (rótulo+def), maior -> menor
+    print("\n=== Par de breakpoint por ontologia (rótulo+def), maior -> menor ===")
+    for r in sorted((x for x in registros if x["top_def"]), key=lambda x: -x["top_def"][0]):
+        s, a, b = r["top_def"]
+        flag = "  [DEGENERADO: embeddings idênticos]" if r["degen"] else ""
+        print(f"  {r['label']:>26} | sim={s:.3f} | {a!r} ~ {b!r}{flag}")
+
+    # (1) bp=1.000 é par degenerado (duplicado), não sentinela de "sem fusão" — excluído do máx.
+    degen = [r["label"] for r in registros if r["degen"]]
+    reais = [(r["bp_def_real"][0], r) for r in registros if r["bp_def_real"]]
+    print("\n=== Agrupamento (D-21), excluindo pares degenerados (sim >= %.3f) ===" % _DEGENERADO)
+    print(f"  Ontologias com par degenerado (relações/definições idênticas): {len(degen)}")
+    for d in degen:
+        print(f"    - {d}")
+    if reais:
+        mx, onto_mx = max(reais, key=lambda t: t[0])
+        s, a, b = onto_mx["bp_def_real"]
+        print(f"  max breakpoint REAL (rótulo+def) = {mx:.3f}  "
+              f"({onto_mx['label']}: {a!r} ~ {b!r})")
+        print(f"  -> threshold pela regra D-21 = {mx + 0.05:.3f}")
+    mx_inc = max((r["top_def"][0] for r in registros if r["top_def"]), default=0.0)
+    print(f"  (max incluindo degenerados = {mx_inc:.3f} -> thr {mx_inc + 0.05:.3f}, sem sentido)")
 
     print("\n=== Projeção (D-30), agregado sobre as 29 ontologias (label+def) ===")
     if todas_linhas:

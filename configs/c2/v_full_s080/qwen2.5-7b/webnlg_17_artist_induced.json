@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "17_artist",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_17_artist_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_17_artist_train_261",
+      "ont_17_artist_train_74",
+      "ont_17_artist_train_263",
+      "ont_17_artist_train_159",
+      "ont_17_artist_train_193",
+      "ont_17_artist_train_244",
+      "ont_17_artist_train_38",
+      "ont_17_artist_train_123",
+      "ont_17_artist_train_33",
+      "ont_17_artist_train_281",
+      "ont_17_artist_train_20",
+      "ont_17_artist_train_231",
+      "ont_17_artist_train_218",
+      "ont_17_artist_train_228",
+      "ont_17_artist_train_148",
+      "ont_17_artist_train_286",
+      "ont_17_artist_train_6",
+      "ont_17_artist_train_108",
+      "ont_17_artist_train_152",
+      "ont_17_artist_train_179",
+      "ont_17_artist_train_25",
+      "ont_17_artist_train_250",
+      "ont_17_artist_train_2",
+      "ont_17_artist_train_196",
+      "ont_17_artist_train_190",
+      "ont_17_artist_train_56",
+      "ont_17_artist_train_213",
+      "ont_17_artist_train_178",
+      "ont_17_artist_train_171",
+      "ont_17_artist_train_145",
+      "ont_17_artist_train_149",
+      "ont_17_artist_train_18",
+      "ont_17_artist_train_255",
+      "ont_17_artist_train_271",
+      "ont_17_artist_train_251",
+      "ont_17_artist_train_274",
+      "ont_17_artist_train_35",
+      "ont_17_artist_train_39",
+      "ont_17_artist_train_210",
+      "ont_17_artist_train_90",
+      "ont_17_artist_train_294",
+      "ont_17_artist_train_185",
+      "ont_17_artist_train_100",
+      "ont_17_artist_train_49",
+      "ont_17_artist_train_132",
+      "ont_17_artist_train_268",
+      "ont_17_artist_train_140",
+      "ont_17_artist_train_300",
+      "ont_17_artist_train_279",
+      "ont_17_artist_train_47"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "born",
+      "frequencia": 15,
+      "membros": [
+        "born",
+        "born_in"
+      ]
+    },
+    {
+      "label": "associated_with",
+      "frequencia": 12,
+      "membros": [
+        "is_associated_with",
+        "associated_with",
+        "associated"
+      ]
+    },
+    {
+      "label": "died",
+      "frequencia": 7,
+      "membros": [
+        "died"
+      ]
+    },
+    {
+      "label": "plays",
+      "frequencia": 7,
+      "membros": [
+        "plays",
+        "plays_for"
+      ]
+    },
+    {
+      "label": "originated_from",
+      "frequencia": 7,
+      "membros": [
+        "originated_from",
+        "derives_from",
+        "comes_from",
+        "originating_from"
+      ]
+    },
+    {
+      "label": "performs",
+      "frequencia": 5,
+      "membros": [
+        "performs",
+        "performed"
+      ]
+    },
+    {
+      "label": "musical_genre",
+      "frequencia": 4,
+      "membros": [
+        "has_musical_genre",
+        "musical_genre"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 4,
+      "membros": [
+        "is_a"
+      ]
+    },
+    {
+      "label": "started_performing_in",
+      "frequencia": 3,
+      "membros": [
+        "started_performing_in",
+        "began_performing_in"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 3,
+      "membros": [
+        "nationality"
+      ]
+    },
+    {
+      "label": "birthPlace",
+      "frequencia": 3,
+      "membros": [
+        "birthPlace"
+      ]
+    },
+    {
+      "label": "population_density",
+      "frequencia": 3,
+      "membros": [
+        "population_density_of",
+        "population_density"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "16_city",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_16_city_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_16_city_train_22",
+      "ont_16_city_train_101",
+      "ont_16_city_train_97",
+      "ont_16_city_train_50",
+      "ont_16_city_train_91",
+      "ont_16_city_train_107",
+      "ont_16_city_train_2",
+      "ont_16_city_train_82",
+      "ont_16_city_train_40",
+      "ont_16_city_train_56",
+      "ont_16_city_train_10",
+      "ont_16_city_train_17",
+      "ont_16_city_train_79",
+      "ont_16_city_train_108",
+      "ont_16_city_train_123",
+      "ont_16_city_train_8",
+      "ont_16_city_train_27",
+      "ont_16_city_train_105",
+      "ont_16_city_train_48",
+      "ont_16_city_train_81",
+      "ont_16_city_train_31",
+      "ont_16_city_train_53",
+      "ont_16_city_train_32",
+      "ont_16_city_train_122",
+      "ont_16_city_train_99",
+      "ont_16_city_train_94",
+      "ont_16_city_train_19",
+      "ont_16_city_train_130",
+      "ont_16_city_train_33",
+      "ont_16_city_train_103",
+      "ont_16_city_train_64",
+      "ont_16_city_train_67",
+      "ont_16_city_train_3",
+      "ont_16_city_train_37",
+      "ont_16_city_train_109",
+      "ont_16_city_train_96",
+      "ont_16_city_train_15",
+      "ont_16_city_train_106",
+      "ont_16_city_train_52",
+      "ont_16_city_train_128",
+      "ont_16_city_train_61",
+      "ont_16_city_train_51",
+      "ont_16_city_train_77",
+      "ont_16_city_train_35",
+      "ont_16_city_train_57",
+      "ont_16_city_train_60",
+      "ont_16_city_train_39",
+      "ont_16_city_train_116",
+      "ont_16_city_train_42",
+      "ont_16_city_train_89"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "population_density",
+      "frequencia": 23,
+      "membros": [
+        "population_density_of",
+        "population_density",
+        "has_population_density",
+        "populationDensity"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 17,
+      "membros": [
+        "located_at",
+        "located_in"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 16,
+      "membros": [
+        "part_of",
+        "is_part_of",
+        "is part of"
+      ]
+    },
+    {
+      "label": "leader_of",
+      "frequencia": 8,
+      "membros": [
+        "leader_of",
+        "leader_title",
+        "leader"
+      ]
+    },
+    {
+      "label": "in",
+      "frequencia": 7,
+      "membros": [
+        "in",
+        "is_in"
+      ]
+    },
+    {
+      "label": "time_zone_of",
+      "frequencia": 6,
+      "membros": [
+        "time_zone_of",
+        "time_zone",
+        "timezone_of",
+        "timezone"
+      ]
+    },
+    {
+      "label": "government_type",
+      "frequencia": 5,
+      "membros": [
+        "government_type",
+        "uses_government_type",
+        "has_government_type"
+      ]
+    },
+    {
+      "label": "location",
+      "frequencia": 5,
+      "membros": [
+        "location"
+      ]
+    },
+    {
+      "label": "elevation_above_sea_level",
+      "frequencia": 5,
+      "membros": [
+        "height_above_sea_level",
+        "elevation_above_sea_level",
+        "lies_above_sea_level"
+      ]
+    },
+    {
+      "label": "total_area",
+      "frequencia": 5,
+      "membros": [
+        "total_area",
+        "has_total_area"
+      ]
+    },
+    {
+      "label": "led_by",
+      "frequencia": 4,
+      "membros": [
+        "led_by"
+      ]
+    },
+    {
+      "label": "population",
+      "frequencia": 4,
+      "membros": [
+        "population"
+      ]
+    },
+    {
+      "label": "utc_offset",
+      "frequencia": 4,
+      "membros": [
+        "utc_offset",
+        "has_utc_offset"
+      ]
+    }
+  ]
+}

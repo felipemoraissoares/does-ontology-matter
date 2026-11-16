@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "11_meanoftransportation",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_11_meanoftransportation_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_11_meanoftransportation_train_160",
+      "ont_11_meanoftransportation_train_37",
+      "ont_11_meanoftransportation_train_178",
+      "ont_11_meanoftransportation_train_3",
+      "ont_11_meanoftransportation_train_46",
+      "ont_11_meanoftransportation_train_106",
+      "ont_11_meanoftransportation_train_166",
+      "ont_11_meanoftransportation_train_139",
+      "ont_11_meanoftransportation_train_53",
+      "ont_11_meanoftransportation_train_214",
+      "ont_11_meanoftransportation_train_173",
+      "ont_11_meanoftransportation_train_147",
+      "ont_11_meanoftransportation_train_111",
+      "ont_11_meanoftransportation_train_116",
+      "ont_11_meanoftransportation_train_122",
+      "ont_11_meanoftransportation_train_99",
+      "ont_11_meanoftransportation_train_181",
+      "ont_11_meanoftransportation_train_61",
+      "ont_11_meanoftransportation_train_14",
+      "ont_11_meanoftransportation_train_45",
+      "ont_11_meanoftransportation_train_17",
+      "ont_11_meanoftransportation_train_85",
+      "ont_11_meanoftransportation_train_135",
+      "ont_11_meanoftransportation_train_30",
+      "ont_11_meanoftransportation_train_215",
+      "ont_11_meanoftransportation_train_22",
+      "ont_11_meanoftransportation_train_123",
+      "ont_11_meanoftransportation_train_185",
+      "ont_11_meanoftransportation_train_31",
+      "ont_11_meanoftransportation_train_103",
+      "ont_11_meanoftransportation_train_175",
+      "ont_11_meanoftransportation_train_5",
+      "ont_11_meanoftransportation_train_43",
+      "ont_11_meanoftransportation_train_48",
+      "ont_11_meanoftransportation_train_6",
+      "ont_11_meanoftransportation_train_78",
+      "ont_11_meanoftransportation_train_4",
+      "ont_11_meanoftransportation_train_16",
+      "ont_11_meanoftransportation_train_216",
+      "ont_11_meanoftransportation_train_114",
+      "ont_11_meanoftransportation_train_205",
+      "ont_11_meanoftransportation_train_82",
+      "ont_11_meanoftransportation_train_192",
+      "ont_11_meanoftransportation_train_100",
+      "ont_11_meanoftransportation_train_133",
+      "ont_11_meanoftransportation_train_67",
+      "ont_11_meanoftransportation_train_145",
+      "ont_11_meanoftransportation_train_74",
+      "ont_11_meanoftransportation_train_11",
+      "ont_11_meanoftransportation_train_120"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "manufactured_by",
+      "frequencia": 12,
+      "membros": [
+        "manufactured",
+        "manufactured_by",
+        "manufactures",
+        "produced"
+      ]
+    },
+    {
+      "label": "length",
+      "frequencia": 9,
+      "membros": [
+        "length",
+        "length_of"
+      ]
+    },
+    {
+      "label": "has_engine",
+      "frequencia": 9,
+      "membros": [
+        "has_engine",
+        "has_engine_type"
+      ]
+    },
+    {
+      "label": "related_to",
+      "frequencia": 7,
+      "membros": [
+        "related_to",
+        "related"
+      ]
+    },
+    {
+      "label": "production_date",
+      "frequencia": 6,
+      "membros": [
+        "production_date",
+        "production_start_date",
+        "production_end_date"
+      ]
+    },
+    {
+      "label": "made",
+      "frequencia": 5,
+      "membros": [
+        "makes",
+        "made"
+      ]
+    },
+    {
+      "label": "ethnic_group",
+      "frequencia": 5,
+      "membros": [
+        "ethnic_group",
+        "is_ethnic_group",
+        "ethnic_group_of",
+        "ethnic_group_in"
+      ]
+    },
+    {
+      "label": "built",
+      "frequencia": 5,
+      "membros": [
+        "built_by",
+        "built"
+      ]
+    },
+    {
+      "label": "assembled_in",
+      "frequencia": 4,
+      "membros": [
+        "assembled_in"
+      ]
+    },
+    {
+      "label": "launched_from",
+      "frequencia": 4,
+      "membros": [
+        "launching_from",
+        "launched_from"
+      ]
+    },
+    {
+      "label": "comes_from",
+      "frequencia": 4,
+      "membros": [
+        "comes_from",
+        "originated_in"
+      ]
+    },
+    {
+      "label": "located-in",
+      "frequencia": 3,
+      "membros": [
+        "located-in",
+        "located_in",
+        "located"
+      ]
+    },
+    {
+      "label": "has_transmission",
+      "frequencia": 3,
+      "membros": [
+        "has_transmission"
+      ]
+    },
+    {
+      "label": "has_body_style",
+      "frequencia": 3,
+      "membros": [
+        "has_body_style"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "8_celestialbody",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_8_celestialbody_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_8_celestialbody_train_10",
+      "ont_8_celestialbody_train_112",
+      "ont_8_celestialbody_train_63",
+      "ont_8_celestialbody_train_117",
+      "ont_8_celestialbody_train_86",
+      "ont_8_celestialbody_train_31",
+      "ont_8_celestialbody_train_56",
+      "ont_8_celestialbody_train_80",
+      "ont_8_celestialbody_train_99",
+      "ont_8_celestialbody_train_100",
+      "ont_8_celestialbody_train_68",
+      "ont_8_celestialbody_train_122",
+      "ont_8_celestialbody_train_91",
+      "ont_8_celestialbody_train_33",
+      "ont_8_celestialbody_train_17",
+      "ont_8_celestialbody_train_37",
+      "ont_8_celestialbody_train_57",
+      "ont_8_celestialbody_train_74",
+      "ont_8_celestialbody_train_53",
+      "ont_8_celestialbody_train_61",
+      "ont_8_celestialbody_train_9",
+      "ont_8_celestialbody_train_89",
+      "ont_8_celestialbody_train_66",
+      "ont_8_celestialbody_train_97",
+      "ont_8_celestialbody_train_8",
+      "ont_8_celestialbody_train_2",
+      "ont_8_celestialbody_train_81",
+      "ont_8_celestialbody_train_73",
+      "ont_8_celestialbody_train_27",
+      "ont_8_celestialbody_train_83",
+      "ont_8_celestialbody_train_22",
+      "ont_8_celestialbody_train_96",
+      "ont_8_celestialbody_train_42",
+      "ont_8_celestialbody_train_52",
+      "ont_8_celestialbody_train_94",
+      "ont_8_celestialbody_train_40",
+      "ont_8_celestialbody_train_93",
+      "ont_8_celestialbody_train_35",
+      "ont_8_celestialbody_train_101",
+      "ont_8_celestialbody_train_39",
+      "ont_8_celestialbody_train_62",
+      "ont_8_celestialbody_train_51",
+      "ont_8_celestialbody_train_60",
+      "ont_8_celestialbody_train_79",
+      "ont_8_celestialbody_train_23",
+      "ont_8_celestialbody_train_48",
+      "ont_8_celestialbody_train_67",
+      "ont_8_celestialbody_train_24",
+      "ont_8_celestialbody_train_41",
+      "ont_8_celestialbody_train_102"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "discovered",
+      "frequencia": 23,
+      "membros": [
+        "discovered_by",
+        "discovered"
+      ]
+    },
+    {
+      "label": "periapsis",
+      "frequencia": 19,
+      "membros": [
+        "periapsis_of",
+        "has_apoapsis",
+        "periapsis",
+        "apoapsis_of"
+      ]
+    },
+    {
+      "label": "epoch_date",
+      "frequencia": 17,
+      "membros": [
+        "epoch_date_of",
+        "has_epoch_date",
+        "epoch_date",
+        "date_of_epoch",
+        "epoch_of_time"
+      ]
+    },
+    {
+      "label": "orbital_period",
+      "frequencia": 13,
+      "membros": [
+        "has_orbital_period",
+        "orbital_period",
+        "orbital_period_of"
+      ]
+    },
+    {
+      "label": "apoapsis",
+      "frequencia": 13,
+      "membros": [
+        "apoapsis"
+      ]
+    },
+    {
+      "label": "epoch",
+      "frequencia": 6,
+      "membros": [
+        "epoch"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 5,
+      "membros": [
+        "born",
+        "born_in"
+      ]
+    },
+    {
+      "label": "mass",
+      "frequencia": 5,
+      "membros": [
+        "mass",
+        "has_mass"
+      ]
+    },
+    {
+      "label": "has_periapsis",
+      "frequencia": 5,
+      "membros": [
+        "has_periapsis"
+      ]
+    },
+    {
+      "label": "escape_velocity",
+      "frequencia": 4,
+      "membros": [
+        "escape_velocity"
+      ]
+    },
+    {
+      "label": "died_in",
+      "frequencia": 3,
+      "membros": [
+        "died_in"
+      ]
+    }
+  ]
+}

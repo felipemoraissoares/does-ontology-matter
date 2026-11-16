@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "7_company",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_7_company_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_7_company_train_86",
+      "ont_7_company_train_60",
+      "ont_7_company_train_63",
+      "ont_7_company_train_10",
+      "ont_7_company_train_34",
+      "ont_7_company_train_27",
+      "ont_7_company_train_2",
+      "ont_7_company_train_69",
+      "ont_7_company_train_16",
+      "ont_7_company_train_61",
+      "ont_7_company_train_64",
+      "ont_7_company_train_11",
+      "ont_7_company_train_53",
+      "ont_7_company_train_75",
+      "ont_7_company_train_52",
+      "ont_7_company_train_91",
+      "ont_7_company_train_50",
+      "ont_7_company_train_42",
+      "ont_7_company_train_66",
+      "ont_7_company_train_31",
+      "ont_7_company_train_56",
+      "ont_7_company_train_73",
+      "ont_7_company_train_46",
+      "ont_7_company_train_33",
+      "ont_7_company_train_97",
+      "ont_7_company_train_68",
+      "ont_7_company_train_93",
+      "ont_7_company_train_9",
+      "ont_7_company_train_38",
+      "ont_7_company_train_77",
+      "ont_7_company_train_81",
+      "ont_7_company_train_48",
+      "ont_7_company_train_45",
+      "ont_7_company_train_43",
+      "ont_7_company_train_96",
+      "ont_7_company_train_51",
+      "ont_7_company_train_84",
+      "ont_7_company_train_13",
+      "ont_7_company_train_37",
+      "ont_7_company_train_24",
+      "ont_7_company_train_40",
+      "ont_7_company_train_41",
+      "ont_7_company_train_19",
+      "ont_7_company_train_79",
+      "ont_7_company_train_71",
+      "ont_7_company_train_57",
+      "ont_7_company_train_8",
+      "ont_7_company_train_35",
+      "ont_7_company_train_80",
+      "ont_7_company_train_47"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "located_in",
+      "frequencia": 27,
+      "membros": [
+        "located",
+        "located_in",
+        "location_of",
+        "location"
+      ]
+    },
+    {
+      "label": "founded_on",
+      "frequencia": 9,
+      "membros": [
+        "founded_on",
+        "founded_in",
+        "founded",
+        "was_founded_on"
+      ]
+    },
+    {
+      "label": "produces",
+      "frequencia": 8,
+      "membros": [
+        "produces"
+      ]
+    },
+    {
+      "label": "makes",
+      "frequencia": 7,
+      "membros": [
+        "makes"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 6,
+      "membros": [
+        "is_a"
+      ]
+    },
+    {
+      "label": "industry",
+      "frequencia": 4,
+      "membros": [
+        "industry"
+      ]
+    },
+    {
+      "label": "employs",
+      "frequencia": 4,
+      "membros": [
+        "employs"
+      ]
+    },
+    {
+      "label": "has_net_income",
+      "frequencia": 3,
+      "membros": [
+        "has_net_income"
+      ]
+    },
+    {
+      "label": "serves",
+      "frequencia": 3,
+      "membros": [
+        "serves"
+      ]
+    },
+    {
+      "label": "whose_key_person",
+      "frequencia": 3,
+      "membros": [
+        "whose_key_person",
+        "is_key_person"
+      ]
+    },
+    {
+      "label": "offers",
+      "frequencia": 3,
+      "membros": [
+        "offers",
+        "offers services",
+        "offers_in"
+      ]
+    },
+    {
+      "label": "has_subsidiary",
+      "frequencia": 3,
+      "membros": [
+        "has_subsidiary"
+      ]
+    },
+    {
+      "label": "net_income",
+      "frequencia": 3,
+      "membros": [
+        "net_income",
+        "net_income_of"
+      ]
+    }
+  ]
+}

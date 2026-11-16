@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "4_book",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_4_book_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_4_book_train_396",
+      "ont_4_book_train_527",
+      "ont_4_book_train_250",
+      "ont_4_book_train_190",
+      "ont_4_book_train_666",
+      "ont_4_book_train_360",
+      "ont_4_book_train_347",
+      "ont_4_book_train_640",
+      "ont_4_book_train_473",
+      "ont_4_book_train_64",
+      "ont_4_book_train_581",
+      "ont_4_book_train_117",
+      "ont_4_book_train_469",
+      "ont_4_book_train_176",
+      "ont_4_book_train_180",
+      "ont_4_book_train_6",
+      "ont_4_book_train_650",
+      "ont_4_book_train_29",
+      "ont_4_book_train_534",
+      "ont_4_book_train_3",
+      "ont_4_book_train_185",
+      "ont_4_book_train_205",
+      "ont_4_book_train_151",
+      "ont_4_book_train_623",
+      "ont_4_book_train_281",
+      "ont_4_book_train_262",
+      "ont_4_book_train_541",
+      "ont_4_book_train_322",
+      "ont_4_book_train_494",
+      "ont_4_book_train_40",
+      "ont_4_book_train_438",
+      "ont_4_book_train_335",
+      "ont_4_book_train_414",
+      "ont_4_book_train_372",
+      "ont_4_book_train_660",
+      "ont_4_book_train_102",
+      "ont_4_book_train_181",
+      "ont_4_book_train_679",
+      "ont_4_book_train_578",
+      "ont_4_book_train_620",
+      "ont_4_book_train_602",
+      "ont_4_book_train_15",
+      "ont_4_book_train_393",
+      "ont_4_book_train_274",
+      "ont_4_book_train_557",
+      "ont_4_book_train_107",
+      "ont_4_book_train_363",
+      "ont_4_book_train_140",
+      "ont_4_book_train_649",
+      "ont_4_book_train_540"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "published",
+      "frequencia": 17,
+      "membros": [
+        "published_in",
+        "published"
+      ]
+    },
+    {
+      "label": "author",
+      "frequencia": 16,
+      "membros": [
+        "author"
+      ]
+    },
+    {
+      "label": "chief_editor",
+      "frequencia": 9,
+      "membros": [
+        "editors-in-chief",
+        "editor-in-chief",
+        "chief_editor"
+      ]
+    },
+    {
+      "label": "publication_year",
+      "frequencia": 6,
+      "membros": [
+        "publicationYear",
+        "publication_year",
+        "publishedYear"
+      ]
+    },
+    {
+      "label": "published_by",
+      "frequencia": 6,
+      "membros": [
+        "published_by"
+      ]
+    },
+    {
+      "label": "title",
+      "frequencia": 5,
+      "membros": [
+        "title"
+      ]
+    },
+    {
+      "label": "language",
+      "frequencia": 4,
+      "membros": [
+        "language"
+      ]
+    },
+    {
+      "label": "illustrator",
+      "frequencia": 4,
+      "membros": [
+        "illustrator"
+      ]
+    },
+    {
+      "label": "type",
+      "frequencia": 3,
+      "membros": [
+        "type"
+      ]
+    },
+    {
+      "label": "year",
+      "frequencia": 3,
+      "membros": [
+        "year"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 3,
+      "membros": [
+        "is_a"
+      ]
+    },
+    {
+      "label": "written_by",
+      "frequencia": 3,
+      "membros": [
+        "written_by",
+        "was_written_by"
+      ]
+    },
+    {
+      "label": "written",
+      "frequencia": 3,
+      "membros": [
+        "written",
+        "wrote"
+      ]
+    }
+  ]
+}

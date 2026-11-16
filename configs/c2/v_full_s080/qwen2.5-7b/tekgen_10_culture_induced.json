@@ -1,0 +1,156 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "10_culture",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_10_culture_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_10_culture_train_183",
+      "ont_10_culture_train_38",
+      "ont_10_culture_train_61",
+      "ont_10_culture_train_193",
+      "ont_10_culture_train_6",
+      "ont_10_culture_train_105",
+      "ont_10_culture_train_200",
+      "ont_10_culture_train_123",
+      "ont_10_culture_train_14",
+      "ont_10_culture_train_196",
+      "ont_10_culture_train_156",
+      "ont_10_culture_train_67",
+      "ont_10_culture_train_194",
+      "ont_10_culture_train_31",
+      "ont_10_culture_train_53",
+      "ont_10_culture_train_77",
+      "ont_10_culture_train_3",
+      "ont_10_culture_train_162",
+      "ont_10_culture_train_170",
+      "ont_10_culture_train_48",
+      "ont_10_culture_train_199",
+      "ont_10_culture_train_165",
+      "ont_10_culture_train_4",
+      "ont_10_culture_train_46",
+      "ont_10_culture_train_16",
+      "ont_10_culture_train_86",
+      "ont_10_culture_train_37",
+      "ont_10_culture_train_43",
+      "ont_10_culture_train_150",
+      "ont_10_culture_train_159",
+      "ont_10_culture_train_79",
+      "ont_10_culture_train_45",
+      "ont_10_culture_train_161",
+      "ont_10_culture_train_10",
+      "ont_10_culture_train_13",
+      "ont_10_culture_train_39",
+      "ont_10_culture_train_70",
+      "ont_10_culture_train_85",
+      "ont_10_culture_train_96",
+      "ont_10_culture_train_137",
+      "ont_10_culture_train_33",
+      "ont_10_culture_train_62",
+      "ont_10_culture_train_90",
+      "ont_10_culture_train_107",
+      "ont_10_culture_train_11",
+      "ont_10_culture_train_132",
+      "ont_10_culture_train_116",
+      "ont_10_culture_train_74",
+      "ont_10_culture_train_125",
+      "ont_10_culture_train_112"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "established",
+      "frequencia": 15,
+      "membros": [
+        "established",
+        "established_in",
+        "was established"
+      ]
+    },
+    {
+      "label": "occupation",
+      "frequencia": 15,
+      "membros": [
+        "occupation"
+      ]
+    },
+    {
+      "label": "date_of_birth",
+      "frequencia": 8,
+      "membros": [
+        "birth_date",
+        "date_of_birth"
+      ]
+    },
+    {
+      "label": "date_of_death",
+      "frequencia": 8,
+      "membros": [
+        "death_date",
+        "date_of_death"
+      ]
+    },
+    {
+      "label": "published",
+      "frequencia": 7,
+      "membros": [
+        "published",
+        "published_in",
+        "is_published_by"
+      ]
+    },
+    {
+      "label": "name",
+      "frequencia": 6,
+      "membros": [
+        "name"
+      ]
+    },
+    {
+      "label": "wrote",
+      "frequencia": 4,
+      "membros": [
+        "wrote"
+      ]
+    },
+    {
+      "label": "peer_reviewed",
+      "frequencia": 3,
+      "membros": [
+        "peer-reviewed",
+        "peer_reviewed"
+      ]
+    },
+    {
+      "label": "frequency",
+      "frequencia": 3,
+      "membros": [
+        "frequency",
+        "has_frequency"
+      ]
+    },
+    {
+      "label": "published_by",
+      "frequencia": 3,
+      "membros": [
+        "published_by"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 3,
+      "membros": [
+        "nationality"
+      ]
+    }
+  ]
+}

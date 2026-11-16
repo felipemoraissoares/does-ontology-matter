@@ -44,6 +44,8 @@ Cada decisão substitui as propostas anteriores onde houver conflito.
 | D-33 | Ontologia induzida C2 com dimensão de modelo (v_full/\<slug\>) | APROVADA | — |
 | D-34 | Normalização única de chaves de definição e projeção que falha sem definição | APROVADA | — |
 | D-35 | Versões travadas das dependências do Kaggle | APROVADA | — |
+| D-36 | Limiar de projeção 0.45 recalibrado nas 29 ontologias | APROVADA | — |
+| D-37 | Agrupamento C2 mantém 0.70 (desvio do pré-registro D-21) | PENDENTE DE VALIDAÇÃO | — |
 
 ---
 
@@ -1663,3 +1665,85 @@ CUDA (torch) 13.0, 2026-11-16**; trava do lock: **`vllm==0.33.0`**.
 - `scripts/montar_wheelhouse.py` e `docs/kaggle_wheelhouse.md` — wheelhouse a partir do lock.
 - Teste `tests/test_rodar_kaggle.py` — garante que o lock trava só o vllm, lista = projeto,
   e a trava do vllm bate com o freeze.
+
+---
+
+## D-36: Limiar de projeção 0.45 recalibrado nas 29 ontologias
+
+**Status:** APROVADA (2026-11-16)
+
+### Decisão
+
+O limiar de projeção de relações (C0/C2/C3) do **experimento completo** passa a ser **0.45**,
+recalibrado pela mesma regra pré-registrada da D-30 (menor limiar com precisão agregada
+≥ 0,80 nos pares de treino alinhados), agora sobre as **29 ontologias**. Substitui o 0,63 do
+piloto para o experimento completo. **O piloto-v3 mantém 0,63** (fechado, não refeito).
+
+### Resultado da recalibração (`scripts/recalibrar_c2_29.py --slug qwen2.5-7b`)
+
+Agregado label+def sobre as 29 ontologias (465 pares em 0.45):
+
+| Threshold | Precisão | Recall | Aceitos | Corretos |
+|---|---|---|---|---|
+| 0.40 | 0.792 | 0.578 | 523 | 414 |
+| **0.45** | **0.811** | 0.514 | **465** | 377 |
+| 0.50 | 0.825 | 0.466 | 422 | 348 |
+| 0.55 | 0.850 | 0.383 | 347 | 295 |
+| 0.63 (piloto) | ~0.90 | — | — | — |
+
+**0.45** é o menor limiar com precisão ≥ 0,80. Sensibilidade pré-registrada: **0.40**
+(prec 0,792 — abaixo do critério) e **0.55** (prec 0,850 — mais conservador, menos cobertura).
+
+### Implementação
+
+- `scripts/avaliar_resultados.py` — flag `--threshold_proj`; o experimento completo roda com
+  `--threshold_proj 0.45`. Sem a flag, o padrão continua 0,63 (reproduz o piloto).
+- `src/t2kg/avaliacao/extended.py` — `projetar_relacoes(threshold=...)` já aceita o override.
+
+---
+
+## D-37: Agrupamento C2 mantém 0.70 — desvio documentado do pré-registro D-21
+
+**Status:** PENDENTE DE VALIDAÇÃO DO ORIENTADOR (2026-11-16)
+
+### Contexto
+
+A regra pré-registrada D-21 define o threshold de agrupamento como
+`max(breakpoints de referência) + 0,05`, com um limiar único para todas as ontologias. O
+breakpoint de uma ontologia é a maior similaridade (rótulo+def) entre duas de suas relações
+de referência — o primeiro par que se fundiria.
+
+Reaplicada às 29 ontologias (`recalibrar_c2_29.py`), a regra **não é viável**:
+
+- **Pares degenerados (sim = 1,000):** `tekgen/3_sport` (`league` ~ `league`) e
+  `tekgen/5_military` (`designed by` ~ `designed by`) têm **rótulos de referência duplicados**
+  na própria ontologia → embeddings idênticos. Isso **não é** "nenhuma fusão encontrada"
+  (sentinela); é um artefato de duplicata, **excluído** do cálculo do máximo.
+- **Quase sinônimos no DBpedia:** mesmo excluindo os degenerados, as ontologias do WebNLG
+  contêm relações quase sinônimas — `webnlg/9_astronaut` (`awards` ~ `award`, sim 0,939),
+  `webnlg/19_film` (`iso6392Code` ~ `iso6391Code`, 0,906), `webnlg/1_university`
+  (`numberOfPostgraduateStudents` ~ `numberOfUndergraduateStudents`, 0,874). O **max
+  breakpoint real = 0,939** → threshold **0,989** pela regra D-21.
+
+Um threshold de ~0,99 **anula o agrupamento** (quase nenhum par de relações livres seria
+fundido), esvaziando a condição C2.
+
+### Decisão
+
+Mantém-se **threshold de agrupamento = 0,70** (valor do piloto, **já usado na indução das
+29 ontologias no Kaggle**), declarado explicitamente como **DESVIO do pré-registro D-21**.
+Justificativa: o 0,70 agrupa sinônimos de superfície das extrações livres sem colapsar
+relações distintas, enquanto a regra `max+0,05` é dominada por quase sinônimos das ontologias
+de referência do DBpedia e produz um limiar degenerado.
+
+**Análise de sensibilidade planejada:** re-induzir a C2 com threshold **0,80** (a partir das
+respostas cruas e definições já salvas, sem GPU — ver `scripts/reinduzir_s080.py`) e comparar
+o número de relações e as métricas resultantes. Materiais preparados; execução/decisão final
+pendente de validação do orientador.
+
+### Implementação
+
+- `scripts/recalibrar_c2_29.py` — exclui pares degenerados (sim ≥ 0,999); imprime o par de
+  breakpoint por ontologia (maior → menor) e o máximo real.
+- `scripts/reinduzir_s080.py` — re-indução de sensibilidade em 0,80 → `configs/c2/v_full_s080/`
+  (CPU, reaproveita respostas cruas + definições; **não** altera `v_full`).

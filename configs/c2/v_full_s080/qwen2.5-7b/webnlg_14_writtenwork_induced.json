@@ -1,0 +1,212 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "14_writtenwork",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_14_writtenwork_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_14_writtenwork_train_162",
+      "ont_14_writtenwork_train_43",
+      "ont_14_writtenwork_train_3",
+      "ont_14_writtenwork_train_175",
+      "ont_14_writtenwork_train_141",
+      "ont_14_writtenwork_train_13",
+      "ont_14_writtenwork_train_79",
+      "ont_14_writtenwork_train_14",
+      "ont_14_writtenwork_train_122",
+      "ont_14_writtenwork_train_70",
+      "ont_14_writtenwork_train_4",
+      "ont_14_writtenwork_train_184",
+      "ont_14_writtenwork_train_31",
+      "ont_14_writtenwork_train_195",
+      "ont_14_writtenwork_train_168",
+      "ont_14_writtenwork_train_16",
+      "ont_14_writtenwork_train_158",
+      "ont_14_writtenwork_train_37",
+      "ont_14_writtenwork_train_133",
+      "ont_14_writtenwork_train_45",
+      "ont_14_writtenwork_train_6",
+      "ont_14_writtenwork_train_54",
+      "ont_14_writtenwork_train_103",
+      "ont_14_writtenwork_train_80",
+      "ont_14_writtenwork_train_65",
+      "ont_14_writtenwork_train_74",
+      "ont_14_writtenwork_train_38",
+      "ont_14_writtenwork_train_125",
+      "ont_14_writtenwork_train_148",
+      "ont_14_writtenwork_train_176",
+      "ont_14_writtenwork_train_159",
+      "ont_14_writtenwork_train_67",
+      "ont_14_writtenwork_train_126",
+      "ont_14_writtenwork_train_150",
+      "ont_14_writtenwork_train_33",
+      "ont_14_writtenwork_train_53",
+      "ont_14_writtenwork_train_192",
+      "ont_14_writtenwork_train_143",
+      "ont_14_writtenwork_train_11",
+      "ont_14_writtenwork_train_61",
+      "ont_14_writtenwork_train_85",
+      "ont_14_writtenwork_train_127",
+      "ont_14_writtenwork_train_171",
+      "ont_14_writtenwork_train_102",
+      "ont_14_writtenwork_train_191",
+      "ont_14_writtenwork_train_113",
+      "ont_14_writtenwork_train_170",
+      "ont_14_writtenwork_train_101",
+      "ont_14_writtenwork_train_91",
+      "ont_14_writtenwork_train_62"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "wrote",
+      "frequencia": 10,
+      "membros": [
+        "wrote",
+        "written"
+      ]
+    },
+    {
+      "label": "has_isbn_number",
+      "frequencia": 10,
+      "membros": [
+        "has_isbn_number",
+        "has_isbn",
+        "isbn",
+        "hasISBNNumber"
+      ]
+    },
+    {
+      "label": "written_by",
+      "frequencia": 9,
+      "membros": [
+        "written_by",
+        "was_written_by"
+      ]
+    },
+    {
+      "label": "published",
+      "frequencia": 9,
+      "membros": [
+        "published",
+        "published_in",
+        "publish",
+        "published_for",
+        "publishes"
+      ]
+    },
+    {
+      "label": "published_by",
+      "frequencia": 9,
+      "membros": [
+        "published_by"
+      ]
+    },
+    {
+      "label": "released_on",
+      "frequencia": 5,
+      "membros": [
+        "released_on",
+        "release_date",
+        "released"
+      ]
+    },
+    {
+      "label": "preceded_by",
+      "frequencia": 5,
+      "membros": [
+        "preceded_by"
+      ]
+    },
+    {
+      "label": "born_in",
+      "frequencia": 5,
+      "membros": [
+        "born_in",
+        "born"
+      ]
+    },
+    {
+      "label": "author",
+      "frequencia": 4,
+      "membros": [
+        "author"
+      ]
+    },
+    {
+      "label": "influenced_by",
+      "frequencia": 4,
+      "membros": [
+        "influenced_by",
+        "was_influenced_by"
+      ]
+    },
+    {
+      "label": "has_page_count",
+      "frequencia": 4,
+      "membros": [
+        "has_pages",
+        "has_page_count"
+      ]
+    },
+    {
+      "label": "located_at",
+      "frequencia": 4,
+      "membros": [
+        "located_at",
+        "located_in"
+      ]
+    },
+    {
+      "label": "sequel_to",
+      "frequencia": 3,
+      "membros": [
+        "sequel_to",
+        "sequel_of"
+      ]
+    },
+    {
+      "label": "has_oclc",
+      "frequencia": 3,
+      "membros": [
+        "has_oclc",
+        "has_OCLC_number",
+        "has_oclc_number"
+      ]
+    },
+    {
+      "label": "genre_of",
+      "frequencia": 3,
+      "membros": [
+        "genre_of",
+        "genre",
+        "literary_genre"
+      ]
+    },
+    {
+      "label": "has_lccn_number",
+      "frequencia": 3,
+      "membros": [
+        "has_lccn_number",
+        "lccn_number_of"
+      ]
+    },
+    {
+      "label": "has_issn_number",
+      "frequencia": 3,
+      "membros": [
+        "has_issn_number",
+        "issn"
+      ]
+    }
+  ]
+}

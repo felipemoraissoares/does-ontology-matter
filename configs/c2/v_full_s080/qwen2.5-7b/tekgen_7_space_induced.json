@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "7_space",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_7_space_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_7_space_train_243",
+      "ont_7_space_train_10",
+      "ont_7_space_train_104",
+      "ont_7_space_train_61",
+      "ont_7_space_train_6",
+      "ont_7_space_train_80",
+      "ont_7_space_train_241",
+      "ont_7_space_train_188",
+      "ont_7_space_train_46",
+      "ont_7_space_train_52",
+      "ont_7_space_train_133",
+      "ont_7_space_train_4",
+      "ont_7_space_train_173",
+      "ont_7_space_train_30",
+      "ont_7_space_train_175",
+      "ont_7_space_train_223",
+      "ont_7_space_train_100",
+      "ont_7_space_train_139",
+      "ont_7_space_train_112",
+      "ont_7_space_train_211",
+      "ont_7_space_train_214",
+      "ont_7_space_train_202",
+      "ont_7_space_train_79",
+      "ont_7_space_train_90",
+      "ont_7_space_train_73",
+      "ont_7_space_train_216",
+      "ont_7_space_train_227",
+      "ont_7_space_train_120",
+      "ont_7_space_train_199",
+      "ont_7_space_train_259",
+      "ont_7_space_train_169",
+      "ont_7_space_train_136",
+      "ont_7_space_train_22",
+      "ont_7_space_train_62",
+      "ont_7_space_train_235",
+      "ont_7_space_train_16",
+      "ont_7_space_train_255",
+      "ont_7_space_train_101",
+      "ont_7_space_train_239",
+      "ont_7_space_train_29",
+      "ont_7_space_train_129",
+      "ont_7_space_train_185",
+      "ont_7_space_train_85",
+      "ont_7_space_train_215",
+      "ont_7_space_train_145",
+      "ont_7_space_train_45",
+      "ont_7_space_train_114",
+      "ont_7_space_train_106",
+      "ont_7_space_train_28",
+      "ont_7_space_train_86"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "discovered_by",
+      "frequencia": 20,
+      "membros": [
+        "discovered_by",
+        "discovered"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 20,
+      "membros": [
+        "located_in",
+        "located_at",
+        "location_of",
+        "locatedIn"
+      ]
+    },
+    {
+      "label": "discovered_on",
+      "frequencia": 15,
+      "membros": [
+        "discovered_on",
+        "discovered_at"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 13,
+      "membros": [
+        "is_a",
+        "is_an"
+      ]
+    },
+    {
+      "label": "flew",
+      "frequencia": 8,
+      "membros": [
+        "flew",
+        "flown"
+      ]
+    },
+    {
+      "label": "located_in_constellation",
+      "frequencia": 6,
+      "membros": [
+        "located_in_constellation"
+      ]
+    },
+    {
+      "label": "distance_from_earth",
+      "frequencia": 6,
+      "membros": [
+        "distance_from_earth"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 4,
+      "membros": [
+        "part_of",
+        "is_part_of"
+      ]
+    },
+    {
+      "label": "commander_of",
+      "frequencia": 4,
+      "membros": [
+        "commander_of",
+        "was_commander_of"
+      ]
+    },
+    {
+      "label": "in_constellation",
+      "frequencia": 4,
+      "membros": [
+        "in_constellation"
+      ]
+    },
+    {
+      "label": "observed_at",
+      "frequencia": 4,
+      "membros": [
+        "observed_at",
+        "observed_on"
+      ]
+    }
+  ]
+}

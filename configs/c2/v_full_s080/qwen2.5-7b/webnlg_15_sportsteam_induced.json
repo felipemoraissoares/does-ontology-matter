@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "15_sportsteam",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_15_sportsteam_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_15_sportsteam_train_10",
+      "ont_15_sportsteam_train_97",
+      "ont_15_sportsteam_train_100",
+      "ont_15_sportsteam_train_99",
+      "ont_15_sportsteam_train_71",
+      "ont_15_sportsteam_train_17",
+      "ont_15_sportsteam_train_61",
+      "ont_15_sportsteam_train_48",
+      "ont_15_sportsteam_train_102",
+      "ont_15_sportsteam_train_81",
+      "ont_15_sportsteam_train_68",
+      "ont_15_sportsteam_train_22",
+      "ont_15_sportsteam_train_31",
+      "ont_15_sportsteam_train_85",
+      "ont_15_sportsteam_train_33",
+      "ont_15_sportsteam_train_63",
+      "ont_15_sportsteam_train_73",
+      "ont_15_sportsteam_train_120",
+      "ont_15_sportsteam_train_94",
+      "ont_15_sportsteam_train_62",
+      "ont_15_sportsteam_train_57",
+      "ont_15_sportsteam_train_3",
+      "ont_15_sportsteam_train_66",
+      "ont_15_sportsteam_train_79",
+      "ont_15_sportsteam_train_37",
+      "ont_15_sportsteam_train_98",
+      "ont_15_sportsteam_train_8",
+      "ont_15_sportsteam_train_2",
+      "ont_15_sportsteam_train_86",
+      "ont_15_sportsteam_train_53",
+      "ont_15_sportsteam_train_27",
+      "ont_15_sportsteam_train_89",
+      "ont_15_sportsteam_train_74",
+      "ont_15_sportsteam_train_103",
+      "ont_15_sportsteam_train_93",
+      "ont_15_sportsteam_train_114",
+      "ont_15_sportsteam_train_40",
+      "ont_15_sportsteam_train_101",
+      "ont_15_sportsteam_train_35",
+      "ont_15_sportsteam_train_51",
+      "ont_15_sportsteam_train_39",
+      "ont_15_sportsteam_train_109",
+      "ont_15_sportsteam_train_42",
+      "ont_15_sportsteam_train_83",
+      "ont_15_sportsteam_train_77",
+      "ont_15_sportsteam_train_60",
+      "ont_15_sportsteam_train_43",
+      "ont_15_sportsteam_train_125",
+      "ont_15_sportsteam_train_23",
+      "ont_15_sportsteam_train_52"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "plays_for",
+      "frequencia": 17,
+      "membros": [
+        "plays",
+        "plays_for",
+        "played_in"
+      ]
+    },
+    {
+      "label": "ground",
+      "frequencia": 12,
+      "membros": [
+        "ground_of",
+        "ground"
+      ]
+    },
+    {
+      "label": "has_member",
+      "frequencia": 12,
+      "membros": [
+        "has_member",
+        "member_of",
+        "have_members",
+        "has_members"
+      ]
+    },
+    {
+      "label": "manager",
+      "frequencia": 11,
+      "membros": [
+        "manager"
+      ]
+    },
+    {
+      "label": "leader",
+      "frequencia": 10,
+      "membros": [
+        "leader_of",
+        "leader",
+        "is_leader_of",
+        "is_leader"
+      ]
+    },
+    {
+      "label": "played_for",
+      "frequencia": 10,
+      "membros": [
+        "played_for",
+        "currently_plays_for",
+        "used_to_play_for"
+      ]
+    },
+    {
+      "label": "manages",
+      "frequencia": 7,
+      "membros": [
+        "manages",
+        "managing"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 6,
+      "membros": [
+        "located_in",
+        "location_of",
+        "located_at"
+      ]
+    },
+    {
+      "label": "full_name",
+      "frequencia": 5,
+      "membros": [
+        "full_name"
+      ]
+    },
+    {
+      "label": "club",
+      "frequencia": 3,
+      "membros": [
+        "club"
+      ]
+    },
+    {
+      "label": "played_season",
+      "frequencia": 3,
+      "membros": [
+        "played_season",
+        "played_in_season"
+      ]
+    },
+    {
+      "label": "attached_to",
+      "frequencia": 3,
+      "membros": [
+        "attached_to",
+        "attached"
+      ]
+    }
+  ]
+}

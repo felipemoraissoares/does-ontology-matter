@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "8_politics",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_tekgen_8_politics_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_8_politics_train_139",
+      "ont_8_politics_train_49",
+      "ont_8_politics_train_67",
+      "ont_8_politics_train_228",
+      "ont_8_politics_train_183",
+      "ont_8_politics_train_62",
+      "ont_8_politics_train_122",
+      "ont_8_politics_train_202",
+      "ont_8_politics_train_10",
+      "ont_8_politics_train_105",
+      "ont_8_politics_train_213",
+      "ont_8_politics_train_157",
+      "ont_8_politics_train_6",
+      "ont_8_politics_train_252",
+      "ont_8_politics_train_232",
+      "ont_8_politics_train_154",
+      "ont_8_politics_train_229",
+      "ont_8_politics_train_96",
+      "ont_8_politics_train_214",
+      "ont_8_politics_train_124",
+      "ont_8_politics_train_251",
+      "ont_8_politics_train_205",
+      "ont_8_politics_train_101",
+      "ont_8_politics_train_273",
+      "ont_8_politics_train_201",
+      "ont_8_politics_train_265",
+      "ont_8_politics_train_7",
+      "ont_8_politics_train_123",
+      "ont_8_politics_train_104",
+      "ont_8_politics_train_267",
+      "ont_8_politics_train_74",
+      "ont_8_politics_train_256",
+      "ont_8_politics_train_170",
+      "ont_8_politics_train_79",
+      "ont_8_politics_train_106",
+      "ont_8_politics_train_217",
+      "ont_8_politics_train_206",
+      "ont_8_politics_train_249",
+      "ont_8_politics_train_33",
+      "ont_8_politics_train_43",
+      "ont_8_politics_train_195",
+      "ont_8_politics_train_90",
+      "ont_8_politics_train_207",
+      "ont_8_politics_train_222",
+      "ont_8_politics_train_4",
+      "ont_8_politics_train_136",
+      "ont_8_politics_train_46",
+      "ont_8_politics_train_248",
+      "ont_8_politics_train_193",
+      "ont_8_politics_train_66"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "occupation",
+      "frequencia": 11,
+      "membros": [
+        "occupation"
+      ]
+    },
+    {
+      "label": "member_of",
+      "frequencia": 10,
+      "membros": [
+        "member_of",
+        "member"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 9,
+      "membros": [
+        "born"
+      ]
+    },
+    {
+      "label": "position",
+      "frequencia": 7,
+      "membros": [
+        "position"
+      ]
+    },
+    {
+      "label": "served_as",
+      "frequencia": 5,
+      "membros": [
+        "served_as"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 4,
+      "membros": [
+        "nationality"
+      ]
+    },
+    {
+      "label": "start_date",
+      "frequencia": 4,
+      "membros": [
+        "start_date",
+        "startDate"
+      ]
+    },
+    {
+      "label": "end_date",
+      "frequencia": 4,
+      "membros": [
+        "end_date",
+        "endDate"
+      ]
+    },
+    {
+      "label": "time_period",
+      "frequencia": 3,
+      "membros": [
+        "time_period"
+      ]
+    }
+  ]
+}

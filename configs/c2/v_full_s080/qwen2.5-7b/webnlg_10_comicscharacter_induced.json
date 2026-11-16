@@ -1,0 +1,195 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "10_comicscharacter",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.8,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "D:\\Workspace\\mestrado\\llm-kg-ontology\\resultados\\c2_inducao\\v_full\\qwen2.5-7b\\raw_webnlg_10_comicscharacter_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_10_comicscharacter_train_63",
+      "ont_10_comicscharacter_train_49",
+      "ont_10_comicscharacter_train_30",
+      "ont_10_comicscharacter_train_26",
+      "ont_10_comicscharacter_train_8",
+      "ont_10_comicscharacter_train_47",
+      "ont_10_comicscharacter_train_58",
+      "ont_10_comicscharacter_train_32",
+      "ont_10_comicscharacter_train_17",
+      "ont_10_comicscharacter_train_50",
+      "ont_10_comicscharacter_train_10",
+      "ont_10_comicscharacter_train_34",
+      "ont_10_comicscharacter_train_31",
+      "ont_10_comicscharacter_train_21",
+      "ont_10_comicscharacter_train_19",
+      "ont_10_comicscharacter_train_54",
+      "ont_10_comicscharacter_train_24",
+      "ont_10_comicscharacter_train_46",
+      "ont_10_comicscharacter_train_45",
+      "ont_10_comicscharacter_train_61",
+      "ont_10_comicscharacter_train_20",
+      "ont_10_comicscharacter_train_23",
+      "ont_10_comicscharacter_train_12",
+      "ont_10_comicscharacter_train_40",
+      "ont_10_comicscharacter_train_43",
+      "ont_10_comicscharacter_train_52",
+      "ont_10_comicscharacter_train_65",
+      "ont_10_comicscharacter_train_41",
+      "ont_10_comicscharacter_train_25",
+      "ont_10_comicscharacter_train_59",
+      "ont_10_comicscharacter_train_5",
+      "ont_10_comicscharacter_train_37",
+      "ont_10_comicscharacter_train_22",
+      "ont_10_comicscharacter_train_53",
+      "ont_10_comicscharacter_train_11",
+      "ont_10_comicscharacter_train_1",
+      "ont_10_comicscharacter_train_18",
+      "ont_10_comicscharacter_train_29",
+      "ont_10_comicscharacter_train_57",
+      "ont_10_comicscharacter_train_27",
+      "ont_10_comicscharacter_train_56",
+      "ont_10_comicscharacter_train_42",
+      "ont_10_comicscharacter_train_13",
+      "ont_10_comicscharacter_train_64",
+      "ont_10_comicscharacter_train_51",
+      "ont_10_comicscharacter_train_39",
+      "ont_10_comicscharacter_train_33",
+      "ont_10_comicscharacter_train_62",
+      "ont_10_comicscharacter_train_14",
+      "ont_10_comicscharacter_train_55"
+    ],
+    "run_id": "S080"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "created_by",
+      "frequencia": 36,
+      "membros": [
+        "created",
+        "created_by",
+        "creation"
+      ]
+    },
+    {
+      "label": "broadcast",
+      "frequencia": 22,
+      "membros": [
+        "broadcasted",
+        "broadcast",
+        "broadcasted_by",
+        "broadcast_by",
+        "broadcasts",
+        "broadcasting"
+      ]
+    },
+    {
+      "label": "starred",
+      "frequencia": 12,
+      "membros": [
+        "starred",
+        "starred_in"
+      ]
+    },
+    {
+      "label": "location",
+      "frequencia": 6,
+      "membros": [
+        "location",
+        "location_of",
+        "located"
+      ]
+    },
+    {
+      "label": "also_known_as",
+      "frequencia": 6,
+      "membros": [
+        "is_also_known_as",
+        "also_known_as",
+        "known_as"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 5,
+      "membros": [
+        "located_in",
+        "is_located_in"
+      ]
+    },
+    {
+      "label": "aired_on",
+      "frequencia": 5,
+      "membros": [
+        "aired_on",
+        "aired_in"
+      ]
+    },
+    {
+      "label": "first_aired",
+      "frequencia": 4,
+      "membros": [
+        "first_aired",
+        "was_first_aired_on"
+      ]
+    },
+    {
+      "label": "born_in",
+      "frequencia": 4,
+      "membros": [
+        "born_in",
+        "born"
+      ]
+    },
+    {
+      "label": "aired",
+      "frequencia": 3,
+      "membros": [
+        "aired"
+      ]
+    },
+    {
+      "label": "shown_on",
+      "frequencia": 3,
+      "membros": [
+        "showed_on",
+        "shown_on"
+      ]
+    },
+    {
+      "label": "founded_by",
+      "frequencia": 3,
+      "membros": [
+        "founded_by",
+        "founded"
+      ]
+    },
+    {
+      "label": "stars",
+      "frequencia": 3,
+      "membros": [
+        "stars"
+      ]
+    },
+    {
+      "label": "last_aired",
+      "frequencia": 3,
+      "membros": [
+        "last_aired"
+      ]
+    },
+    {
+      "label": "broadcast_on",
+      "frequencia": 3,
+      "membros": [
+        "broadcast_on",
+        "was_broadcast_by"
+      ]
+    }
+  ]
+}
