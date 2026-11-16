@@ -42,6 +42,9 @@ venv/
 # Notebooks (checkpoints)
 .ipynb_checkpoints/
 
+# Cache do app Streamlit
+app/.cache/
+
 # Arquivos temporários
 *.tmp
 scripts/temp_*.json
