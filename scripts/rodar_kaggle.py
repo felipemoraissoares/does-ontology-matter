@@ -26,6 +26,21 @@ from t2kg.modelos import slug_modelo  # noqa: E402
 
 # Módulos verificados no teste de import do modo congelar_ambiente.
 IMPORTS_TESTE = ["vllm", "torch", "transformers", "sentence_transformers", "nltk"]
+# Único pacote travado no lock: determina o motor de inferência (D-35).
+PACOTE_TRAVADO = "vllm"
+# Pacotes cujas versões efetivas são impressas no log após a instalação.
+VERSOES_LOG = ["vllm", "torch", "transformers", "sentence-transformers", "numpy"]
+
+
+def _imprimir_versoes():
+    """Imprime as versões efetivas instaladas (logo após a instalação, no run)."""
+    import importlib.metadata as md
+    print("Versões efetivas instaladas:")
+    for pkg in VERSOES_LOG:
+        try:
+            print(f"  {pkg}=={md.version(pkg)}")
+        except Exception:
+            print(f"  {pkg}: nao instalado")
 
 
 def sh(cmd, env, cwd=None):
@@ -91,20 +106,27 @@ def gerar_freeze(repo_dir: str) -> str:
 
 
 def gerar_lock(repo_dir: str):
-    """Lock com APENAS os pacotes de requirements-kaggle.txt, travados nas versões
-    instaladas. O resto das dependências é resolvido pelo pip — evita re-resolver um freeze
-    completo e irresolvível. Retorna (texto, faltando).
+    """Lock = a lista de requirements-kaggle.txt com UMA única trava: vllm==<versão instalada>.
+    O resto é resolvido pelo pip sobre a imagem do Kaggle. Travar todas as versões é
+    irresolvível porque a imagem pré-instalada traz conflitos "no papel" que o pip só
+    aceita numa instalação incremental (D-35). Retorna (texto, faltando).
     """
     import importlib.metadata as md
     linhas, faltando = [], []
     for nome in _pacotes_base(repo_dir):
-        try:
-            linhas.append(f"{nome}=={md.version(nome)}")
-        except md.PackageNotFoundError:
-            faltando.append(nome)
-    cab = _cabecalho("requirements-kaggle.lock.txt - pacotes diretos do projeto travados (D-35).")
-    cab.insert(1, "# O resto das dependencias e resolvido pelo pip. Freeze: requirements-kaggle.freeze.txt.")
-    return "\n".join(cab + sorted(linhas, key=str.lower)) + "\n", faltando
+        if nome == PACOTE_TRAVADO:
+            try:
+                linhas.append(f"{nome}=={md.version(nome)}")
+            except md.PackageNotFoundError:
+                faltando.append(nome)
+                linhas.append(nome)
+        else:
+            linhas.append(nome)  # sem travar — pip resolve
+    cab = _cabecalho(
+        f"requirements-kaggle.lock.txt - apenas {PACOTE_TRAVADO} travado (motor de inferencia) (D-35).")
+    cab.insert(1, "# O resto e resolvido pelo pip sobre a imagem do Kaggle. "
+                  "Freeze: requirements-kaggle.freeze.txt.")
+    return "\n".join(cab + linhas) + "\n", faltando
 
 
 def _salvar_freeze_run(repo_dir: str, destino_dir: str):
@@ -250,6 +272,10 @@ def main():
     p.add_argument("--freeze_out", default=None,
                    help="Caminho do freeze a gravar (padrão: <repo>/requirements-kaggle.freeze.txt).")
     args = p.parse_args()
+
+    # Logo após a instalação (feita antes no lançador): registra as versões efetivas no log.
+    if not args.mock:
+        _imprimir_versoes()
 
     if args.modo == "congelar_ambiente":
         modo_congelar(args)

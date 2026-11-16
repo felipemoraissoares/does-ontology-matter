@@ -1,17 +1,17 @@
-# requirements-kaggle.lock.txt - pacotes diretos do projeto travados (D-35).
-# O resto das dependencias e resolvido pelo pip. Freeze completo: requirements-kaggle.freeze.txt.
+# requirements-kaggle.lock.txt - apenas o vLLM travado (motor de inferencia); o resto e
+# resolvido pelo pip sobre a imagem do Kaggle (D-35). Freeze completo: requirements-kaggle.freeze.txt.
 # Python: 3.13.16
 # CUDA (torch): 13.0
 # Data: 2026-11-16
 
-nltk==3.9.1
-numpy==1.26.4
-openai==2.54.0
-pandas==2.3.3
-scikit-learn==1.6.1
-scipy==1.16.3
-sentence-transformers==5.7.0
-statsmodels==0.15.0
-torch==2.14.0
-transformers==5.20.2
 vllm==0.33.0
+torch
+transformers
+openai
+sentence-transformers
+scikit-learn
+nltk
+scipy
+numpy
+pandas
+statsmodels

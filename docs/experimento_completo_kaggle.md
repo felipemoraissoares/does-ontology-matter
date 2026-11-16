@@ -15,6 +15,9 @@ Ordem das sessões: **0) congelar_ambiente → 1) inducao_c2 → 2) experimento.
 
 - **Reimportar o notebook** no Kaggle (ele mudou).
 - `Settings → Secrets`: `GITHUB_TOKEN` (repo write) e `HF_TOKEN`, ambos anexados.
+- `Settings → Environment → **Pin to original environment**` (não "Always use latest") — fixa
+  a imagem base do Kaggle entre sessões. O lock trava só o `vllm`; torch/transformers/numpy
+  vêm da imagem, então mantê-la fixa garante reprodutibilidade sem travar tudo no pip (D-35).
 
 ---
 

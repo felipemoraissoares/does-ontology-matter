@@ -1614,49 +1614,52 @@ falhou com *"No matching distribution found for torch==2.4.0"*. As versões não
 inventadas; têm de ser as que o próprio Kaggle resolve.
 
 **2ª correção (2026-11-16):** o primeiro lock gravava o `pip freeze` COMPLETO (151 pacotes).
-Re-resolver esse conjunto inteiro é **irresolvível** (ex.: `flashinfer-python` vs
-`packaging==24.0` → *ResolutionImpossible*), porque o ambiente do Kaggle já traz conflitos
-internos que só não quebram porque nada é re-resolvido. **Travar só os pacotes diretos do
-projeto** e deixar o pip resolver o resto evita isso.
+Re-resolver esse conjunto é irresolvível (`flashinfer-python` vs `packaging==24.0`).
+
+**3ª correção (2026-11-16):** travar **todas** as versões dos pacotes diretos (copiadas do
+freeze) **também falha** — `numpy==1.26.4` vs os *kernels* do vllm → *ResolutionImpossible*.
+Causa: a **imagem pré-instalada do Kaggle** é um ambiente que *funciona* mas tem conflitos
+"no papel" entre restrições de pacotes. O pip tolera isso numa **instalação incremental**
+(instala/atualiza só o que falta, sem re-resolver o grafo inteiro), mas uma **instalação
+travada** (`pip install -r` com versões exatas) força o resolvedor a satisfazer todas as
+restrições de uma vez — o que é impossível. Logo, o freeze do Kaggle **não serve como lock**.
 
 ### Decisão
 
-1. **`requirements-kaggle.txt` é só a LISTA de pacotes diretos do projeto (sem versão)** —
-   `vllm, torch, transformers, openai, sentence-transformers, scikit-learn, nltk, scipy,
-   numpy, pandas, statsmodels`. O resolvedor do Kaggle escolhe as versões compatíveis com o
-   Python/CUDA do momento.
-2. **`congelar_ambiente` gera DOIS arquivos** (Accelerator: None, sem vLLM): instala a lista
-   sem travar, testa os imports (`vllm, torch, transformers, sentence_transformers, nltk`) e:
-   - **`requirements-kaggle.lock.txt`** — **apenas os pacotes de `requirements-kaggle.txt`**,
-     travados nas versões instaladas. É o que se usa para instalar. O resto das dependências
-     é resolvido pelo pip (resolúvel).
-   - **`requirements-kaggle.freeze.txt`** — o `pip freeze` COMPLETO, só para auditoria
-     (NÃO é usado para instalar).
-
-   Ambos com cabeçalho (Python, CUDA (torch), data). Push verificado dos dois.
-3. **Os modos `inducao_c2` e `experimento` instalam do lock** (`pip install -r
-   requirements-kaggle.lock.txt`). Se o lock não existir, o lançador **para** com a mensagem
-   para rodar `congelar_ambiente` primeiro.
-4. **Freeze por run.** Cada run (`inducao_c2`/`experimento`) grava o `pip freeze` real da
-   sessão junto dos resultados (`resultados/.../ambiente_pip_freeze.txt`), para auditoria do
-   ambiente exato que gerou cada saída.
-5. **Wheelhouse a partir do lock.** O *wheelhouse* baixa as *wheels* do lock.
+1. **Travar só o vLLM.** `requirements-kaggle.lock.txt` tem a mesma lista de
+   `requirements-kaggle.txt` (sem versão), com **uma única trava: `vllm==<versão>`**. O vLLM
+   determina o motor de inferência (kernels/scheduler) e, portanto, a geração em fp16/AWQ;
+   fixá-lo é o que garante a comparabilidade entre sessões. O resto (torch, transformers,
+   numpy, …) é resolvido pelo pip **sobre a imagem do Kaggle**, respeitando o que já está
+   instalado — instalação incremental, sem o conflito acima.
+2. **Imagem do Kaggle fixada nas configurações do notebook.** Para o ambiente base não
+   mudar entre sessões, fixe no Kaggle `Settings → Environment → "Pin to original environment"`
+   (não "Always use latest"). Assim torch/transformers/numpy da imagem ficam estáveis sem
+   precisar travá-los no pip.
+3. **`congelar_ambiente` gera dois arquivos** (Accelerator: None, sem vLLM): instala a lista
+   sem travar, testa os imports e grava:
+   - **`requirements-kaggle.lock.txt`** — lista do projeto com só `vllm==<versão>` travado
+     (usado para instalar nos demais modos).
+   - **`requirements-kaggle.freeze.txt`** — `pip freeze` COMPLETO, **só registro/auditoria**.
+4. **Os modos `inducao_c2`/`experimento` instalam do lock**; se faltar, o lançador **para**
+   pedindo para rodar `congelar_ambiente` antes. Logo após a instalação, o run imprime no log
+   as versões efetivas de `vllm, torch, transformers, sentence-transformers, numpy`.
+5. **Freeze por run.** Cada run grava o `pip freeze` real da sessão em
+   `resultados/.../ambiente_pip_freeze.txt` e faz push — auditoria do ambiente exato de cada saída.
 6. **Verificação na 1ª sessão.** O smoke de poucas frases por modelo (I-11) confirma que a
    pilha gera saídas sãs antes de comprometer horas de GPU.
 
-Versões efetivas do run atual (cabeçalho do lock): **Python 3.13.16, CUDA (torch) 13.0,
-2026-11-16** — `vllm==0.33.0, torch==2.14.0, transformers==5.20.2, sentence-transformers==5.7.0,
-openai==2.54.0, scikit-learn==1.6.1, scipy==1.16.3, numpy==1.26.4, pandas==2.3.3,
-statsmodels==0.15.0, nltk==3.9.1`.
+Versões efetivas do ambiente atual (cabeçalho do freeze/lock): **Python 3.13.16,
+CUDA (torch) 13.0, 2026-11-16**; trava do lock: **`vllm==0.33.0`**.
 
 ### Implementação
 
 - `requirements-kaggle.txt` — lista de pacotes diretos (sem versão).
-- `requirements-kaggle.lock.txt` — só os pacotes do projeto, travados (usado para instalar).
+- `requirements-kaggle.lock.txt` — lista do projeto com só `vllm==<versão>` travado.
 - `requirements-kaggle.freeze.txt` — `pip freeze` completo (auditoria).
-- `scripts/rodar_kaggle.py` — `gerar_lock()` (só projeto), `gerar_freeze()` (completo),
-  `_salvar_freeze_run()` (freeze por run), modo `congelar_ambiente`.
+- `scripts/rodar_kaggle.py` — `gerar_lock()` (trava só vllm), `gerar_freeze()`,
+  `_salvar_freeze_run()` (freeze por run), `_imprimir_versoes()`, modo `congelar_ambiente`.
 - `kaggle/lancador.ipynb` — instalação do lock nos modos de execução; sem travar no congelar.
 - `scripts/montar_wheelhouse.py` e `docs/kaggle_wheelhouse.md` — wheelhouse a partir do lock.
-- Teste `tests/test_rodar_kaggle.py` — garante lock ⊆ freeze (mesmas versões) e lock =
-  pacotes de `requirements-kaggle.txt`.
+- Teste `tests/test_rodar_kaggle.py` — garante que o lock trava só o vllm, lista = projeto,
+  e a trava do vllm bate com o freeze.

@@ -1,4 +1,4 @@
-"""D-35: lock só com pacotes do projeto + freeze completo (auditoria)."""
+"""D-35: lock trava só o vLLM; freeze completo é só auditoria."""
 import argparse
 import os
 import sys
@@ -13,30 +13,48 @@ FREEZE = os.path.join(REPO, "requirements-kaggle.freeze.txt")
 REQ = os.path.join(REPO, "requirements-kaggle.txt")
 
 
+def _canon(n):
+    return n.strip().lower().replace("_", "-")
+
+
+def _nomes(path):
+    """Nomes de pacotes (com ou sem versão)."""
+    out = []
+    with open(path, encoding="utf-8") as f:
+        for l in f:
+            l = l.strip()
+            if not l or l.startswith("#"):
+                continue
+            out.append(_canon(l.split("==")[0]))
+    return out
+
+
 def _pins(path):
-    """{pacote_canonico: versao} das linhas pkg==ver de um arquivo."""
+    """Só os pacotes travados {nome: versao}."""
     out = {}
     with open(path, encoding="utf-8") as f:
         for l in f:
             l = l.strip()
             if not l or l.startswith("#") or "==" not in l:
                 continue
-            nome, ver = l.split("==", 1)
-            out[nome.strip().lower().replace("_", "-")] = ver.strip()
+            n, v = l.split("==", 1)
+            out[_canon(n)] = v.strip()
     return out
 
 
 class TestGerarLock:
-    def test_retorna_texto_e_faltando(self):
+    def test_lista_completa_e_trava_so_vllm(self):
         texto, faltando = rk.gerar_lock(REPO)
-        assert texto.splitlines()[0].startswith("# requirements-kaggle.lock.txt")
-        assert any(l.startswith("# Python:") for l in texto.splitlines())
-        assert isinstance(faltando, list)
+        nomes = [_canon(l.split("==")[0]) for l in texto.splitlines()
+                 if l and not l.startswith("#")]
+        assert {"vllm", "torch", "numpy"} <= set(nomes)
+        pins = [l for l in texto.splitlines() if "==" in l and not l.startswith("#")]
+        # No máximo o vllm é travado; nenhum outro pacote carrega ==.
+        assert all(_canon(p.split("==")[0]) == "vllm" for p in pins)
 
     def test_pacotes_base_inclui_torch_transformers(self):
         nomes = rk._pacotes_base(REPO)
         assert {"vllm", "torch", "transformers", "numpy"} <= set(nomes)
-        assert all("==" not in n for n in nomes)
 
 
 class TestModoCongelar:
@@ -47,21 +65,16 @@ class TestModoCongelar:
                                   lock_out=lock_out, freeze_out=freeze_out)
         rk.modo_congelar(args)
         assert os.path.exists(lock_out) and os.path.exists(freeze_out)
-        assert "# Python:" in open(lock_out, encoding="utf-8").read()
-        assert "# Python:" in open(freeze_out, encoding="utf-8").read()
 
 
-class TestLockCoerenteComFreeze:
-    """Ponto 3: todo pacote do lock está no freeze com a MESMA versão."""
+class TestLockCommitado:
+    def test_so_vllm_travado(self):
+        pins = _pins(LOCK)
+        assert set(pins) == {"vllm"}, f"lock deveria travar só vllm, tem: {set(pins)}"
+        assert pins["vllm"], "versão do vllm vazia"
 
-    def test_lock_subset_do_freeze(self):
-        lock, freeze = _pins(LOCK), _pins(FREEZE)
-        assert lock, "lock vazio"
-        for pkg, ver in lock.items():
-            assert pkg in freeze, f"{pkg} do lock ausente no freeze"
-            assert freeze[pkg] == ver, f"{pkg}: lock {ver} != freeze {freeze[pkg]}"
+    def test_lista_igual_requirements(self):
+        assert set(_nomes(LOCK)) == set(_nomes(REQ))
 
-    def test_lock_so_tem_pacotes_do_projeto(self):
-        projeto = {n.lower().replace("_", "-") for n in rk._pacotes_base(REPO)}
-        lock = set(_pins(LOCK))
-        assert lock == projeto, f"lock != projeto: {lock ^ projeto}"
+    def test_vllm_bate_com_freeze(self):
+        assert _pins(FREEZE).get("vllm") == _pins(LOCK)["vllm"]
