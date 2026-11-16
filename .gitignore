@@ -19,6 +19,13 @@ resultados/*
 !resultados/piloto_v3/**
 !resultados/avaliacao_piloto_v3/
 !resultados/avaliacao_piloto_v3/**
+# Experimento completo (C-1): saída por modelo em resultados/7b/ e resultados/full/<slug>/
+!resultados/7b/
+!resultados/7b/**
+!resultados/full/
+!resultados/full/**
+!resultados/avaliacao/
+!resultados/avaliacao/**
 
 # Python
 __pycache__/
