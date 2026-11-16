@@ -14,12 +14,43 @@ from t2kg.avaliacao.extended import (
     deduplicar_onto_list,
     sumarizar_estendido,
     avaliar_frase_estendida,
+    projetar_relacoes,
+    normalizar_chave_definicao,
     _normalizar_rotulo,
 )
 
 
 def _ont(relacoes):
     return {"concepts": [], "relations": [{"label": r} for r in relacoes]}
+
+
+class TestNormalizarChaveDefinicao:
+    def test_espaco_vira_underscore_e_minusculo(self):
+        assert normalizar_chave_definicao("based on") == "based_on"
+        assert normalizar_chave_definicao("Publication Date") == "publication_date"
+        assert normalizar_chave_definicao(" cast member ") == "cast_member"
+
+    def test_ja_normalizado_inalterado(self):
+        assert normalizar_chave_definicao("based_on") == "based_on"
+
+
+class TestProjecaoFalhaSemDefinicao:
+    def test_falta_definicao_levanta_erro(self):
+        ont = _ont(["based on", "cast member"])
+        triplas = [["a", "based on", "b"]]
+        # "cast member" sem definição → deve falhar (nunca cair para só-rótulo)
+        with pytest.raises(ValueError) as e:
+            projetar_relacoes(triplas, ont, definicoes_ref={"based_on": "x def"})
+        assert "D-34" in str(e.value)
+        assert "cast member" in str(e.value)
+
+    def test_definicoes_multi_palavra_resolvem(self):
+        # Chave gravada com underscore casa com rótulo de referência com espaço (I-1).
+        ont = _ont(["based on"])
+        triplas = [["a", "based on", "b"]]
+        defs = {"based_on": "A work derived from an original source."}
+        projetadas, frac = projetar_relacoes(triplas, ont, definicoes_ref=defs)
+        assert frac >= 0.0  # não levanta: todas as refs têm definição
 
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

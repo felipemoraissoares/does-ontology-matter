@@ -6,6 +6,8 @@
 
 > **Re-run D-32** (commits d19f4b4, 9aced71): placeholders `relation_name(...)` tratados como fmt_error; C2/webnlg/19_film re-induzida sem `relation_name`. Células alteradas marcadas com ⁺.
 
+> **Nota D-34 (projeção label+def):** no piloto, relações de referência com mais de uma palavra (ex.: `based on`, `publication date`) foram projetadas **sem definição** — a chave gravada (`based_on`) não casava com o rótulo consultado (`based on`). Calibração (D-30) e avaliação usaram exatamente a mesma regra, então o piloto é **autoconsistente** e **não é refeito**. Corrigido para o experimento completo: chave de definição normalizada em todos os pontos e projeção que falha se faltar definição de alguma relação de referência (D-34).
+
 > am = modo amostra; Conf-nv / Hal-nv = excluindo respostas vazias; F1-proj = projeção D-24.
 
 

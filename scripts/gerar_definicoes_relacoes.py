@@ -24,6 +24,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from t2kg.parser import parsear_resposta  # noqa: E402
+from t2kg.avaliacao.extended import normalizar_chave_definicao  # noqa: E402
 
 BENCH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Text2KGBench"))
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -43,7 +44,7 @@ def _carregar_relacoes_jsonl(source_jsonl: str):
             r = json.loads(line)
             for t in r.get("triples", []):
                 if len(t) >= 2:
-                    rotulos.add(t[1].strip().lower())
+                    rotulos.add(normalizar_chave_definicao(t[1]))  # D-34
     return rotulos
 
 
@@ -55,7 +56,7 @@ def _carregar_relacoes_ontologia(dataset: str, onto_id: str):
         p = os.path.join(BENCH, "data", "dbpedia_webnlg", "ontologies", f"{onto_id}_ontology.json")
     with open(p, encoding="utf-8") as f:
         onto = json.load(f)
-    return {r["label"].lower().replace(" ", "_") for r in onto.get("relations", [])}
+    return {normalizar_chave_definicao(r["label"]) for r in onto.get("relations", [])}  # D-34
 
 
 def _caminho_cache(onto_id: str):

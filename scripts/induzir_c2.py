@@ -40,7 +40,7 @@ from t2kg.pipeline.dados import carregar_frases, carregar_frases_treino  # noqa:
 from t2kg.pipeline.provedores.openai_compat import ProvedorOpenAICompat  # noqa: E402
 from t2kg.pipeline.prompts import montar_prompt  # noqa: E402
 from t2kg.parser import parsear_resposta  # noqa: E402
-from t2kg.avaliacao.extended import _normalizar_rotulo  # noqa: E402
+from t2kg.avaliacao.extended import _normalizar_rotulo, normalizar_chave_definicao  # noqa: E402
 
 BENCH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Text2KGBench"))
 MODELO_EMBS = "all-MiniLM-L6-v2"
@@ -125,8 +125,14 @@ def agrupar_relacoes(
     contagem = Counter(relacoes)
     unicos = list(contagem.keys())
     if definicoes:
+        # D-34: consulta por chave canônica
+        defs_norm = {normalizar_chave_definicao(k): v for k, v in definicoes.items()}
         norm_fn = _normalizar_rotulo if normalizar else (lambda r: r.replace("_", " ").lower())
-        unicos_embs = [f"{norm_fn(r)}: {definicoes[r]}" if r in definicoes else norm_fn(r) for r in unicos]
+        unicos_embs = [
+            f"{norm_fn(r)}: {defs_norm[normalizar_chave_definicao(r)]}"
+            if normalizar_chave_definicao(r) in defs_norm else norm_fn(r)
+            for r in unicos
+        ]
     elif normalizar:
         unicos_embs = [_normalizar_rotulo(r) for r in unicos]
     else:

@@ -87,6 +87,16 @@ def _normalizar_rotulo(label: str) -> str:
     s = re.sub(r"^(has |is )", "", s)
     s = re.sub(r" (by|of|in|to|for)$", "", s)
     return s.strip()
+
+
+def normalizar_chave_definicao(label: str) -> str:
+    """D-34: chave canônica única dos dicionários de definição (rótulo → definição).
+
+    Usada ao GRAVAR e ao CONSULTAR definições em todos os pontos (gravação, indução,
+    projeção e calibração). Resolve o bug I-1 em que rótulos multi-palavra
+    (ex.: "based on") nunca casavam com a chave gravada ("based_on").
+    """
+    return label.strip().lower().replace(" ", "_")
 _MODELO_EMBS = "all-MiniLM-L6-v2"
 _modelo_cache: Optional[object] = None
 
@@ -133,10 +143,11 @@ def projetar_relacoes(
     Para cada relação extraída, computa SimE com todos os labels da ontologia e aceita
     o mapeamento se SimE >= threshold. Triplas sem mapeamento são descartadas.
 
-    threshold: se None, usa THRESHOLD_PROJ_DEF (0.55) com definicoes_ref ou
+    threshold: se None, usa THRESHOLD_PROJ_DEF (0.63) com definicoes_ref ou
                THRESHOLD_PROJ_LABEL (0.50) sem definicoes_ref (D-30).
     definicoes_ref: dict {label: definicao} para usar embeddings D-24 ("label: def")
-    nos labels de referência.
+    nos labels de referência. D-34: se fornecido, TODAS as relações de referência
+    precisam de definição — caso contrário levanta ValueError.
 
     Retorna: (triplas_projetadas, fracao_projetada)
     """
@@ -146,20 +157,32 @@ def projetar_relacoes(
     if threshold is None:
         threshold = THRESHOLD_PROJ_DEF if definicoes_ref is not None else THRESHOLD_PROJ_LABEL
 
-    modelo = _get_modelo()
     rels_ref_orig = [r["label"] for r in ontologia_ref["relations"]]
-
     if not rels_ref_orig:
         return [], 0.0
 
-    if definicoes_ref:
+    # D-34: valida as definições ANTES de carregar o modelo de embeddings.
+    if definicoes_ref is not None:
+        # modo label+def exige definição para TODAS as relações de referência.
+        # Nunca cai em silêncio para o formato só-rótulo (bug I-1).
+        defs_norm = {normalizar_chave_definicao(k): v for k, v in definicoes_ref.items()}
+        faltando = [r for r in rels_ref_orig
+                    if normalizar_chave_definicao(r) not in defs_norm]
+        if faltando:
+            raise ValueError(
+                f"D-34: projeção label+def exige definição para TODAS as "
+                f"{len(rels_ref_orig)} relações de referência; faltam {len(faltando)}: "
+                f"{faltando[:8]}. Gere as definições (gerar_definicoes_relacoes.py) "
+                f"ou chame com definicoes_ref=None para o modo só-rótulo."
+            )
         rels_ref = [
-            f"{_normalizar_rotulo(r)}: {definicoes_ref[r]}"
-            if r in definicoes_ref else _normalizar_rotulo(r)
+            f"{_normalizar_rotulo(r)}: {defs_norm[normalizar_chave_definicao(r)]}"
             for r in rels_ref_orig
         ]
     else:
         rels_ref = [_normalizar_rotulo(r) for r in rels_ref_orig]
+
+    modelo = _get_modelo()
 
     rels_sistema = list({t[1] for t in triplas})
     rels_sistema_norm = [_normalizar_rotulo(r) for r in rels_sistema]
@@ -262,7 +285,14 @@ def redundancia_semantica(triplas: List, threshold: float = 0.80, definicoes: Op
 
     modelo = _get_modelo()
     if definicoes:
-        rotulos_norm = [f"{_normalizar_rotulo(r)}: {definicoes[r]}" if r in definicoes else _normalizar_rotulo(r) for r in rotulos_distintos]
+        # D-34: consulta por chave canônica; rótulos livres (vocabulário aberto)
+        # sem definição caem para só-rótulo — aqui o fallback é legítimo.
+        defs_norm = {normalizar_chave_definicao(k): v for k, v in definicoes.items()}
+        rotulos_norm = [
+            f"{_normalizar_rotulo(r)}: {defs_norm[normalizar_chave_definicao(r)]}"
+            if normalizar_chave_definicao(r) in defs_norm else _normalizar_rotulo(r)
+            for r in rotulos_distintos
+        ]
     else:
         rotulos_norm = [_normalizar_rotulo(r) for r in rotulos_distintos]
     embs = modelo.encode(rotulos_norm, show_progress_bar=False)

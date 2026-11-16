@@ -32,7 +32,7 @@ RAW_DIR = os.path.join(REPO, "resultados", "c2_inducao")
 
 sys.path.insert(0, os.path.join(REPO, "src"))
 
-from t2kg.avaliacao.extended import _normalizar_rotulo, _get_modelo
+from t2kg.avaliacao.extended import _normalizar_rotulo, _get_modelo, normalizar_chave_definicao
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity as _cos_sim
 
@@ -148,8 +148,11 @@ def calibrate(pairs: List[Tuple[str, str]],
 
     # Embeddings das relações de referência (ontologia)
     if defs:
+        # D-34: consulta por chave canônica (resolve rótulos multi-palavra como "based on")
+        defs_norm = {normalizar_chave_definicao(k): v for k, v in defs.items()}
         rels_ref_emb = [
-            f"{_normalizar_rotulo(r)}: {defs[r]}" if r in defs else _normalizar_rotulo(r)
+            f"{_normalizar_rotulo(r)}: {defs_norm[normalizar_chave_definicao(r)]}"
+            if normalizar_chave_definicao(r) in defs_norm else _normalizar_rotulo(r)
             for r in onto_rels
         ]
     else:
