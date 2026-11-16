@@ -5,6 +5,32 @@ Objetivo: identificar riscos antes do experimento completo (8 modelos × 29 onto
 7 condições, ~100 h de GPU no Kaggle). **Nenhum código foi alterado nesta auditoria**;
 itens que tocam decisões D-01–D-32 estão marcados como PROPOSTA.
 
+## Status das correções (Etapa 0 — 2026-11-15)
+
+Correção dos itens CRÍTICOS e dos IMPORTANTES de baixo custo. `pytest` completo
+(648 passed) e smoke test com Mock passando ao fim da etapa. Novas decisões: D-33, D-34, D-35.
+
+| Item | Status | Commit |
+|---|---|---|
+| C-1 — `.gitignore` rastreia saída do experimento completo | **CORRIGIDO** | `9a7db17`, `b8de243` |
+| C-2 — `--skip_existentes` só pula experimento completo | **CORRIGIDO** | `92e020a` |
+| C-3 — `ler_jsonl` tolera truncamento / erra em corrupção | **CORRIGIDO** | `80e032d` |
+| C-4 — lançador faz push verificado por experimento | **CORRIGIDO** (notebook — reimportar) | `ae334d5` |
+| C-5 — ontologia C2 com dimensão de modelo (D-33) | **CORRIGIDO** (estrutura; manifesto na Etapa B) | `8d7d20a` |
+| C-6 — versões travadas das dependências (D-35) | **CORRIGIDO** (wheelhouse na Etapa A) | `c8e08c4` |
+| C-7 — `pytest` coleta com manifesto em dict | **CORRIGIDO** | `f3c6cbf` |
+| C-8 — normalização de chave de definição + projeção falha sem definição (D-34) | **CORRIGIDO** | `77b9b3c` |
+| Reprodução dos baselines (caminho Alpaca TekGen) | **CORRIGIDO** — 6/6 cenários batem | `db5738f` |
+| I-1 — lookup de definição multi-palavra | **CORRIGIDO** (parte de C-8/D-34) | `77b9b3c` |
+| I-2 — C5 sem parceira cai em silêncio | **CORRIGIDO** | `450a6c2` |
+| I-3 — reprodução aborta por caminho errado | **CORRIGIDO** | `db5738f` |
+| I-4 — `open()` sem `encoding` em `_contar_registros` | **SEM AÇÃO** — falso positivo; o código já usava `encoding="utf-8"` (grep confirmou nenhum `open()` sem encoding em `src/` e `scripts/`) | — |
+| I-7 — `FORCE_RERUN=True` default | **CORRIGIDO** (notebook — reimportar) | `ae334d5` |
+| I-9 — `finish_reason` não registrado | **CORRIGIDO** | `450a6c2` |
+| I-10 — `params_c2.json` com `freq_min=5` | **CORRIGIDO** | `450a6c2` |
+| I-5, I-6, I-8, I-11 | **PENDENTE** — I-5 (dimensão de modelo em manifesto/avaliação) tratado na Etapa B; I-6 (restauração de sessão) superado pelo push por experimento de C-4; I-8 (try/except por experimento) e I-11 (verificação de modelos novos) ficam para a configuração do experimento completo | — |
+| OPCIONAIS (O-1…O-9) | **PENDENTE** — exceto O-2 (docstring 0.63) e O-4 (None vs {}) corrigidos junto de C-8 | `77b9b3c` |
+
 ## Verificações executadas
 
 | Verificação | Resultado |
