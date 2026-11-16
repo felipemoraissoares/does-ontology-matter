@@ -24,7 +24,10 @@ def _carregar_manifestos():
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         for exp in _experimentos(data):
-            items.append((path.name, exp))
+            # Manifestos de indução C2 (tarefas sem 'saida') não têm caminho de
+            # saída de experimento — as checagens de portabilidade não se aplicam.
+            if "saida" in exp:
+                items.append((path.name, exp))
     return items
 
 

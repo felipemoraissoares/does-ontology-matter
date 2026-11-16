@@ -59,20 +59,21 @@ def _carregar_relacoes_ontologia(dataset: str, onto_id: str):
     return {normalizar_chave_definicao(r["label"]) for r in onto.get("relations", [])}  # D-34
 
 
-def _caminho_cache(onto_id: str):
-    return os.path.join(REPO, "configs", "c2", f"definicoes_{onto_id}.json")
+def _caminho_cache(onto_id: str, saida_dir: str = None):
+    base = saida_dir if saida_dir else os.path.join(REPO, "configs", "c2")
+    return os.path.join(base, f"definicoes_{onto_id}.json")
 
 
-def _carregar_cache(onto_id: str):
-    p = _caminho_cache(onto_id)
+def _carregar_cache(onto_id: str, saida_dir: str = None):
+    p = _caminho_cache(onto_id, saida_dir)
     if os.path.exists(p):
         with open(p, encoding="utf-8") as f:
             return json.load(f)
     return {"modelo": None, "relacoes": {}}
 
 
-def _salvar_cache(onto_id: str, cache: dict):
-    p = _caminho_cache(onto_id)
+def _salvar_cache(onto_id: str, cache: dict, saida_dir: str = None):
+    p = _caminho_cache(onto_id, saida_dir)
     os.makedirs(os.path.dirname(p), exist_ok=True)
     with open(p, "w", encoding="utf-8") as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
@@ -92,7 +93,7 @@ def gerar_definicoes(rotulos, cache, provedor, modelo_nome):
         resp = provedor.gerar(prompt, max_tokens=128, temperatura=0.0).strip()
         cache["relacoes"][rotulo] = resp
         if (i + 1) % 10 == 0:
-            print(f"    {i+1}/{len(pendentes)}: {rotulo!r} → {resp[:60]}...")
+            print(f"    {i+1}/{len(pendentes)}: {rotulo!r} -> {resp[:60]}...")
 
     return cache
 
@@ -109,9 +110,12 @@ if __name__ == "__main__":
                    help="Apenas lê e exibe o cache existente, sem chamar o LLM.")
     p.add_argument("--mock", action="store_true",
                    help="Usa ProvedorMock em vez de vLLM (para testes locais sem GPU).")
+    p.add_argument("--saida_dir", default=None,
+                   help="Diretório do cache de definições. Padrão: configs/c2/ (piloto). "
+                        "Experimento completo: configs/c2/v_full/<slug>/ (D-33/D-34).")
     args = p.parse_args()
 
-    cache = _carregar_cache(args.onto_id)
+    cache = _carregar_cache(args.onto_id, args.saida_dir)
 
     # Coleta rótulos
     rotulos = _carregar_relacoes_ontologia(args.dataset, args.onto_id)
@@ -134,13 +138,13 @@ if __name__ == "__main__":
         from t2kg.pipeline.provedores.mock import ProvedorMock
         provedor = ProvedorMock(resposta_fixa="A relationship between two entities.")
         cache = gerar_definicoes(rotulos, cache, provedor, "mock")
-        _salvar_cache(args.onto_id, cache)
-        print(f"\nDefinições (mock) salvas em: {_caminho_cache(args.onto_id)}")
+        _salvar_cache(args.onto_id, cache, args.saida_dir)
+        print(f"\nDefinições (mock) salvas em: {_caminho_cache(args.onto_id, args.saida_dir)}")
         print(f"Total de definições: {len(cache['relacoes'])}")
     else:
         from t2kg.pipeline.provedores.openai_compat import ProvedorOpenAICompat
         provedor = ProvedorOpenAICompat(url=args.url, api_key="token-nao-usado", modelo=args.modelo_llm)
         cache = gerar_definicoes(rotulos, cache, provedor, args.modelo_llm)
-        _salvar_cache(args.onto_id, cache)
-        print(f"\nDefinições salvas em: {_caminho_cache(args.onto_id)}")
+        _salvar_cache(args.onto_id, cache, args.saida_dir)
+        print(f"\nDefinições salvas em: {_caminho_cache(args.onto_id, args.saida_dir)}")
         print(f"Total de definições: {len(cache['relacoes'])}")
