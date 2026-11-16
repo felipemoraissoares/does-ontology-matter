@@ -15,11 +15,15 @@ import argparse
 import datetime
 import json
 import os
+import re
 import subprocess
 import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SCRIPTS = os.path.join(REPO, "scripts")
+
+# Módulos verificados no teste de import do modo congelar_ambiente.
+IMPORTS_TESTE = ["vllm", "torch", "transformers", "sentence_transformers", "nltk"]
 
 
 def sh(cmd, env, cwd=None):
@@ -36,6 +40,107 @@ def git(gargs, repo_dir):
 def _env(repo_dir):
     return {**os.environ, "PYTHONPATH": os.path.join(repo_dir, "src"),
             "PYTHONIOENCODING": "utf-8"}
+
+
+def _canon(nome: str) -> str:
+    return re.sub(r"[-_.]+", "-", nome).strip().lower()
+
+
+def _pacotes_base(repo_dir: str):
+    """Nomes dos pacotes de requirements-kaggle.txt (sem versão)."""
+    req = os.path.join(repo_dir, "requirements-kaggle.txt")
+    nomes = []
+    with open(req, encoding="utf-8") as f:
+        for linha in f:
+            linha = linha.strip()
+            if not linha or linha.startswith("#"):
+                continue
+            nome = re.split(r"[<>=!~;\[\s]", linha, 1)[0].strip()
+            if nome:
+                nomes.append(nome)
+    return nomes
+
+
+def _cuda_torch() -> str:
+    try:
+        import torch
+        return torch.version.cuda or "cpu"
+    except Exception:
+        return "desconhecido"
+
+
+def gerar_lock(repo_dir: str) -> str:
+    """Monta o conteúdo de requirements-kaggle.lock.txt: pacotes do projeto + suas
+    dependências diretas, com as versões EFETIVAS instaladas, e cabeçalho (Python/CUDA/Data).
+    """
+    import importlib.metadata as md
+
+    tops = _pacotes_base(repo_dir)
+    candidatos = {_canon(t) for t in tops}
+    for t in tops:
+        try:
+            for req in (md.requires(t) or []):
+                nome = re.split(r"[<>=!~;\[\s(]", req, 1)[0].strip()
+                if nome:
+                    candidatos.add(_canon(nome))
+        except md.PackageNotFoundError:
+            pass
+
+    instaladas = {}
+    for dist in md.distributions():
+        nome = (dist.metadata["Name"] if dist.metadata else None)
+        if nome and _canon(nome) in candidatos:
+            instaladas[_canon(nome)] = (nome, dist.version)
+
+    linhas = [f"{n}=={v}" for _, (n, v) in sorted(instaladas.items())]
+    cab = [
+        "# requirements-kaggle.lock.txt — gerado por MODO=congelar_ambiente no Kaggle (D-35).",
+        f"# Python: {sys.version.split()[0]}",
+        f"# CUDA (torch): {_cuda_torch()}",
+        f"# Data: {datetime.date.today().isoformat()}",
+        "",
+    ]
+    return "\n".join(cab + linhas) + "\n"
+
+
+def modo_congelar(args):
+    # 1. Teste rápido de import (pula imports pesados em --mock)
+    if args.mock:
+        print("[mock] pulando teste de import de vllm/torch/...")
+    else:
+        faltando = []
+        for m in IMPORTS_TESTE:
+            try:
+                __import__(m)
+            except Exception as e:
+                faltando.append(f"{m}: {type(e).__name__}: {str(e)[:120]}")
+        if faltando:
+            raise RuntimeError("Teste de import falhou:\n  " + "\n  ".join(faltando))
+        print(f"Teste de import OK: {', '.join(IMPORTS_TESTE)}")
+
+    # 2. Gera e grava o lock
+    lock_txt = gerar_lock(args.repo_dir)
+    lock_path = args.lock_out or os.path.join(args.repo_dir, "requirements-kaggle.lock.txt")
+    with open(lock_path, "w", encoding="utf-8") as f:
+        f.write(lock_txt)
+    n_pkgs = sum(1 for l in lock_txt.splitlines() if l and not l.startswith("#"))
+    print(f"Lock gravado: {lock_path} ({n_pkgs} pacotes)")
+
+    # 3. Push verificado (salvo em --no_push)
+    if args.no_push:
+        print("(--no_push: sem git)")
+        return
+    rel = os.path.relpath(lock_path, args.repo_dir).replace("\\", "/")
+    git(["add", rel], args.repo_dir)
+    if git(["status", "--porcelain", rel], args.repo_dir).stdout.strip():
+        git(["commit", "-m", "auto: requirements-kaggle.lock.txt (congelar_ambiente)"], args.repo_dir)
+        r = git(["push"], args.repo_dir)
+        if r.returncode == 0:
+            print("Push do lock OK.")
+        else:
+            raise RuntimeError(f"Push do lock falhou: {r.stderr[:200]}")
+    else:
+        print("Lock inalterado — nada para commitar.")
 
 
 def modo_inducao(args):
@@ -94,7 +199,8 @@ def modo_experimento(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--modo", required=True, choices=["inducao_c2", "experimento"])
+    p.add_argument("--modo", required=True,
+                   choices=["congelar_ambiente", "inducao_c2", "experimento"])
     p.add_argument("--repo_dir", default=REPO)
     p.add_argument("--bench_dir", default=os.path.abspath(os.path.join(REPO, "..", "Text2KGBench")))
     p.add_argument("--work_dir", default=os.path.abspath(os.path.join(REPO, "..")))
@@ -110,9 +216,13 @@ def main():
     p.add_argument("--run_id", default=None)
     p.add_argument("--mock", action="store_true")
     p.add_argument("--no_push", action="store_true")
+    p.add_argument("--lock_out", default=None,
+                   help="Caminho do lock a gravar (padrão: <repo>/requirements-kaggle.lock.txt).")
     args = p.parse_args()
 
-    if args.modo == "inducao_c2":
+    if args.modo == "congelar_ambiente":
+        modo_congelar(args)
+    elif args.modo == "inducao_c2":
         modo_inducao(args)
     else:
         if not args.manifesto:

@@ -49,8 +49,17 @@ def main():
     rodar = os.path.join(SCRIPTS, "rodar_kaggle.py")
 
     try:
+        # ---- MODO congelar_ambiente (mock, sem push) ----
+        print("--- MODO congelar_ambiente (mock) ---")
+        lock_out = os.path.join(tmp, "req.lock.txt")
+        run([sys.executable, rodar, "--modo", "congelar_ambiente", "--mock", "--no_push",
+             "--repo_dir", REPO, "--lock_out", lock_out], env)
+        cab = open(lock_out, encoding="utf-8").read()
+        assert "# Python:" in cab and "# CUDA (torch):" in cab, "cabeçalho do lock ausente"
+        print("  OK: lock gerado com cabeçalho")
+
         # ---- MODO inducao_c2 ----
-        print("--- MODO inducao_c2 (mock) ---")
+        print("\n--- MODO inducao_c2 (mock) ---")
         tarefas = [{"dataset": ds, "onto": o, "n_frases": 3, "seed": 42,
                     "threshold": 0.70, "freq_min": 1, "calibrar": False, "ativo": True}
                    for ds, o in ONTOS]
@@ -89,7 +98,8 @@ def main():
         print("  OK: experimentos C2 geraram saída")
 
         print("\n" + "=" * 60)
-        print("SMOKE OK — lançador nos dois modos (inducao_c2 + experimento)")
+        print("SMOKE OK — lançador nos três modos "
+              "(congelar_ambiente + inducao_c2 + experimento)")
         print("=" * 60)
         return 0
     except Exception as exc:

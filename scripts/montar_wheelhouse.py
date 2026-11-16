@@ -5,9 +5,12 @@ IMPORTANTE: rode este script **no Kaggle** (ou em outro Linux com o MESMO Python
 ambiente de execução). As wheels são específicas de plataforma/versão de Python; baixá-las
 no Windows produziria arquivos que o Kaggle não consegue instalar.
 
+Pré-requisito: rode antes o lançador com MODO="congelar_ambiente" para gerar o LOCK
+(requirements-kaggle.lock.txt com as versões efetivas do Kaggle). O wheelhouse usa o lock.
+
 Uso (numa célula de um notebook Kaggle, após clonar o repo):
     !python does-ontology-matter/scripts/montar_wheelhouse.py \
-        --requirements does-ontology-matter/requirements-kaggle.txt \
+        --requirements does-ontology-matter/requirements-kaggle.lock.txt \
         --saida /kaggle/working/wheelhouse
 
 Depois, crie um Dataset do Kaggle a partir da pasta de saída (ver docs/kaggle_wheelhouse.md).
@@ -21,8 +24,9 @@ import sys
 
 def main():
     p = argparse.ArgumentParser(description="Baixa as wheels das dependências travadas.")
-    p.add_argument("--requirements", default="requirements-kaggle.txt",
-                   help="Arquivo de requisitos travado (D-35).")
+    p.add_argument("--requirements", default="requirements-kaggle.lock.txt",
+                   help="Arquivo de requisitos travado — use o LOCK gerado por "
+                        "congelar_ambiente (D-35).")
     p.add_argument("--saida", default="wheelhouse",
                    help="Pasta onde salvar as wheels (vira o Dataset do Kaggle).")
     args = p.parse_args()

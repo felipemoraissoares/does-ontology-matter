@@ -12,20 +12,27 @@ Você faz isto **uma vez**. Depois é só anexar o Dataset ao notebook do experi
 
 ---
 
+## Parte 0 — Gerar o lock (pré-requisito)
+
+O wheelhouse usa o `requirements-kaggle.lock.txt`, que lista as versões **reais** do Kaggle.
+Rode o lançador com `MODO = "congelar_ambiente"` (Accelerator: None) **uma vez** para gerar e
+commitar esse lock (ver `docs/experimento_completo_kaggle.md`). Sem o lock, pule para a
+instalação normal (o lançador instala sem travar e gera o lock sozinho).
+
 ## Parte 1 — Gerar o wheelhouse (uma vez, no Kaggle)
 
 > Precisa ser feito **no Kaggle** porque os pacotes são específicos do sistema do Kaggle
 > (Linux). Não dá para gerar no seu PC Windows.
 
 1. No Kaggle, crie um **Notebook** novo (`+ Create` → `New Notebook`).
-2. (Opcional, recomendado) Em **Settings** (barra lateral direita), ligue **GPU T4 x2** —
-   não é obrigatório para baixar os pacotes, mas garante o mesmo ambiente.
-3. Cole **uma célula** com o conteúdo abaixo e rode (ícone ▶):
+2. (Opcional) Em **Settings**, ligue **GPU T4 x2** — não é obrigatório para baixar os
+   pacotes, mas garante o mesmo ambiente.
+3. Cole **uma célula** com o conteúdo abaixo e rode (ícone ▶) — usa o **lock**:
 
    ```python
    !git clone --depth=1 https://github.com/felipemoraissoares/does-ontology-matter.git
    !python does-ontology-matter/scripts/montar_wheelhouse.py \
-       --requirements does-ontology-matter/requirements-kaggle.txt \
+       --requirements does-ontology-matter/requirements-kaggle.lock.txt \
        --saida /kaggle/working/wheelhouse
    ```
 

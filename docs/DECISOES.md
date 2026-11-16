@@ -1599,51 +1599,46 @@ o piloto é **autoconsistente** — mas a representação label+def era parcial.
 
 ## D-35: Versões travadas das dependências do Kaggle
 
-**Status:** APROVADA (2026-11-15)
+**Status:** APROVADA (2026-11-15; revisada 2026-11-16 — versões vêm do lock gerado no Kaggle)
 
 ### Contexto
 
 O lançador instalava `vllm openai sentence-transformers scikit-learn nltk scipy numpy
 pandas statsmodels` **sem versões** (C-6 da auditoria). O experimento completo roda em
 muitas sessões ao longo de semanas; um upgrade do vLLM (kernels/scheduler) entre sessões
-mudaria a geração em fp16/AWQ e quebraria a comparabilidade entre modelos/condições
-rodados em sessões diferentes.
+mudaria a geração em fp16/AWQ e quebraria a comparabilidade entre sessões.
+
+**Correção (2026-11-16):** a primeira tentativa fixou versões escolhidas **sem verificar no
+Kaggle** (ex.: `torch==2.4.0`), que não existem para o Python 3.13 do Kaggle — a instalação
+falhou com *"No matching distribution found for torch==2.4.0"*. As versões não podem ser
+inventadas; têm de ser as que o próprio Kaggle resolve.
 
 ### Decisão
 
-1. **Arquivo de requisitos travado:** `requirements-kaggle.txt` fixa as versões diretas.
-   O lançador instala a partir dele (ou do *wheelhouse* da Etapa A, que congela também a
-   árvore transitiva de dependências).
-2. **Versões diretas fixadas** (conjunto coerente com T4 fp16 + Qwen2.5-AWQ + Gemma 2 +
-   modelos 14B/32B via tensor-parallel):
+1. **`requirements-kaggle.txt` é só a LISTA de pacotes (sem versão)** — a mesma que
+   funcionou no piloto-v3. Deixar o resolvedor do Kaggle escolher as versões compatíveis
+   com o Python/CUDA do momento.
+2. **O travamento é feito NO KAGGLE.** O lançador tem o modo `MODO="congelar_ambiente"`
+   (Accelerator: None, sem vLLM): instala a lista sem travar, testa os imports
+   (`vllm, torch, transformers, sentence_transformers, nltk`), e grava
+   **`requirements-kaggle.lock.txt`** com as versões efetivas (pacotes do projeto + suas
+   dependências diretas) e um cabeçalho com Python, CUDA (torch) e data. Faz push verificado.
+3. **Os modos `inducao_c2` e `experimento` instalam do lock.** Se
+   `requirements-kaggle.lock.txt` não existir, o lançador **para** com a mensagem para rodar
+   `congelar_ambiente` primeiro. Reprodutibilidade entre sessões garantida pelo lock.
+4. **Wheelhouse a partir do lock.** O *wheelhouse* (Etapa A) baixa as *wheels* do lock; a
+   instalação `--no-index --find-links` reproduz exatamente aquele conjunto.
+5. **Verificação na 1ª sessão.** Antes de comprometer horas de GPU, o smoke de poucas frases
+   por modelo (I-11) confirma que a pilha gera saídas sãs.
 
-   | Pacote | Versão |
-   |---|---|
-   | vllm | 0.6.3.post1 |
-   | torch | 2.4.0 |
-   | transformers | 4.45.2 |
-   | openai | 1.54.4 |
-   | sentence-transformers | 3.2.1 |
-   | scikit-learn | 1.5.2 |
-   | nltk | 3.9.1 |
-   | scipy | 1.14.1 |
-   | numpy | 1.26.4 |
-   | pandas | 2.2.3 |
-   | statsmodels | 0.14.4 |
-
-3. **Lock definitivo = wheelhouse.** O *wheelhouse* (Etapa A) resolve e baixa a árvore
-   transitiva completa como *wheels*; a instalação `--no-index --find-links` reproduz
-   exatamente esse conjunto, independente do que o PyPI sirva depois. O conjunto congelado
-   do wheelhouse é o lock definitivo.
-4. **Verificação na 1ª sessão.** Antes de comprometer horas de GPU, a primeira sessão do
-   experimento completo deve rodar o smoke de poucas frases por modelo (I-11) e confirmar
-   que a pilha instalada gera saídas sãs. Se alguma versão acima for incompatível com o
-   ambiente do Kaggle no momento, ajustar `requirements-kaggle.txt`, regenerar o wheelhouse
-   e registrar a correção aqui.
+As versões definitivas são as registradas em `requirements-kaggle.lock.txt` (gerado no
+Kaggle; a data e o Python/CUDA constam no cabeçalho do arquivo).
 
 ### Implementação
 
-- `requirements-kaggle.txt` (raiz do repo).
-- `kaggle/lancador.ipynb` — célula de instalação usa o wheelhouse quando anexado, com
-  *fallback* para `pip install -r requirements-kaggle.txt` (Etapa A).
-- `scripts/montar_wheelhouse.py` e `docs/kaggle_wheelhouse.md` (Etapa A).
+- `requirements-kaggle.txt` — lista sem versões.
+- `requirements-kaggle.lock.txt` — gerado por `congelar_ambiente` no Kaggle (commitado de lá).
+- `scripts/rodar_kaggle.py` — modo `congelar_ambiente` (`gerar_lock()`, teste de import, push).
+- `kaggle/lancador.ipynb` — célula de instalação por modo (congelar: sem travar; demais: do
+  lock, ou para se o lock faltar); vLLM não sobe no modo congelar.
+- `scripts/montar_wheelhouse.py` e `docs/kaggle_wheelhouse.md` — wheelhouse a partir do lock.

@@ -1,19 +1,19 @@
-# Dependências travadas do experimento completo no Kaggle (D-35).
-# O lançador instala a partir deste arquivo (ou do wheelhouse da Etapa A, que
-# congela também a árvore transitiva). Reprodutibilidade entre sessões/semanas.
+# Lista de pacotes do experimento no Kaggle (SEM versões) — D-35.
 #
-# Conjunto coerente com T4 fp16 + Qwen2.5-AWQ + Gemma 2 + modelos 14B/32B (tensor-parallel).
-# Lock definitivo = wheelhouse (pip download resolve a árvore transitiva completa).
-# Verificar com o smoke de poucas frases por modelo antes de comprometer GPU (I-11 da auditoria).
+# As versões NÃO são fixadas aqui: elas dependem do Python/CUDA do Kaggle no momento
+# (ex.: Python 3.13 não tem torch==2.4.0). O travamento definitivo é feito NO PRÓPRIO
+# Kaggle: rode o lançador com MODO="congelar_ambiente" (Accelerator: None), que instala
+# esta lista sem travar, testa os imports e grava requirements-kaggle.lock.txt com as
+# versões efetivas (+ Python e CUDA). Os modos inducao_c2/experimento instalam do lock.
+#
+# Mesma lista que funcionou no piloto-v3.
 
-vllm==0.6.3.post1
-torch==2.4.0
-transformers==4.45.2
-openai==1.54.4
-sentence-transformers==3.2.1
-scikit-learn==1.5.2
-nltk==3.9.1
-scipy==1.14.1
-numpy==1.26.4
-pandas==2.2.3
-statsmodels==0.14.4
+vllm
+openai
+sentence-transformers
+scikit-learn
+nltk
+scipy
+numpy
+pandas
+statsmodels
