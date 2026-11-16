@@ -72,52 +72,66 @@ llm-kg-ontology/
 ├── src/t2kg/
 │   ├── pipeline/
 │   │   ├── dados.py           # Loads benchmark sentences and training frequencies
-│   │   ├── ontologias.py      # Loads and formats ontology context per condition
+│   │   ├── ontologias.py      # Loads/formats ontology context (C2 per-model: v_full/<slug>)
 │   │   ├── prompts.py         # Assembles the full prompt string per condition
-│   │   └── executar.py        # Runs extraction with checkpoint/resume support
+│   │   ├── executar.py        # Runs extraction with checkpoint/resume support
+│   │   └── provedores/        # Inference backends (openai_compat, mock)
 │   ├── avaliacao/
 │   │   ├── original.py        # Exact mirror of Text2KGBench run_eval.py
-│   │   └── extended.py        # Extended metrics: semantic redundancy, projection
+│   │   └── extended.py        # Extended metrics: semantic redundancy, projection (D-34)
+│   ├── grafo/
+│   │   └── carregar_neo4j.py  # Fase 4: loads a run into Neo4j (acerto/sobra per edge)
+│   ├── modelos.py             # slug_modelo() for per-model C2 paths (D-33)
 │   ├── parser.py              # Parses LLM responses into (sub, rel, obj) triples
 │   └── run.py                 # CLI entry point: reads manifesto, calls executar()
 │
 ├── scripts/
-│   ├── induzir_c2.py          # C2 ontology induction: free extraction + clustering
-│   ├── gerar_definicoes_relacoes.py  # Generates LLM definitions for EDC (D-24)
-│   ├── calibrar_c2_com_definicoes.py # Calibration table: label vs label+definition
+│   ├── gerar_manifesto.py     # Builds the full-experiment manifest (203/model, session split)
+│   ├── montar_wheelhouse.py   # Builds the Kaggle wheelhouse (fast offline install)
+│   ├── rodar_kaggle.py        # Dispatcher: MODO inducao_c2 | experimento
+│   ├── induzir_c2_lote.py     # C2 induction over the 29 ontologies (per model)
+│   ├── induzir_c2.py          # Single-ontology C2 induction: free extraction + clustering
+│   ├── gerar_definicoes_relacoes.py  # LLM definitions for EDC (D-24), --saida_dir
+│   ├── guard_check_c2.py      # Blocks C2 experiments without the model's induced ontology
+│   ├── recalibrar_c2_29.py    # Recomputes D-21/D-30 thresholds over 29 ontologies (CPU)
+│   ├── reproduzir_baselines.py       # Reproduces the published baseline metrics (6/6)
 │   ├── avaliar_resultados.py  # Evaluates results using a manifesto JSON
-│   ├── calcular_pares_c5.py   # Computes schema-similarity pairs for C5
-│   └── analisar_threshold_c2.py  # Threshold sweep for C2 clustering (D-21)
+│   └── smoke_experimento_completo.py # Mock smoke of the full flow (both MODO)
 │
 ├── configs/
 │   ├── pipeline/
-│   │   ├── manifesto_piloto_v3.json   # 28-experiment pilot manifest
-│   │   ├── manifesto_7b_full.json     # Full-phase manifest (174 experiments)
-│   │   ├── reinducao_c2_kaggle.json   # C2 induction tasks for Kaggle run
-│   │   └── pares_c5.json             # Pre-registered C5 ontology pairs
+│   │   ├── manifesto_piloto_v3.json    # 28-experiment pilot manifest
+│   │   ├── manifesto_7b_completo.json  # Full experiment (203: 29 onto × 7 cond)
+│   │   ├── manifesto_c2_inducao_29.json# C2 induction tasks for the 29 ontologies
+│   │   └── pares_c5.json               # Pre-registered C5 ontology pairs
 │   └── c2/
-│       ├── *_induced.json             # Induced ontologies (generated on Kaggle)
-│       └── definicoes_*.json          # LLM-generated relation definitions (D-24)
+│       ├── *_induced.json              # Pilot induced ontologies
+│       ├── definicoes_*.json           # Pilot relation definitions (D-24)
+│       └── v_full/<slug>/              # Per-model induced ontologies + definitions (D-33)
+│
+├── app/
+│   ├── streamlit_app.py       # Fase 5: compare conditions side by side (colored triples)
+│   └── dados_piloto.py        # Pure data/classification logic (testable)
 │
 ├── kaggle/
-│   └── lancador.ipynb         # 14-cell Kaggle notebook: induction → experiments → evaluation
+│   └── lancador.ipynb         # Kaggle launcher with a single MODO switch
 │
 ├── resultados/
-│   ├── piloto_v3/             # Raw JSONL results from piloto-v3 (auto-pushed from Kaggle)
+│   ├── piloto_v3/             # Pilot JSONL results (auto-pushed from Kaggle)
 │   ├── avaliacao_piloto_v3/   # Evaluation metrics and CSV summary
-│   └── c2_inducao/            # Raw extraction JSOLs from C2 training phase
+│   ├── full/<slug>/           # Full-experiment results per model
+│   └── c2_inducao/            # Raw C0 extractions from the C2 training phase
 │
-├── tests/                     # pytest suite (612 tests, all pass locally)
-│   ├── test_pipeline.py
-│   ├── test_c2_smoke_v3.py
-│   ├── test_c2_inducao.py
-│   ├── test_avaliacao_resultados.py
-│   └── test_parser.py
+├── requirements-kaggle.txt    # Pinned Kaggle stack (D-35)
+├── requirements-app.txt       # Local tooling (Neo4j, Streamlit) for Fases 4–5
+│
+├── tests/                     # pytest suite (1082 tests, all pass locally)
 │
 └── docs/
-    ├── DECISOES.md            # Authoritative log of all 25 methodological decisions
-    ├── decisions.html         # Visual decision log with Mermaid diagrams
-    └── codebase.html          # Code architecture and module documentation
+    ├── DECISOES.md                    # Authoritative log of all methodological decisions (D-01–D-35)
+    ├── auditoria_pre_experimento.md   # Pre-experiment audit + correction status
+    ├── experimento_completo_kaggle.md # Step-by-step for the full experiment on Kaggle
+    └── kaggle_wheelhouse.md           # How to build/attach the wheelhouse dataset
 ```
 
 The Text2KGBench benchmark data is **not included** in this repository. It must be cloned
@@ -146,10 +160,12 @@ cd ../Text2KGBench
 git checkout 50a3d255371b8817cdff70fd88459ac82b339cfe
 cd ../does-ontology-matter
 
-# Install Python dependencies
-pip install -r requirements.txt
-# Or, for local evaluation/testing only (no GPU inference):
+# Local evaluation/testing and exploration tooling (no GPU inference):
 pip install pytest nltk sentence-transformers scikit-learn numpy scipy pandas statsmodels
+pip install -r requirements-app.txt   # Neo4j + Streamlit (Fases 4–5)
+
+# On Kaggle, the launcher installs the pinned GPU stack from requirements-kaggle.txt (D-35)
+# (or from the attached wheelhouse — see docs/kaggle_wheelhouse.md).
 ```
 
 ### Data
@@ -164,7 +180,7 @@ the repository clone above. The benchmark is pinned to commit `50a3d255` for rep
 The full test suite runs without GPU or vLLM. All inference calls go through `ProvedorMock`.
 
 ```bash
-# Run all 612 tests
+# Run all 1082 tests
 python -m pytest
 
 # Run only prompt-assembly tests
@@ -177,7 +193,7 @@ python -m pytest tests/test_c2_smoke_v3.py -v
 python -m pytest --cov=src/t2kg --cov-report=term-missing
 ```
 
-Expected output: 612 passed. Tests do not require GPU, network, or vLLM.
+Expected output: 1082 passed. Tests do not require GPU, network, or vLLM.
 
 ### Evaluation
 
@@ -218,56 +234,98 @@ python -m t2kg.run \
 
 ## Running on Kaggle
 
-The Kaggle notebook `kaggle/lancador.ipynb` orchestrates the full pipeline in 14 cells,
-pushing results to this GitHub repository at the end.
+The Kaggle notebook `kaggle/lancador.ipynb` has a single switch at the top — you only edit
+the configuration cell:
+
+```python
+MODO = "inducao_c2"   # or "experimento"
+MANIFESTO = "configs/pipeline/manifesto_7b_completo.json"   # used in "experimento" mode
+MODELO = "Qwen/Qwen2.5-7B-Instruct-AWQ"
+```
+
+- **`MODO = "inducao_c2"`** (once per model) — the model induces its own C2 ontology for the
+  29 ontologies and generates the D-24 definitions, into `configs/c2/v_full/<slug>/`. Pushes
+  the induced ontologies and raw extractions (verified).
+- **`MODO = "experimento"`** — runs the chosen `MANIFESTO` with a **guard check** of the C2
+  (blocks if the model's induced ontology is missing) and **push per experiment**
+  (`--auto_push`, so a dropped session loses nothing and resumes).
+
+Both modes are dispatched by `scripts/rodar_kaggle.py`; no other cell needs manual editing.
+Run order and exact commands are in [`docs/experimento_completo_kaggle.md`](docs/experimento_completo_kaggle.md).
 
 ### Configuration
 
-Before running the notebook, configure in Kaggle:
-
 1. **Settings → Accelerator → GPU T4 x2** (vLLM requires two GPUs for the AWQ model)
 2. **Settings → Internet → On** (for GitHub push and model download)
-3. **Settings → Secrets** — add two secrets, both with "Attach to notebook" checked:
-   - `GITHUB_TOKEN`: a GitHub Personal Access Token with `repo` write scope
-   - `HF_TOKEN`: a Hugging Face token for model access (if the model requires authentication)
+3. **Settings → Secrets** — `GITHUB_TOKEN` (repo write scope) and `HF_TOKEN`, both attached.
+4. (Optional) Attach the **wheelhouse** dataset for fast offline install — see
+   [`docs/kaggle_wheelhouse.md`](docs/kaggle_wheelhouse.md). The install cell detects it
+   automatically; otherwise it falls back to the pinned `requirements-kaggle.txt` (D-35).
 
-### Execution Order
+### Pilot results (already committed)
 
-The notebook enforces a strict ordering to prevent C2 experiments from using stale or
-pre-session induced ontologies:
+The piloto-v3 (28 experiments, 4 ontologies) is **closed** (tag `piloto-v3-fechado`). Its
+raw results, per-ontology metrics and `tabela_piloto_v3.csv` are in `resultados/piloto_v3/`
+and `resultados/avaliacao_piloto_v3/`. `git pull` to download, or browse on GitHub.
 
-| Cell | Purpose |
-|---|---|
-| 1–5 | Setup: secrets, helpers, clone repos, restore previous session outputs, install deps |
-| 6–7 | Start vLLM server and wait for health check |
-| 8 | Load experiment manifest, adjust output paths to Kaggle working dir |
-| **9** | **C2 induction**: (a) free extraction on 50 training sentences → (b) LLM definitions (D-24) → (c) re-induction with label+definition embeddings → (d) calibration table |
-| **10** | **Guard check**: raises `RuntimeError` if any C2 experiment lacks a correctly-session-tagged ontology (`run_id == PV3_RUN_ID`) |
-| **11** | **28 experiments** (C0, C1, C1_oneshot_original, C2, C3, C5_vizinho, C5_incongruente) |
-| **12** | Push raw JSONL results to GitHub (`resultados/piloto_v3/`) |
-| **13** | Evaluate results, generate CSV, push evaluation to GitHub (`resultados/avaliacao_piloto_v3/`) |
-| 14 | vLLM log tail for diagnostics |
+## Full Experiment
 
-The `PV3_RUN_ID` is an ISO timestamp generated at the start of Cell 9 and stored as
-`metadata.run_id` in each induced ontology JSON. The guard check in Cell 10 compares this
-value to prevent experiments from silently using an ontology from a previous session — a
-real failure mode that occurred in the first Kaggle pilot (decision D-17).
+The full experiment covers 29 ontologies × 7 conditions. Generate the manifest with:
 
-### Outputs
+```bash
+python scripts/gerar_manifesto.py \
+    --modelos Qwen/Qwen2.5-7B-Instruct-AWQ \
+    --saida configs/pipeline/manifesto_7b_completo.json \
+    [--dividir_por_sessao --horas_max 10 --fator 1.0]
+```
 
-After a successful run, the following are committed and pushed to this repository:
+This writes `manifesto_7b_completo.json` (**203 experiments**, ~8.0 h for the 7B at
+~5300 sentences/h, fitting one 12 h Kaggle session) with unique ids and output paths per
+model (`resultados/full/<slug>/`). C2 entries carry `c2_subdir: v_full/<slug>` so each model
+uses its own induced ontology (D-33). `--dividir_por_sessao` splits slower models into
+`..._parteN.json` chunks of ≤ `--horas_max`.
 
-| Path | Contents | Pushed by |
-|---|---|---|
-| `configs/c2/*_induced.json` | Induced ontologies with metadata | Cell 9 |
-| `configs/c2/definicoes_*.json` | LLM-generated relation definitions (D-24) | Cell 9 |
-| `resultados/c2_inducao/raw_*.jsonl` | Raw C0 extractions from training sentences | Cell 9 |
-| `resultados/piloto_v3/pv3_*.jsonl` | Per-sentence extraction results (28 files) | Cell 12 |
-| `resultados/avaliacao_piloto_v3/*.jsonl` | Per-ontology evaluation metrics | Cell 13 |
-| `resultados/avaliacao_piloto_v3/tabela_piloto_v3.csv` | Summary table of all metrics | Cell 13 |
+After inducing C2 on Kaggle, recompute the thresholds over the 29 ontologies (CPU):
 
-To download results after a run, `git pull` in this repository or browse the files directly
-on GitHub.
+```bash
+python scripts/recalibrar_c2_29.py --slug qwen2.5-7b
+```
+
+It prints the clustering threshold (D-21: max breakpoint + 0.05) and the projection
+threshold (D-30: lowest threshold with aggregate precision ≥ 0.80). It only computes; the
+decision is registered by the author.
+
+## Graph Exploration (Neo4j, Fase 4)
+
+Load a run into Neo4j for visual exploration. Credentials come **only** from `.env`
+(`NEO4J_URI`, `NEO4J_USER`/`NEO4J_USERNAME`, `NEO4J_PASSWORD` — never committed):
+
+```bash
+pip install -r requirements-app.txt
+python -m t2kg.grafo.carregar_neo4j --run pv3_1movie_c1            # load a run
+python -m t2kg.grafo.carregar_neo4j --run pv3_1movie_c1 --apagar_run  # reload
+```
+
+Graph model: `(:Frase)-[:MENCIONA]->(:Entidade)` and
+`(:Entidade)-[:REL {relacao, condicao, modelo, run, status, frase}]->(:Entidade)`, where
+`status` is `acerto`/`sobra` per the evaluator. Loading is **per run** (AuraDB Free limits).
+An example Cypher query ("C0 edges absent in C1 for the same sentence") is in
+[`src/t2kg/grafo/README.md`](src/t2kg/grafo/README.md).
+
+## Results App (Streamlit, Fase 5)
+
+Explore the pilot results with no Neo4j required (reads only `resultados/`):
+
+```bash
+pip install -r requirements-app.txt
+streamlit run app/streamlit_app.py
+```
+
+- **Comparar condições**: pick a dataset, ontology and sentence; see the sentence, the gold
+  triples and each condition's triples side by side, colored by status — acerto (green),
+  sobra (yellow), falta (red), erro de formato (gray). Projected relations are shown for
+  C0/C2/C3 on demand.
+- **Visão geral**: metrics-per-condition table from the piloto-v3 CSV.
 
 ## Experiment Configuration
 
@@ -300,7 +358,8 @@ Key design decisions encoded in the manifesto:
   for the same ontology, enabling paired analysis
 - `bench_commit` — pinned benchmark commit prevents silent data drift
 
-The full 174-experiment phase manifesto is in `configs/pipeline/manifesto_7b_full.json`.
+The full-experiment manifesto (203 experiments) is in
+`configs/pipeline/manifesto_7b_completo.json` (see the Full Experiment section above).
 
 ## Results
 
@@ -328,7 +387,7 @@ Full piloto-v3 results pending.
 
 ## Decisions Log
 
-All 25 methodological decisions are documented in [`docs/DECISOES.md`](docs/DECISOES.md)
+All methodological decisions (D-01–D-35) are documented in [`docs/DECISOES.md`](docs/DECISOES.md)
 and visualized at [`docs/decisions.html`](docs/decisions.html).
 
 | Decision | Summary |
@@ -358,6 +417,16 @@ and visualized at [`docs/decisions.html`](docs/decisions.html).
 | D-23 | `workers=1` fixed in all manifests for 100% reproducibility |
 | D-24 | Embedding-based Definition Canonicalization (EDC): embed `"label: LLM-definition"` |
 | D-25 | C2 context uses `Ontology Relations:` label, no concepts or domain/range signatures |
+| D-26 | `modo_amostra` detected per ontology, not per dataset |
+| D-27 | `fmt_error` detects capitalized class labels (DBpedia: "Film", "Person") |
+| D-28 | Conformity/hallucination metrics excluding empty responses (`_nv`, `pct_vazias`) |
+| D-29 | D-24 embeddings (label+definition) used in relation projection (C0/C2/C3) |
+| D-30 | Projection threshold recalibrated: 0.63 (label+def) / 0.50 (label-only) |
+| D-31 | Piloto-v3 — validation before the full phase |
+| D-32 | Variant-D placeholders (`relation_name`) treated as format errors |
+| D-33 | Per-model induced C2 ontology under `configs/c2/v_full/<slug>/` |
+| D-34 | Single normalized definition key; projection fails if a definition is missing |
+| D-35 | Pinned Kaggle dependency versions (`requirements-kaggle.txt`) |
 
 ## Citation / Acknowledgements
 
