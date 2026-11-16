@@ -24,8 +24,6 @@ resultados/*
 !resultados/7b/**
 !resultados/full/
 !resultados/full/**
-!resultados/avaliacao/
-!resultados/avaliacao/**
 
 # Python
 __pycache__/
