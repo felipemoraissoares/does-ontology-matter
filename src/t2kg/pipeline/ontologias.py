@@ -62,13 +62,24 @@ def _formatar_conceitos(ontologia: Dict) -> str:
     return ", ".join(c["label"] for c in ontologia["concepts"]) + ","
 
 
-def carregar_ontologia_induzida(dataset: str, ontologia_id: str) -> Dict:
+def carregar_ontologia_induzida(
+    dataset: str, ontologia_id: str, c2_subdir: Optional[str] = None
+) -> Dict:
     """
     Carrega a ontologia induzida pela condição C2.
-    Espera o arquivo em configs/c2/{dataset}_{onto}_induced.json (gerado por induzir_c2.py).
+
+    c2_subdir : str | None
+        Subdiretório sob configs/c2/ onde procurar a ontologia induzida (D-33).
+        Para o experimento completo: "v_full/<slug>" (uma induzida por modelo).
+        None (padrão, piloto/legado): caminho plano configs/c2/.
+
+    Espera o arquivo em configs/c2/[<c2_subdir>/]{dataset}_{onto}_induced.json.
     Lança FileNotFoundError com mensagem clara se o arquivo não existir.
     """
-    caminho = os.path.join(_REPO_DIR, "configs", "c2", f"{dataset}_{ontologia_id}_induced.json")
+    base = os.path.join(_REPO_DIR, "configs", "c2")
+    if c2_subdir:
+        base = os.path.join(base, *c2_subdir.split("/"))
+    caminho = os.path.join(base, f"{dataset}_{ontologia_id}_induced.json")
     if not os.path.exists(caminho):
         raise FileNotFoundError(
             f"Ontologia induzida C2 não encontrada: {caminho}\n"

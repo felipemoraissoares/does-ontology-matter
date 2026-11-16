@@ -251,6 +251,7 @@ def main():
             ontologia_parceira_id=exp.get("ontologia_parceira_id"),
             workers=workers,
             instrucao_formato=instrucao_formato,
+            c2_subdir=exp.get("c2_subdir"),
         )
         print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
 

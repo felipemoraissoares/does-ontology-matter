@@ -58,6 +58,7 @@ def executar(
     ontologia_parceira_id: Optional[str] = None,
     workers: int = 1,
     instrucao_formato: Optional[str] = None,
+    c2_subdir: Optional[str] = None,
 ) -> int:
     """
     Executa a extração de triplas para uma (ontologia, condição) e salva em JSONL.
@@ -113,7 +114,7 @@ def executar(
     ontologia_parceira = None
     if condicao == "C2":
         from .ontologias import carregar_ontologia_induzida
-        ontologia_parceira = carregar_ontologia_induzida(dataset, ontologia_id)
+        ontologia_parceira = carregar_ontologia_induzida(dataset, ontologia_id, c2_subdir=c2_subdir)
     elif condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
         ontologia_parceira = carregar_ontologia(bench_dir, dataset, ontologia_parceira_id)
 
