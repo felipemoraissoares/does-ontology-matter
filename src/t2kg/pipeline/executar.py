@@ -115,7 +115,13 @@ def executar(
     if condicao == "C2":
         from .ontologias import carregar_ontologia_induzida
         ontologia_parceira = carregar_ontologia_induzida(dataset, ontologia_id, c2_subdir=c2_subdir)
-    elif condicao in ("C5_vizinho", "C5_incongruente") and ontologia_parceira_id:
+    elif condicao in ("C5_vizinho", "C5_incongruente"):
+        if not ontologia_parceira_id:
+            raise ValueError(
+                f"{condicao} requer 'ontologia_parceira_id' no manifesto (I-2). "
+                "Sem ela o contexto usaria a ontologia alvo e o experimento viraria "
+                "um C1 rotulado como C5, silenciosamente."
+            )
         ontologia_parceira = carregar_ontologia(bench_dir, dataset, ontologia_parceira_id)
 
     # Para C3: top-k relações extraídas dos dados de TREINO (nunca do GT de teste)
@@ -140,6 +146,16 @@ def executar(
         if frase["id"] not in ja_prontos:
             pendentes.append(frase)
 
+    def _montar_registro(frase, prompt, resposta, finish_reason, triplas):
+        registro = {
+            "id": frase["id"], "sent": frase["sent"],
+            "prompt": prompt, "response": resposta, "triples": triplas,
+        }
+        # I-9: registra finish_reason quando disponível ('length' = truncamento).
+        if finish_reason is not None:
+            registro["finish_reason"] = finish_reason
+        return registro
+
     if workers <= 1:
         # Modo sequencial — comportamento original
         for frase in pendentes:
@@ -151,12 +167,10 @@ def executar(
                 exemplo_saida=frase.get("exemplo_saida"),
                 instrucao_formato=instrucao_formato,
             )
-            resposta = provedor.gerar(prompt, max_tokens=max_tokens, temperatura=temperatura)
+            resposta, finish_reason = provedor.gerar_detalhado(
+                prompt, max_tokens=max_tokens, temperatura=temperatura)
             triplas = parsear_resposta(resposta)
-            _registrar(saida, {
-                "id": frase["id"], "sent": frase["sent"],
-                "prompt": prompt, "response": resposta, "triples": triplas,
-            })
+            _registrar(saida, _montar_registro(frase, prompt, resposta, finish_reason, triplas))
             processados += 1
             if verbose:
                 print(f"  [{processados}] {frase['id']}: {len(triplas)} tripla(s)")
@@ -172,17 +186,15 @@ def executar(
                 exemplo_saida=frase.get("exemplo_saida"),
                 instrucao_formato=instrucao_formato,
             )
-            resposta = provedor.gerar(prompt, max_tokens=max_tokens, temperatura=temperatura)
-            return frase, prompt, resposta, parsear_resposta(resposta)
+            resposta, finish_reason = provedor.gerar_detalhado(
+                prompt, max_tokens=max_tokens, temperatura=temperatura)
+            return frase, prompt, resposta, finish_reason, parsear_resposta(resposta)
 
         with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = [executor.submit(_processar_frase, f) for f in pendentes]
             for future in futures:
-                frase, prompt, resposta, triplas = future.result()
-                _registrar(saida, {
-                    "id": frase["id"], "sent": frase["sent"],
-                    "prompt": prompt, "response": resposta, "triples": triplas,
-                })
+                frase, prompt, resposta, finish_reason, triplas = future.result()
+                _registrar(saida, _montar_registro(frase, prompt, resposta, finish_reason, triplas))
                 processados += 1
                 if verbose:
                     print(f"  [{processados}] {frase['id']}: {len(triplas)} tripla(s)")

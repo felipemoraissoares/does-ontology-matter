@@ -2,7 +2,7 @@
 # Requer: pip install openai
 
 import time
-from typing import Optional
+from typing import Optional, Tuple
 
 from .base import ProvedorBase
 
@@ -56,6 +56,13 @@ class ProvedorOpenAICompat(ProvedorBase):
         self._espera = espera_tentativa
 
     def gerar(self, prompt: str, max_tokens: int = 512, temperatura: float = 0.0) -> str:
+        texto, _ = self.gerar_detalhado(prompt, max_tokens=max_tokens, temperatura=temperatura)
+        return texto
+
+    def gerar_detalhado(
+        self, prompt: str, max_tokens: int = 512, temperatura: float = 0.0
+    ) -> Tuple[str, Optional[str]]:
+        """Retorna (texto, finish_reason). finish_reason='length' sinaliza truncamento (I-9)."""
         mensagens = []
         if self._sistema:
             mensagens.append({"role": "system", "content": self._sistema})
@@ -73,7 +80,8 @@ class ProvedorOpenAICompat(ProvedorBase):
                 if self._seed is not None:
                     kwargs["seed"] = self._seed
                 resposta = self._cliente.chat.completions.create(**kwargs)
-                return resposta.choices[0].message.content or ""
+                escolha = resposta.choices[0]
+                return (escolha.message.content or ""), escolha.finish_reason
             except Exception as e:
                 ultimo_erro = e
                 if tentativa < self._max_tentativas - 1:
