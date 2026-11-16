@@ -150,8 +150,10 @@ EXPERIMENTOS = [
     {
         "nome": "TekGen / Alpaca-LoRA-13B",
         "config_fn": config_tekgen_alpaca,
+        # O arquivo publicado é ont_llm_avg_stats.jsonl e NÃO tem linha "global"
+        # (limitação do benchmark original) — comparar() cai para comparação por ontologia.
         "publicado": os.path.join(BENCH_DIR, "data", "wikidata_tekgen", "baselines",
-                                  "Alpaca-LoRA-13B", "eval_metrics", "ont_llm_avg_eval_metrics.jsonl"),
+                                  "Alpaca-LoRA-13B", "eval_metrics", "ont_llm_avg_stats.jsonl"),
     },
     {
         "nome": "DBpedia/WebNLG / Vicuna-13B",
@@ -207,22 +209,25 @@ def comparar(nome, pub_path, rep_path):
     print(f"  {nome}")
     print(f"{'='*72}")
 
-    if pub_global is None or rep_global is None:
-        print("  ERRO: não foi possível ler a linha global.")
-        return False
-
-    print(f"  {'Métrica':<22} {'Publicado':>12} {'Reproduzido':>12} {'OK?':>6}")
-    print(f"  {'-'*22} {'-'*12} {'-'*12} {'-'*6}")
-
     tudo_bate = True
-    for m in METRICAS:
-        pub_val = pub_global.get(m, "?")
-        rep_val = rep_global.get(m, "?")
-        bate = pub_val == rep_val
-        if not bate:
-            tudo_bate = False
-        status = "OK" if bate else "DIFF"
-        print(f"  {m:<22} {pub_val:>12} {rep_val:>12} {status:>6}")
+    if pub_global is None:
+        # Alguns arquivos publicados (ex.: Alpaca TekGen ont_llm_avg_stats.jsonl)
+        # não têm linha "global" — comparamos apenas por ontologia (abaixo).
+        print("  (arquivo publicado sem linha 'global' — comparando por ontologia)")
+    elif rep_global is None:
+        print("  ERRO: a reprodução não gerou linha 'global'.")
+        return False
+    else:
+        print(f"  {'Métrica':<22} {'Publicado':>12} {'Reproduzido':>12} {'OK?':>6}")
+        print(f"  {'-'*22} {'-'*12} {'-'*12} {'-'*6}")
+        for m in METRICAS:
+            pub_val = pub_global.get(m, "?")
+            rep_val = rep_global.get(m, "?")
+            bate = pub_val == rep_val
+            if not bate:
+                tudo_bate = False
+            status = "OK" if bate else "DIFF"
+            print(f"  {m:<22} {pub_val:>12} {rep_val:>12} {status:>6}")
 
     pub_onto = extrair_por_onto(pub_path)
     rep_onto = extrair_por_onto(rep_path)
@@ -235,6 +240,7 @@ def comparar(nome, pub_path, rep_path):
                 divergencias.append((onto_id, m, pv, rv))
 
     if divergencias:
+        tudo_bate = False
         print(f"\n  Divergências por ontologia (primeiras 10):")
         for onto_id, m, pv, rv in divergencias[:10]:
             print(f"    {onto_id:25s} {m}: publicado={pv}, reproduzido={rv}")
