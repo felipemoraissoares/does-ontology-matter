@@ -11,12 +11,19 @@ CONFIGS_DIR = pathlib.Path(__file__).parent.parent / "configs" / "pipeline"
 MANIFESTO_GLOB = list(CONFIGS_DIR.glob("manifesto_*.json"))
 
 
+def _experimentos(data):
+    """Normaliza os dois formatos de manifesto: lista ou dict com 'experimentos'."""
+    if isinstance(data, dict):
+        return data.get("experimentos", [])
+    return data
+
+
 def _carregar_manifestos():
     items = []
     for path in MANIFESTO_GLOB:
         with open(path, encoding="utf-8") as f:
-            exps = json.load(f)
-        for exp in exps:
+            data = json.load(f)
+        for exp in _experimentos(data):
             items.append((path.name, exp))
     return items
 
@@ -54,7 +61,7 @@ def test_piloto_em_resultados_piloto():
     """Manifesto piloto deve gravar em resultados/piloto/, não em resultados/7b/."""
     piloto = CONFIGS_DIR / "manifesto_piloto_kaggle.json"
     with open(piloto, encoding="utf-8") as f:
-        exps = json.load(f)
+        exps = _experimentos(json.load(f))
     for exp in exps:
         assert exp["saida"].startswith("resultados/piloto/"), (
             f"Piloto {exp['id']} aponta para '{exp['saida']}' — "
@@ -69,7 +76,7 @@ def test_bench_commit_presente():
     for nome in gerados:
         path = CONFIGS_DIR / nome
         with open(path, encoding="utf-8") as f:
-            exps = json.load(f)
+            exps = _experimentos(json.load(f))
         for exp in exps:
             assert "bench_commit" in exp, (
                 f"{nome} :: {exp['id']}: campo 'bench_commit' ausente."
