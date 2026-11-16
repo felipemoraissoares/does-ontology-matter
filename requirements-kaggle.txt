@@ -9,6 +9,8 @@
 # Mesma lista que funcionou no piloto-v3.
 
 vllm
+torch
+transformers
 openai
 sentence-transformers
 scikit-learn

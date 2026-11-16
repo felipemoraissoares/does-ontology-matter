@@ -21,6 +21,8 @@ import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SCRIPTS = os.path.join(REPO, "scripts")
+sys.path.insert(0, os.path.join(REPO, "src"))
+from t2kg.modelos import slug_modelo  # noqa: E402
 
 # Módulos verificados no teste de import do modo congelar_ambiente.
 IMPORTS_TESTE = ["vllm", "torch", "transformers", "sentence_transformers", "nltk"]
@@ -40,10 +42,6 @@ def git(gargs, repo_dir):
 def _env(repo_dir):
     return {**os.environ, "PYTHONPATH": os.path.join(repo_dir, "src"),
             "PYTHONIOENCODING": "utf-8"}
-
-
-def _canon(nome: str) -> str:
-    return re.sub(r"[-_.]+", "-", nome).strip().lower()
 
 
 def _pacotes_base(repo_dir: str):
@@ -69,38 +67,54 @@ def _cuda_torch() -> str:
         return "desconhecido"
 
 
-def gerar_lock(repo_dir: str) -> str:
-    """Monta o conteúdo de requirements-kaggle.lock.txt: pacotes do projeto + suas
-    dependências diretas, com as versões EFETIVAS instaladas, e cabeçalho (Python/CUDA/Data).
-    """
-    import importlib.metadata as md
-
-    tops = _pacotes_base(repo_dir)
-    candidatos = {_canon(t) for t in tops}
-    for t in tops:
-        try:
-            for req in (md.requires(t) or []):
-                nome = re.split(r"[<>=!~;\[\s(]", req, 1)[0].strip()
-                if nome:
-                    candidatos.add(_canon(nome))
-        except md.PackageNotFoundError:
-            pass
-
-    instaladas = {}
-    for dist in md.distributions():
-        nome = (dist.metadata["Name"] if dist.metadata else None)
-        if nome and _canon(nome) in candidatos:
-            instaladas[_canon(nome)] = (nome, dist.version)
-
-    linhas = [f"{n}=={v}" for _, (n, v) in sorted(instaladas.items())]
-    cab = [
-        "# requirements-kaggle.lock.txt — gerado por MODO=congelar_ambiente no Kaggle (D-35).",
+def _cabecalho(primeira_linha: str):
+    return [
+        f"# {primeira_linha}",
         f"# Python: {sys.version.split()[0]}",
         f"# CUDA (torch): {_cuda_torch()}",
         f"# Data: {datetime.date.today().isoformat()}",
         "",
     ]
-    return "\n".join(cab + linhas) + "\n"
+
+
+def _pip_freeze():
+    r = subprocess.run([sys.executable, "-m", "pip", "freeze"],
+                       capture_output=True, text=True)
+    return [l.strip() for l in r.stdout.splitlines() if l.strip()]
+
+
+def gerar_freeze(repo_dir: str) -> str:
+    """pip freeze COMPLETO da sessão (auditoria) — NÃO é usado para instalar."""
+    cab = _cabecalho("requirements-kaggle.freeze.txt - pip freeze COMPLETO da sessao (auditoria).")
+    cab.insert(1, "# NAO e usado para instalar (re-resolver o freeze e irresolvivel). Instale pelo lock.")
+    return "\n".join(cab + sorted(_pip_freeze(), key=str.lower)) + "\n"
+
+
+def gerar_lock(repo_dir: str):
+    """Lock com APENAS os pacotes de requirements-kaggle.txt, travados nas versões
+    instaladas. O resto das dependências é resolvido pelo pip — evita re-resolver um freeze
+    completo e irresolvível. Retorna (texto, faltando).
+    """
+    import importlib.metadata as md
+    linhas, faltando = [], []
+    for nome in _pacotes_base(repo_dir):
+        try:
+            linhas.append(f"{nome}=={md.version(nome)}")
+        except md.PackageNotFoundError:
+            faltando.append(nome)
+    cab = _cabecalho("requirements-kaggle.lock.txt - pacotes diretos do projeto travados (D-35).")
+    cab.insert(1, "# O resto das dependencias e resolvido pelo pip. Freeze: requirements-kaggle.freeze.txt.")
+    return "\n".join(cab + sorted(linhas, key=str.lower)) + "\n", faltando
+
+
+def _salvar_freeze_run(repo_dir: str, destino_dir: str):
+    """Grava o pip freeze real da sessão junto dos resultados (auditoria por run)."""
+    try:
+        os.makedirs(destino_dir, exist_ok=True)
+        with open(os.path.join(destino_dir, "ambiente_pip_freeze.txt"), "w", encoding="utf-8") as f:
+            f.write("\n".join(_pip_freeze()) + "\n")
+    except Exception as e:
+        print(f"AVISO: não consegui gravar o pip freeze do run: {e}")
 
 
 def modo_congelar(args):
@@ -118,29 +132,34 @@ def modo_congelar(args):
             raise RuntimeError("Teste de import falhou:\n  " + "\n  ".join(faltando))
         print(f"Teste de import OK: {', '.join(IMPORTS_TESTE)}")
 
-    # 2. Gera e grava o lock
-    lock_txt = gerar_lock(args.repo_dir)
+    # 2. Grava o freeze COMPLETO (auditoria) e o lock SÓ com os pacotes do projeto.
+    freeze_path = args.freeze_out or os.path.join(args.repo_dir, "requirements-kaggle.freeze.txt")
     lock_path = args.lock_out or os.path.join(args.repo_dir, "requirements-kaggle.lock.txt")
+    with open(freeze_path, "w", encoding="utf-8") as f:
+        f.write(gerar_freeze(args.repo_dir))
+    lock_txt, faltando = gerar_lock(args.repo_dir)
+    if faltando:
+        print(f"AVISO: pacotes do projeto não instalados (fora do lock): {faltando}")
     with open(lock_path, "w", encoding="utf-8") as f:
         f.write(lock_txt)
-    n_pkgs = sum(1 for l in lock_txt.splitlines() if l and not l.startswith("#"))
-    print(f"Lock gravado: {lock_path} ({n_pkgs} pacotes)")
+    n_lock = sum(1 for l in lock_txt.splitlines() if l and not l.startswith("#"))
+    print(f"Freeze: {freeze_path}  |  Lock ({n_lock} pacotes): {lock_path}")
 
     # 3. Push verificado (salvo em --no_push)
     if args.no_push:
         print("(--no_push: sem git)")
         return
-    rel = os.path.relpath(lock_path, args.repo_dir).replace("\\", "/")
-    git(["add", rel], args.repo_dir)
-    if git(["status", "--porcelain", rel], args.repo_dir).stdout.strip():
-        git(["commit", "-m", "auto: requirements-kaggle.lock.txt (congelar_ambiente)"], args.repo_dir)
+    rels = [os.path.relpath(p, args.repo_dir).replace("\\", "/") for p in (freeze_path, lock_path)]
+    git(["add"] + rels, args.repo_dir)
+    if git(["status", "--porcelain"] + rels, args.repo_dir).stdout.strip():
+        git(["commit", "-m", "auto: requirements-kaggle lock+freeze (congelar_ambiente)"], args.repo_dir)
         r = git(["push"], args.repo_dir)
         if r.returncode == 0:
-            print("Push do lock OK.")
+            print("Push do lock+freeze OK.")
         else:
-            raise RuntimeError(f"Push do lock falhou: {r.stderr[:200]}")
+            raise RuntimeError(f"Push falhou: {r.stderr[:200]}")
     else:
-        print("Lock inalterado — nada para commitar.")
+        print("Lock/freeze inalterados — nada para commitar.")
 
 
 def modo_inducao(args):
@@ -158,10 +177,16 @@ def modo_inducao(args):
         cmd += ["--modelo_llm", args.modelo, "--url", args.url]
     sh(cmd, env, cwd=args.repo_dir)
 
+    # Registra o pip freeze da sessão junto das saídas da indução (auditoria).
+    slug = args.slug or slug_modelo(args.modelo)
+    _salvar_freeze_run(
+        args.repo_dir,
+        os.path.join(args.repo_dir, "resultados", "c2_inducao", args.c2_base, slug))
+
     if args.no_push:
         print("Indução concluída (--no_push: sem git).")
         return
-    alvo = ["configs/c2/v_full/", "resultados/c2_inducao/v_full/"]
+    alvo = [f"configs/c2/{args.c2_base}/", f"resultados/c2_inducao/{args.c2_base}/"]
     git(["add"] + alvo, args.repo_dir)
     if git(["status", "--porcelain"] + alvo, args.repo_dir).stdout.strip():
         git(["commit", "-m", "auto: inducao C2 v_full (29 ontologias)"], args.repo_dir)
@@ -185,6 +210,10 @@ def modo_experimento(args):
     with open(mk, "w", encoding="utf-8") as f:
         json.dump(exps, f, ensure_ascii=False, indent=2)
     print(f"{len(exps)} experimento(s) -> {mk}")
+
+    # Registra o pip freeze da sessão junto das saídas do experimento (auditoria).
+    if exps:
+        _salvar_freeze_run(args.repo_dir, os.path.dirname(exps[0]["saida"]))
 
     # Guard check da C2 (bloqueia se faltar ontologia induzida do modelo)
     sh([sys.executable, os.path.join(args.repo_dir, "scripts", "guard_check_c2.py"),
@@ -218,6 +247,8 @@ def main():
     p.add_argument("--no_push", action="store_true")
     p.add_argument("--lock_out", default=None,
                    help="Caminho do lock a gravar (padrão: <repo>/requirements-kaggle.lock.txt).")
+    p.add_argument("--freeze_out", default=None,
+                   help="Caminho do freeze a gravar (padrão: <repo>/requirements-kaggle.freeze.txt).")
     args = p.parse_args()
 
     if args.modo == "congelar_ambiente":

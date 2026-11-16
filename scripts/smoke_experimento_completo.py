@@ -52,11 +52,13 @@ def main():
         # ---- MODO congelar_ambiente (mock, sem push) ----
         print("--- MODO congelar_ambiente (mock) ---")
         lock_out = os.path.join(tmp, "req.lock.txt")
+        freeze_out = os.path.join(tmp, "req.freeze.txt")
         run([sys.executable, rodar, "--modo", "congelar_ambiente", "--mock", "--no_push",
-             "--repo_dir", REPO, "--lock_out", lock_out], env)
+             "--repo_dir", REPO, "--lock_out", lock_out, "--freeze_out", freeze_out], env)
         cab = open(lock_out, encoding="utf-8").read()
         assert "# Python:" in cab and "# CUDA (torch):" in cab, "cabeçalho do lock ausente"
-        print("  OK: lock gerado com cabeçalho")
+        assert os.path.exists(freeze_out), "freeze não gerado"
+        print("  OK: lock + freeze gerados com cabeçalho")
 
         # ---- MODO inducao_c2 ----
         print("\n--- MODO inducao_c2 (mock) ---")
