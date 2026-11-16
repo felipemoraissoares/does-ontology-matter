@@ -26,10 +26,47 @@ from t2kg.avaliacao.original import (
     calcular_taxa_erro_formato,
     limpar_entidade,
     avaliar,
+    ler_jsonl,
     PLACEHOLDER_RELS,
     PLACEHOLDER_ENTITIES,
 )
 from nltk.stem import PorterStemmer
+
+
+# ---------------------------------------------------------------------------
+# C-3: robustez do ler_jsonl a arquivos truncados por queda de sessão
+# ---------------------------------------------------------------------------
+
+class TestLerJsonlTruncado:
+    def test_ultima_linha_truncada_e_ignorada(self, tmp_path, capsys):
+        p = tmp_path / "parcial.jsonl"
+        p.write_text(
+            '{"id": "a", "triples": []}\n'
+            '{"id": "b", "triples": []}\n'
+            '{"id": "c", "trip',  # linha final truncada (sem \n)
+            encoding="utf-8",
+        )
+        dados = ler_jsonl(str(p))
+        assert [d["id"] for d in dados] == ["a", "b"]
+        assert "truncada" in capsys.readouterr().err
+
+    def test_linha_invalida_no_meio_levanta_erro(self, tmp_path):
+        p = tmp_path / "corrompido.jsonl"
+        p.write_text(
+            '{"id": "a"}\n'
+            'LIXO NAO JSON\n'
+            '{"id": "c"}\n',
+            encoding="utf-8",
+        )
+        with pytest.raises(ValueError) as exc:
+            ler_jsonl(str(p))
+        assert "linha 2" in str(exc.value)
+        assert "corrompido.jsonl" in str(exc.value)
+
+    def test_arquivo_valido_inalterado(self, tmp_path):
+        p = tmp_path / "ok.jsonl"
+        p.write_text('{"id": "a"}\n{"id": "b"}\n', encoding="utf-8")
+        assert [d["id"] for d in ler_jsonl(str(p))] == ["a", "b"]
 
 
 # ---------------------------------------------------------------------------

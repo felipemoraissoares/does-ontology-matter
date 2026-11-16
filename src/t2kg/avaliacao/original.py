@@ -20,6 +20,7 @@
 import json
 import os
 import re
+import sys
 from typing import List, Dict, Set, Tuple
 
 from nltk.tokenize import word_tokenize
@@ -166,13 +167,42 @@ def calcular_conformidade_ontologica(ontologia: Dict, triplas: List) -> Tuple[fl
 # ---------------------------------------------------------------------------
 
 def ler_jsonl(caminho: str, como_json: bool = True) -> List:
-    dados = []
+    """Lê um JSONL tolerando truncamento no fim do arquivo (C-3).
+
+    Uma linha final truncada/inválida (sintoma típico de sessão Kaggle derrubada
+    no meio de uma escrita) é ignorada com aviso em stderr. Uma linha inválida no
+    MEIO do arquivo levanta ValueError com nome do arquivo e número da linha —
+    isso indica corrupção real, não um simples truncamento.
+    """
     with open(caminho, encoding="utf-8") as f:
-        for linha in f:
-            linha = linha.strip()
-            if not linha:
+        linhas = f.readlines()
+
+    # índice (0-based) da última linha não-vazia — a única que pode ser truncada
+    idx_ultima_nao_vazia = max(
+        (i for i, l in enumerate(linhas) if l.strip()), default=-1
+    )
+
+    dados = []
+    for i, linha in enumerate(linhas):
+        s = linha.strip()
+        if not s:
+            continue
+        if not como_json:
+            dados.append(s)
+            continue
+        try:
+            dados.append(json.loads(s))
+        except json.JSONDecodeError as e:
+            if i == idx_ultima_nao_vazia:
+                print(
+                    f"AVISO: última linha de {caminho} truncada/inválida — ignorada "
+                    f"(linha {i + 1}): {e}",
+                    file=sys.stderr,
+                )
                 continue
-            dados.append(json.loads(linha) if como_json else linha)
+            raise ValueError(
+                f"JSON inválido em {caminho}, linha {i + 1}: {e}"
+            ) from e
     return dados
 
 
