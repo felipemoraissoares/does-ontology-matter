@@ -20,6 +20,13 @@ import os
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+from t2kg.modelos import slug_modelo  # noqa: E402
+
+TODAS_CONDICOES = [
+    "C0", "C1", "C1_oneshot_original", "C2", "C3", "C5_vizinho", "C5_incongruente",
+]
+
 # ---------------------------------------------------------------------------
 # Configuração fixa
 # ---------------------------------------------------------------------------
@@ -72,6 +79,9 @@ def entrada(
     saida_base: str,
     git: str,
     onto_parceira_id: str = None,
+    c2_subdir: str = None,
+    quantizacao: str = "AWQ-4bit",
+    chat_template: str = "qwen2",
 ) -> dict:
     # Sempre usa "/" para garantir portabilidade Linux/Windows
     saida = f"{saida_base}/{exp_id}.jsonl"
@@ -82,14 +92,15 @@ def entrada(
         "ontologia_id": onto_id,
         "condicao": condicao,
         "modelo": modelo,
-        "quantizacao": "AWQ-4bit",
-        "chat_template": "qwen2",
+        "quantizacao": quantizacao,
+        "chat_template": chat_template,
         "provedor": "openai_compat",
         "provedor_url": url,
         "api_key": "token-nao-usado",
         "temperatura": 0,
         "seed": 42,
         "max_tokens": 512,
+        "workers": 1,
         "git_hash": git,
         "bench_url": BENCH_URL,
         "bench_commit": BENCH_COMMIT,
@@ -97,6 +108,8 @@ def entrada(
     }
     if onto_parceira_id is not None:
         e["ontologia_parceira_id"] = onto_parceira_id
+    if c2_subdir is not None:
+        e["c2_subdir"] = c2_subdir
     return e
 
 
@@ -242,47 +255,171 @@ def gerar_sensibilidade(pares, modelo, url, saida_base, git):
 
 
 # ---------------------------------------------------------------------------
-# Main
+# Experimento completo (Etapa B) — sem amostragem, 29 ontologias, 7 condições
 # ---------------------------------------------------------------------------
+
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+BENCH_DIR_PADRAO = os.path.abspath(os.path.join(REPO, "..", "Text2KGBench"))
+C2_DIR = os.path.join(REPO, "configs", "c2")
+
+
+def _gt_path(bench_dir, dataset, onto):
+    if dataset == "tekgen":
+        return os.path.join(bench_dir, "data", "wikidata_tekgen", "ground_truth",
+                            f"ont_{onto}_ground_truth.jsonl")
+    return os.path.join(bench_dir, "data", "dbpedia_webnlg", "ground_truth",
+                        f"ont_{onto}_ground_truth.jsonl")
+
+
+def contar_frases_teste(bench_dir, dataset, onto):
+    p = _gt_path(bench_dir, dataset, onto)
+    if not os.path.exists(p):
+        return 0
+    with open(p, encoding="utf-8") as f:
+        return sum(1 for l in f if l.strip())
+
+
+def _parceira(pares, dataset, onto, cond):
+    if cond == "C5_vizinho":
+        return pares[dataset][onto]["vizinho"]["id"]
+    if cond == "C5_incongruente":
+        return pares[dataset][onto]["incongruente"]["id"]
+    return None
+
+
+def gerar_completo(modelos, condicoes, datasets, pares, url, git,
+                   c2_base="v_full", exigir_c2=False):
+    """Monta o manifesto do experimento completo. Retorna (experimentos, avisos).
+
+    C-5/D-33: a condição C2 usa a ontologia induzida do PRÓPRIO modelo em
+    configs/c2/<c2_base>/<slug>/. Se o arquivo não existir, registra aviso; com
+    exigir_c2=True a entrada C2 é OMITIDA (modo estrito), senão é incluída no plano
+    (o guard check do lançador bloqueia a execução até a indução existir).
+    """
+    exp, avisos = [], []
+    ontos_por_ds = {"tekgen": TEKGEN_ONTOS, "webnlg": WEBNLG_ONTOS}
+    for modelo in modelos:
+        slug = slug_modelo(modelo)
+        saida_base = f"resultados/full/{slug}"
+        for dataset in datasets:
+            ds_prefix = "tkg" if dataset == "tekgen" else "web"
+            for onto in ontos_por_ds[dataset]:
+                for cond in condicoes:
+                    exp_id = f"{ds_prefix}_{onto}_{cond.lower()}_{slug}"
+                    c2_subdir = None
+                    if cond == "C2":
+                        c2_subdir = f"{c2_base}/{slug}"
+                        induced = os.path.join(
+                            C2_DIR, c2_base, slug, f"{dataset}_{onto}_induced.json")
+                        if not os.path.exists(induced):
+                            avisos.append(f"{dataset}/{onto} ({slug})")
+                            if exigir_c2:
+                                continue
+                    exp.append(entrada(
+                        exp_id=exp_id, dataset=dataset, onto_id=onto, condicao=cond,
+                        modelo=modelo, url=url, saida_base=saida_base, git=git,
+                        onto_parceira_id=_parceira(pares, dataset, onto, cond),
+                        c2_subdir=c2_subdir,
+                    ))
+    return exp, avisos
+
+
+def dividir_sessoes(experimentos, bench_dir, horas_max, fr_por_hora, fator):
+    """Divide a lista em partes de <= horas_max, estimando por frases de teste."""
+    cache = {}
+
+    def horas(e):
+        chave = (e["dataset"], e["ontologia_id"])
+        if chave not in cache:
+            cache[chave] = contar_frases_teste(bench_dir, *chave)
+        return cache[chave] * fator / fr_por_hora
+
+    partes, atual, h_atual = [], [], 0.0
+    for e in experimentos:
+        h = horas(e)
+        if atual and h_atual + h > horas_max:
+            partes.append((atual, h_atual))
+            atual, h_atual = [], 0.0
+        atual.append(e)
+        h_atual += h
+    if atual:
+        partes.append((atual, h_atual))
+    return partes
+
+
 if __name__ == "__main__":
-    p = argparse.ArgumentParser()
-    p.add_argument("--modelo", default="Qwen/Qwen2.5-7B-Instruct-AWQ")
+    p = argparse.ArgumentParser(description="Gera o manifesto do experimento completo.")
+    p.add_argument("--modelos", default="Qwen/Qwen2.5-7B-Instruct-AWQ",
+                   help="Ids de modelo separados por vírgula.")
+    p.add_argument("--condicoes", default=",".join(TODAS_CONDICOES),
+                   help="Condições separadas por vírgula.")
+    p.add_argument("--datasets", default="tekgen,webnlg")
     p.add_argument("--url", default="http://localhost:8000/v1")
-    p.add_argument("--saida_dir", default=os.path.join(
-        os.path.dirname(__file__), "..", "configs", "pipeline"))
+    p.add_argument("--saida", default=os.path.join(
+        REPO, "configs", "pipeline", "manifesto_completo.json"))
+    p.add_argument("--bench_dir", default=BENCH_DIR_PADRAO)
+    p.add_argument("--exigir_c2_induzido", action="store_true",
+                   help="C-5 estrito: omite C2 cuja ontologia induzida do modelo não existe.")
+    p.add_argument("--dividir_por_sessao", action="store_true",
+                   help="Também grava partes de <= --horas_max h (sessões Kaggle de 12 h).")
+    p.add_argument("--horas_max", type=float, default=10.0)
+    p.add_argument("--fr_por_hora", type=float, default=5300.0,
+                   help="Throughput de referência (7B ~5300 fr/h).")
+    p.add_argument("--fator", type=float, default=1.0,
+                   help="Fator de lentidão do modelo (>1 = mais lento). 7B=1.0.")
     args = p.parse_args()
 
-    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    saida_resultados = "resultados/7b"      # relativo à raiz do repo, sempre "/"
-    saida_piloto     = "resultados/piloto"  # separado para caber na exceção do .gitignore
+    modelos = [m.strip() for m in args.modelos.split(",") if m.strip()]
+    condicoes = [c.strip() for c in args.condicoes.split(",") if c.strip()]
+    datasets = [d.strip() for d in args.datasets.split(",") if d.strip()]
 
-    pares_path = os.path.join(root, "configs", "pipeline", "pares_c5.json")
-    with open(pares_path, encoding="utf-8") as f:
+    desconhecidas = [c for c in condicoes if c not in TODAS_CONDICOES]
+    if desconhecidas:
+        print(f"ERRO: condições desconhecidas: {desconhecidas}", file=sys.stderr)
+        sys.exit(1)
+
+    with open(os.path.join(REPO, "configs", "pipeline", "pares_c5.json"), encoding="utf-8") as f:
         pares = json.load(f)
 
     git = git_hash()
-    print(f"git_hash: {git}")
-    print(f"modelo:   {args.modelo}")
-    print(f"url:      {args.url}")
+    print(f"git_hash:  {git}")
+    print(f"modelos:   {modelos}")
+    print(f"condicoes: {condicoes}")
+    print(f"datasets:  {datasets}")
 
-    exp_full = gerar_principal(
-        TEKGEN_ONTOS, WEBNLG_ONTOS, pares, args.modelo, args.url, saida_resultados, git
+    exp, avisos = gerar_completo(
+        modelos, condicoes, datasets, pares, args.url, git,
+        exigir_c2=args.exigir_c2_induzido,
     )
-    exp_sens = gerar_sensibilidade(pares, args.modelo, args.url, saida_resultados, git)
-    exp_piloto = gerar_piloto(args.modelo, args.url, saida_piloto, git)
 
-    full_path = os.path.join(args.saida_dir, "manifesto_7b_full.json")
-    sens_path = os.path.join(args.saida_dir, "manifesto_7b_sensibilidade.json")
-    piloto_path = os.path.join(args.saida_dir, "manifesto_piloto_kaggle.json")
+    os.makedirs(os.path.dirname(args.saida), exist_ok=True)
+    with open(args.saida, "w", encoding="utf-8") as f:
+        json.dump(exp, f, ensure_ascii=False, indent=2)
+    print(f"\nManifesto: {args.saida}  ({len(exp)} experimentos)")
 
-    with open(full_path, "w", encoding="utf-8") as f:
-        json.dump(exp_full, f, ensure_ascii=False, indent=2)
-    with open(sens_path, "w", encoding="utf-8") as f:
-        json.dump(exp_sens, f, ensure_ascii=False, indent=2)
-    with open(piloto_path, "w", encoding="utf-8") as f:
-        json.dump(exp_piloto, f, ensure_ascii=False, indent=2)
+    total_frases = sum(
+        contar_frases_teste(args.bench_dir, e["dataset"], e["ontologia_id"]) for e in exp)
+    total_h = total_frases * args.fator / args.fr_por_hora
+    print(f"Frases totais: {total_frases}  |  Horas estimadas: {total_h:.1f} h "
+          f"(@ {args.fr_por_hora:.0f} fr/h, fator {args.fator})")
 
-    print(f"\nManifesto principal:    {full_path}  ({len(exp_full)} experimentos)")
-    print(f"Manifesto sensibilidade: {sens_path}  ({len(exp_sens)} experimentos)")
-    print(f"Manifesto piloto:        {piloto_path}  ({len(exp_piloto)} experimentos)")
-    print(f"Total de experimentos:   {len(exp_full) + len(exp_sens) + len(exp_piloto)}")
+    if avisos:
+        modo = "OMITIDAS" if args.exigir_c2_induzido else "incluídas no plano"
+        print(f"\n{len(avisos)} condição(ões) C2 sem ontologia induzida ({modo}):")
+        for a in avisos[:8]:
+            print(f"  - {a}")
+        if len(avisos) > 8:
+            print(f"  ... e mais {len(avisos) - 8}.")
+        print("  Rode a indução C2 no Kaggle (Etapa C) antes de executar a C2; o guard")
+        print("  check do lançador bloqueia a C2 sem a ontologia induzida do modelo.")
+
+    if args.dividir_por_sessao:
+        partes = dividir_sessoes(exp, args.bench_dir, args.horas_max,
+                                 args.fr_por_hora, args.fator)
+        stem = os.path.splitext(args.saida)[0]
+        print(f"\nDividido em {len(partes)} parte(s) de <= {args.horas_max} h:")
+        for i, (parte, h) in enumerate(partes, 1):
+            pp = f"{stem}_parte{i}.json"
+            with open(pp, "w", encoding="utf-8") as f:
+                json.dump(parte, f, ensure_ascii=False, indent=2)
+            print(f"  parte {i}: {len(parte):3d} exp  ~{h:4.1f} h  -> {os.path.basename(pp)}")
