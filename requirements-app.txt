@@ -1,0 +1,10 @@
+# Ferramentas locais (no seu PC) para exploração dos resultados — Fases 4 e 5.
+# Não é a pilha do Kaggle (essa é requirements-kaggle.txt). Instale com:
+#   pip install -r requirements-app.txt
+
+streamlit
+pandas
+neo4j
+sentence-transformers
+scikit-learn
+nltk
