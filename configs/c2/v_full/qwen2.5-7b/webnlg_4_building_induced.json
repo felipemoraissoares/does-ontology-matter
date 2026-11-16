@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "4_building",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_4_building_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_4_building_train_44",
+      "ont_4_building_train_149",
+      "ont_4_building_train_19",
+      "ont_4_building_train_150",
+      "ont_4_building_train_154",
+      "ont_4_building_train_20",
+      "ont_4_building_train_163",
+      "ont_4_building_train_39",
+      "ont_4_building_train_155",
+      "ont_4_building_train_80",
+      "ont_4_building_train_146",
+      "ont_4_building_train_96",
+      "ont_4_building_train_3",
+      "ont_4_building_train_105",
+      "ont_4_building_train_139",
+      "ont_4_building_train_66",
+      "ont_4_building_train_97",
+      "ont_4_building_train_121",
+      "ont_4_building_train_46",
+      "ont_4_building_train_14",
+      "ont_4_building_train_78",
+      "ont_4_building_train_114",
+      "ont_4_building_train_151",
+      "ont_4_building_train_134",
+      "ont_4_building_train_56",
+      "ont_4_building_train_167",
+      "ont_4_building_train_18",
+      "ont_4_building_train_31",
+      "ont_4_building_train_45",
+      "ont_4_building_train_51",
+      "ont_4_building_train_95",
+      "ont_4_building_train_1",
+      "ont_4_building_train_140",
+      "ont_4_building_train_34",
+      "ont_4_building_train_76",
+      "ont_4_building_train_37",
+      "ont_4_building_train_130",
+      "ont_4_building_train_148",
+      "ont_4_building_train_54",
+      "ont_4_building_train_107",
+      "ont_4_building_train_132",
+      "ont_4_building_train_168",
+      "ont_4_building_train_77",
+      "ont_4_building_train_4",
+      "ont_4_building_train_118",
+      "ont_4_building_train_85",
+      "ont_4_building_train_33",
+      "ont_4_building_train_62",
+      "ont_4_building_train_15",
+      "ont_4_building_train_137"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "located_in",
+      "frequencia": 57,
+      "membros": [
+        "located_in",
+        "location",
+        "located",
+        "situated_in",
+        "situated_at",
+        "located_at",
+        "is_located_in",
+        "located_on",
+        "current_location",
+        "is_location_of"
+      ]
+    },
+    {
+      "label": "owned_by",
+      "frequencia": 18,
+      "membros": [
+        "owned_by",
+        "owned",
+        "owner",
+        "is_owned_by",
+        "own"
+      ]
+    },
+    {
+      "label": "tenants_of",
+      "frequencia": 14,
+      "membros": [
+        "tenant_of",
+        "tenants_of",
+        "current_tenants",
+        "tenant",
+        "tenants"
+      ]
+    },
+    {
+      "label": "designed_by",
+      "frequencia": 9,
+      "membros": [
+        "designed_by",
+        "designed"
+      ]
+    },
+    {
+      "label": "completed",
+      "frequencia": 9,
+      "membros": [
+        "completed",
+        "was_completed_in",
+        "completed_on",
+        "completed_in"
+      ]
+    },
+    {
+      "label": "architect",
+      "frequencia": 8,
+      "membros": [
+        "architect",
+        "architect_of",
+        "architects_of"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 4,
+      "membros": [
+        "part_of",
+        "is_part_of",
+        "was_part_of"
+      ]
+    },
+    {
+      "label": "leader_of",
+      "frequencia": 4,
+      "membros": [
+        "leader_of",
+        "leader"
+      ]
+    },
+    {
+      "label": "added_to",
+      "frequencia": 3,
+      "membros": [
+        "added",
+        "added_to"
+      ]
+    },
+    {
+      "label": "built_in",
+      "frequencia": 3,
+      "membros": [
+        "built_in"
+      ]
+    },
+    {
+      "label": "has_floors_count",
+      "frequencia": 3,
+      "membros": [
+        "has_floors_count",
+        "has_floors",
+        "floor_count"
+      ]
+    }
+  ]
+}

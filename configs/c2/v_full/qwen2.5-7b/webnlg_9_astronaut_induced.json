@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "9_astronaut",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_9_astronaut_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_9_astronaut_train_63",
+      "ont_9_astronaut_train_59",
+      "ont_9_astronaut_train_40",
+      "ont_9_astronaut_train_31",
+      "ont_9_astronaut_train_50",
+      "ont_9_astronaut_train_67",
+      "ont_9_astronaut_train_86",
+      "ont_9_astronaut_train_20",
+      "ont_9_astronaut_train_69",
+      "ont_9_astronaut_train_27",
+      "ont_9_astronaut_train_74",
+      "ont_9_astronaut_train_60",
+      "ont_9_astronaut_train_21",
+      "ont_9_astronaut_train_57",
+      "ont_9_astronaut_train_16",
+      "ont_9_astronaut_train_34",
+      "ont_9_astronaut_train_72",
+      "ont_9_astronaut_train_85",
+      "ont_9_astronaut_train_9",
+      "ont_9_astronaut_train_13",
+      "ont_9_astronaut_train_68",
+      "ont_9_astronaut_train_37",
+      "ont_9_astronaut_train_66",
+      "ont_9_astronaut_train_51",
+      "ont_9_astronaut_train_83",
+      "ont_9_astronaut_train_48",
+      "ont_9_astronaut_train_2",
+      "ont_9_astronaut_train_41",
+      "ont_9_astronaut_train_42",
+      "ont_9_astronaut_train_44",
+      "ont_9_astronaut_train_33",
+      "ont_9_astronaut_train_24",
+      "ont_9_astronaut_train_19",
+      "ont_9_astronaut_train_46",
+      "ont_9_astronaut_train_75",
+      "ont_9_astronaut_train_8",
+      "ont_9_astronaut_train_35",
+      "ont_9_astronaut_train_78",
+      "ont_9_astronaut_train_3",
+      "ont_9_astronaut_train_17",
+      "ont_9_astronaut_train_39",
+      "ont_9_astronaut_train_43",
+      "ont_9_astronaut_train_23",
+      "ont_9_astronaut_train_47",
+      "ont_9_astronaut_train_25",
+      "ont_9_astronaut_train_6",
+      "ont_9_astronaut_train_7",
+      "ont_9_astronaut_train_53",
+      "ont_9_astronaut_train_64",
+      "ont_9_astronaut_train_79"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "born_in",
+      "frequencia": 26,
+      "membros": [
+        "birthplace",
+        "born_in",
+        "was_born_in",
+        "place_of_birth"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 13,
+      "membros": [
+        "born",
+        "was born"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 11,
+      "membros": [
+        "part_of",
+        "was_part_of"
+      ]
+    },
+    {
+      "label": "crew_member",
+      "frequencia": 8,
+      "membros": [
+        "crew_member",
+        "served_as_crew_member",
+        "was_crew_member_of",
+        "crew_for"
+      ]
+    },
+    {
+      "label": "is_from",
+      "frequencia": 7,
+      "membros": [
+        "is_from",
+        "from"
+      ]
+    },
+    {
+      "label": "served_as",
+      "frequencia": 5,
+      "membros": [
+        "served",
+        "served_as",
+        "served_on"
+      ]
+    },
+    {
+      "label": "member_of",
+      "frequencia": 4,
+      "membros": [
+        "member_of"
+      ]
+    },
+    {
+      "label": "spent",
+      "frequencia": 4,
+      "membros": [
+        "spent"
+      ]
+    },
+    {
+      "label": "worked_as",
+      "frequencia": 3,
+      "membros": [
+        "worked_as",
+        "worked"
+      ]
+    },
+    {
+      "label": "took_part_in",
+      "frequencia": 3,
+      "membros": [
+        "took_part_in"
+      ]
+    },
+    {
+      "label": "born_on",
+      "frequencia": 3,
+      "membros": [
+        "born_on"
+      ]
+    },
+    {
+      "label": "participated_in",
+      "frequencia": 3,
+      "membros": [
+        "participated_in"
+      ]
+    },
+    {
+      "label": "operated_by",
+      "frequencia": 3,
+      "membros": [
+        "operated",
+        "operated_by"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "3_sport",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_tekgen_3_sport_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_3_sport_train_506",
+      "ont_3_sport_train_504",
+      "ont_3_sport_train_64",
+      "ont_3_sport_train_574",
+      "ont_3_sport_train_482",
+      "ont_3_sport_train_590",
+      "ont_3_sport_train_637",
+      "ont_3_sport_train_299",
+      "ont_3_sport_train_201",
+      "ont_3_sport_train_384",
+      "ont_3_sport_train_327",
+      "ont_3_sport_train_143",
+      "ont_3_sport_train_321",
+      "ont_3_sport_train_595",
+      "ont_3_sport_train_480",
+      "ont_3_sport_train_420",
+      "ont_3_sport_train_315",
+      "ont_3_sport_train_314",
+      "ont_3_sport_train_241",
+      "ont_3_sport_train_236",
+      "ont_3_sport_train_281",
+      "ont_3_sport_train_136",
+      "ont_3_sport_train_161",
+      "ont_3_sport_train_206",
+      "ont_3_sport_train_79",
+      "ont_3_sport_train_494",
+      "ont_3_sport_train_514",
+      "ont_3_sport_train_183",
+      "ont_3_sport_train_103",
+      "ont_3_sport_train_622",
+      "ont_3_sport_train_550",
+      "ont_3_sport_train_9",
+      "ont_3_sport_train_110",
+      "ont_3_sport_train_425",
+      "ont_3_sport_train_345",
+      "ont_3_sport_train_453",
+      "ont_3_sport_train_153",
+      "ont_3_sport_train_227",
+      "ont_3_sport_train_499",
+      "ont_3_sport_train_99",
+      "ont_3_sport_train_15",
+      "ont_3_sport_train_145",
+      "ont_3_sport_train_284",
+      "ont_3_sport_train_578",
+      "ont_3_sport_train_448",
+      "ont_3_sport_train_505",
+      "ont_3_sport_train_150",
+      "ont_3_sport_train_121",
+      "ont_3_sport_train_199",
+      "ont_3_sport_train_642"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "won",
+      "frequencia": 23,
+      "membros": [
+        "won",
+        "winner"
+      ]
+    },
+    {
+      "label": "represents",
+      "frequencia": 14,
+      "membros": [
+        "represents",
+        "representing",
+        "represented"
+      ]
+    },
+    {
+      "label": "played_for",
+      "frequencia": 12,
+      "membros": [
+        "plays_for",
+        "playedFor",
+        "played_in",
+        "played",
+        "playsFor",
+        "playing_for",
+        "played_for"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 11,
+      "membros": [
+        "born"
+      ]
+    },
+    {
+      "label": "occupation",
+      "frequencia": 6,
+      "membros": [
+        "occupation"
+      ]
+    },
+    {
+      "label": "nationality",
+      "frequencia": 4,
+      "membros": [
+        "nationality"
+      ]
+    },
+    {
+      "label": "season",
+      "frequencia": 4,
+      "membros": [
+        "season"
+      ]
+    },
+    {
+      "label": "location",
+      "frequencia": 4,
+      "membros": [
+        "location_of_event",
+        "location"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 3,
+      "membros": [
+        "is_a"
+      ]
+    },
+    {
+      "label": "joined",
+      "frequencia": 3,
+      "membros": [
+        "joined"
+      ]
+    },
+    {
+      "label": "team",
+      "frequencia": 3,
+      "membros": [
+        "team"
+      ]
+    }
+  ]
+}

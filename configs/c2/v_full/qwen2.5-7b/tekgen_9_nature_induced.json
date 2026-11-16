@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "dataset": "tekgen",
+    "onto_id": "9_nature",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_tekgen_9_nature_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_9_nature_train_341",
+      "ont_9_nature_train_330",
+      "ont_9_nature_train_464",
+      "ont_9_nature_train_117",
+      "ont_9_nature_train_443",
+      "ont_9_nature_train_169",
+      "ont_9_nature_train_145",
+      "ont_9_nature_train_201",
+      "ont_9_nature_train_472",
+      "ont_9_nature_train_459",
+      "ont_9_nature_train_620",
+      "ont_9_nature_train_76",
+      "ont_9_nature_train_213",
+      "ont_9_nature_train_97",
+      "ont_9_nature_train_418",
+      "ont_9_nature_train_108",
+      "ont_9_nature_train_300",
+      "ont_9_nature_train_491",
+      "ont_9_nature_train_583",
+      "ont_9_nature_train_291",
+      "ont_9_nature_train_575",
+      "ont_9_nature_train_139",
+      "ont_9_nature_train_513",
+      "ont_9_nature_train_397",
+      "ont_9_nature_train_236",
+      "ont_9_nature_train_284",
+      "ont_9_nature_train_194",
+      "ont_9_nature_train_319",
+      "ont_9_nature_train_435",
+      "ont_9_nature_train_261",
+      "ont_9_nature_train_424",
+      "ont_9_nature_train_120",
+      "ont_9_nature_train_414",
+      "ont_9_nature_train_133",
+      "ont_9_nature_train_286",
+      "ont_9_nature_train_119",
+      "ont_9_nature_train_372",
+      "ont_9_nature_train_323",
+      "ont_9_nature_train_322",
+      "ont_9_nature_train_503",
+      "ont_9_nature_train_13",
+      "ont_9_nature_train_187",
+      "ont_9_nature_train_193",
+      "ont_9_nature_train_63",
+      "ont_9_nature_train_607",
+      "ont_9_nature_train_87",
+      "ont_9_nature_train_22",
+      "ont_9_nature_train_361",
+      "ont_9_nature_train_107",
+      "ont_9_nature_train_148"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "located_in",
+      "frequencia": 28,
+      "membros": [
+        "location",
+        "located_in",
+        "located",
+        "located_at"
+      ]
+    },
+    {
+      "label": "flows",
+      "frequencia": 13,
+      "membros": [
+        "flows_for",
+        "flows"
+      ]
+    },
+    {
+      "label": "tributary_of",
+      "frequencia": 11,
+      "membros": [
+        "tributary_of",
+        "major_tributary",
+        "tributary"
+      ]
+    },
+    {
+      "label": "is part of",
+      "frequencia": 6,
+      "membros": [
+        "is part of",
+        "part_of",
+        "is_a_member_of",
+        "is_part_of"
+      ]
+    },
+    {
+      "label": "won",
+      "frequencia": 5,
+      "membros": [
+        "won"
+      ]
+    },
+    {
+      "label": "belongs_to",
+      "frequencia": 4,
+      "membros": [
+        "belongs_to",
+        "belongs_to_family"
+      ]
+    },
+    {
+      "label": "was_synonym",
+      "frequencia": 3,
+      "membros": [
+        "was_synonym",
+        "is_synonym_of",
+        "has_synonym"
+      ]
+    },
+    {
+      "label": "height_greater_than",
+      "frequencia": 3,
+      "membros": [
+        "height_greater_than",
+        "height_above_sea_level",
+        "has_height"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 3,
+      "membros": [
+        "is_a",
+        "is a"
+      ]
+    },
+    {
+      "label": "created",
+      "frequencia": 3,
+      "membros": [
+        "created",
+        "made"
+      ]
+    },
+    {
+      "label": "is located north of",
+      "frequencia": 3,
+      "membros": [
+        "is located north of",
+        "in_mountain_range",
+        "lies north of"
+      ]
+    }
+  ]
+}

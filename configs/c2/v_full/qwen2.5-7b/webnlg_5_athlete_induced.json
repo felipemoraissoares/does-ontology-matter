@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "5_athlete",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_5_athlete_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_5_athlete_train_3",
+      "ont_5_athlete_train_15",
+      "ont_5_athlete_train_126",
+      "ont_5_athlete_train_102",
+      "ont_5_athlete_train_150",
+      "ont_5_athlete_train_37",
+      "ont_5_athlete_train_176",
+      "ont_5_athlete_train_74",
+      "ont_5_athlete_train_183",
+      "ont_5_athlete_train_14",
+      "ont_5_athlete_train_157",
+      "ont_5_athlete_train_16",
+      "ont_5_athlete_train_175",
+      "ont_5_athlete_train_181",
+      "ont_5_athlete_train_26",
+      "ont_5_athlete_train_43",
+      "ont_5_athlete_train_148",
+      "ont_5_athlete_train_105",
+      "ont_5_athlete_train_6",
+      "ont_5_athlete_train_136",
+      "ont_5_athlete_train_54",
+      "ont_5_athlete_train_67",
+      "ont_5_athlete_train_20",
+      "ont_5_athlete_train_31",
+      "ont_5_athlete_train_116",
+      "ont_5_athlete_train_61",
+      "ont_5_athlete_train_103",
+      "ont_5_athlete_train_38",
+      "ont_5_athlete_train_4",
+      "ont_5_athlete_train_70",
+      "ont_5_athlete_train_101",
+      "ont_5_athlete_train_65",
+      "ont_5_athlete_train_33",
+      "ont_5_athlete_train_141",
+      "ont_5_athlete_train_117",
+      "ont_5_athlete_train_134",
+      "ont_5_athlete_train_80",
+      "ont_5_athlete_train_182",
+      "ont_5_athlete_train_79",
+      "ont_5_athlete_train_45",
+      "ont_5_athlete_train_121",
+      "ont_5_athlete_train_143",
+      "ont_5_athlete_train_95",
+      "ont_5_athlete_train_62",
+      "ont_5_athlete_train_161",
+      "ont_5_athlete_train_1",
+      "ont_5_athlete_train_124",
+      "ont_5_athlete_train_17",
+      "ont_5_athlete_train_85",
+      "ont_5_athlete_train_145"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "plays_for",
+      "frequencia": 52,
+      "membros": [
+        "played_for",
+        "plays_for",
+        "played",
+        "plays_in",
+        "plays",
+        "has_played_for",
+        "later_played_for",
+        "player_of"
+      ]
+    },
+    {
+      "label": "born",
+      "frequencia": 22,
+      "membros": [
+        "born_in",
+        "was_born_on",
+        "born",
+        "birthplace_of",
+        "birth_place",
+        "birthplace"
+      ]
+    },
+    {
+      "label": "club",
+      "frequencia": 11,
+      "membros": [
+        "club",
+        "club_of",
+        "in_club"
+      ]
+    },
+    {
+      "label": "coached_by",
+      "frequencia": 6,
+      "membros": [
+        "coached",
+        "coached_by",
+        "coaches"
+      ]
+    },
+    {
+      "label": "managed_by",
+      "frequencia": 5,
+      "membros": [
+        "managed_by"
+      ]
+    },
+    {
+      "label": "located_in",
+      "frequencia": 3,
+      "membros": [
+        "located_in",
+        "located",
+        "is_in"
+      ]
+    },
+    {
+      "label": "height",
+      "frequencia": 3,
+      "membros": [
+        "height",
+        "height_of"
+      ]
+    },
+    {
+      "label": "based_at",
+      "frequencia": 3,
+      "membros": [
+        "based_in",
+        "based_at"
+      ]
+    }
+  ]
+}

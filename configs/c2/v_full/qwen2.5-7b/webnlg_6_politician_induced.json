@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "6_politician",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_6_politician_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_6_politician_train_3",
+      "ont_6_politician_train_15",
+      "ont_6_politician_train_122",
+      "ont_6_politician_train_146",
+      "ont_6_politician_train_117",
+      "ont_6_politician_train_159",
+      "ont_6_politician_train_37",
+      "ont_6_politician_train_112",
+      "ont_6_politician_train_114",
+      "ont_6_politician_train_14",
+      "ont_6_politician_train_165",
+      "ont_6_politician_train_16",
+      "ont_6_politician_train_38",
+      "ont_6_politician_train_150",
+      "ont_6_politician_train_113",
+      "ont_6_politician_train_33",
+      "ont_6_politician_train_176",
+      "ont_6_politician_train_66",
+      "ont_6_politician_train_166",
+      "ont_6_politician_train_181",
+      "ont_6_politician_train_184",
+      "ont_6_politician_train_20",
+      "ont_6_politician_train_54",
+      "ont_6_politician_train_26",
+      "ont_6_politician_train_179",
+      "ont_6_politician_train_99",
+      "ont_6_politician_train_61",
+      "ont_6_politician_train_31",
+      "ont_6_politician_train_180",
+      "ont_6_politician_train_62",
+      "ont_6_politician_train_133",
+      "ont_6_politician_train_45",
+      "ont_6_politician_train_43",
+      "ont_6_politician_train_67",
+      "ont_6_politician_train_145",
+      "ont_6_politician_train_53",
+      "ont_6_politician_train_128",
+      "ont_6_politician_train_153",
+      "ont_6_politician_train_103",
+      "ont_6_politician_train_65",
+      "ont_6_politician_train_84",
+      "ont_6_politician_train_134",
+      "ont_6_politician_train_1",
+      "ont_6_politician_train_120",
+      "ont_6_politician_train_17",
+      "ont_6_politician_train_70",
+      "ont_6_politician_train_91",
+      "ont_6_politician_train_141",
+      "ont_6_politician_train_132",
+      "ont_6_politician_train_163"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "born_in",
+      "frequencia": 30,
+      "membros": [
+        "born_in",
+        "born",
+        "place_of_birth",
+        "birthplace",
+        "was_born_in"
+      ]
+    },
+    {
+      "label": "worked_as",
+      "frequencia": 9,
+      "membros": [
+        "worked_as",
+        "worked"
+      ]
+    },
+    {
+      "label": "fought_in",
+      "frequencia": 8,
+      "membros": [
+        "fought_in",
+        "battle_fought",
+        "fought",
+        "battled"
+      ]
+    },
+    {
+      "label": "awarded",
+      "frequencia": 7,
+      "membros": [
+        "awarded",
+        "was_awarded"
+      ]
+    },
+    {
+      "label": "in_office_during",
+      "frequencia": 7,
+      "membros": [
+        "in_office_during",
+        "in_office"
+      ]
+    },
+    {
+      "label": "leader_of",
+      "frequencia": 7,
+      "membros": [
+        "leader_of",
+        "leader",
+        "leader_of_party"
+      ]
+    },
+    {
+      "label": "lives_in",
+      "frequencia": 6,
+      "membros": [
+        "lives_in",
+        "lives"
+      ]
+    },
+    {
+      "label": "died",
+      "frequencia": 6,
+      "membros": [
+        "died_in",
+        "died"
+      ]
+    },
+    {
+      "label": "served_in",
+      "frequencia": 6,
+      "membros": [
+        "served_as",
+        "served_in",
+        "served",
+        "served_in_office"
+      ]
+    },
+    {
+      "label": "member_of",
+      "frequencia": 6,
+      "membros": [
+        "member_of",
+        "member_of_party",
+        "member"
+      ]
+    },
+    {
+      "label": "succeeded_by",
+      "frequencia": 5,
+      "membros": [
+        "was_succeeded_by",
+        "succeeded_by"
+      ]
+    },
+    {
+      "label": "succeeded",
+      "frequencia": 5,
+      "membros": [
+        "succeeded"
+      ]
+    },
+    {
+      "label": "place_of_death",
+      "frequencia": 4,
+      "membros": [
+        "death_place_of",
+        "place_of_death",
+        "death place"
+      ]
+    },
+    {
+      "label": "resides_in",
+      "frequencia": 4,
+      "membros": [
+        "resides_at",
+        "resides_in",
+        "located"
+      ]
+    },
+    {
+      "label": "governed_by",
+      "frequencia": 3,
+      "membros": [
+        "governed_by",
+        "governing_body"
+      ]
+    }
+  ]
+}

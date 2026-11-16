@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "2_musicalwork",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_2_musicalwork_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_2_musicalwork_train_58",
+      "ont_2_musicalwork_train_16",
+      "ont_2_musicalwork_train_50",
+      "ont_2_musicalwork_train_53",
+      "ont_2_musicalwork_train_33",
+      "ont_2_musicalwork_train_13",
+      "ont_2_musicalwork_train_54",
+      "ont_2_musicalwork_train_9",
+      "ont_2_musicalwork_train_64",
+      "ont_2_musicalwork_train_31",
+      "ont_2_musicalwork_train_78",
+      "ont_2_musicalwork_train_51",
+      "ont_2_musicalwork_train_37",
+      "ont_2_musicalwork_train_71",
+      "ont_2_musicalwork_train_24",
+      "ont_2_musicalwork_train_66",
+      "ont_2_musicalwork_train_57",
+      "ont_2_musicalwork_train_44",
+      "ont_2_musicalwork_train_60",
+      "ont_2_musicalwork_train_34",
+      "ont_2_musicalwork_train_2",
+      "ont_2_musicalwork_train_79",
+      "ont_2_musicalwork_train_56",
+      "ont_2_musicalwork_train_40",
+      "ont_2_musicalwork_train_19",
+      "ont_2_musicalwork_train_69",
+      "ont_2_musicalwork_train_20",
+      "ont_2_musicalwork_train_21",
+      "ont_2_musicalwork_train_59",
+      "ont_2_musicalwork_train_63",
+      "ont_2_musicalwork_train_47",
+      "ont_2_musicalwork_train_62",
+      "ont_2_musicalwork_train_41",
+      "ont_2_musicalwork_train_8",
+      "ont_2_musicalwork_train_67",
+      "ont_2_musicalwork_train_3",
+      "ont_2_musicalwork_train_17",
+      "ont_2_musicalwork_train_39",
+      "ont_2_musicalwork_train_23",
+      "ont_2_musicalwork_train_43",
+      "ont_2_musicalwork_train_25",
+      "ont_2_musicalwork_train_6",
+      "ont_2_musicalwork_train_7",
+      "ont_2_musicalwork_train_48",
+      "ont_2_musicalwork_train_75",
+      "ont_2_musicalwork_train_10",
+      "ont_2_musicalwork_train_72",
+      "ont_2_musicalwork_train_22",
+      "ont_2_musicalwork_train_68",
+      "ont_2_musicalwork_train_61"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "preceded_by",
+      "frequencia": 18,
+      "membros": [
+        "preceded_by"
+      ]
+    },
+    {
+      "label": "produced",
+      "frequencia": 14,
+      "membros": [
+        "producer",
+        "produced",
+        "producing",
+        "producers"
+      ]
+    },
+    {
+      "label": "genre",
+      "frequencia": 14,
+      "membros": [
+        "genre",
+        "is_of_genre"
+      ]
+    },
+    {
+      "label": "runtime",
+      "frequencia": 9,
+      "membros": [
+        "runtime"
+      ]
+    },
+    {
+      "label": "followed_by",
+      "frequencia": 8,
+      "membros": [
+        "follows",
+        "followed_by"
+      ]
+    },
+    {
+      "label": "produced_by",
+      "frequencia": 5,
+      "membros": [
+        "created_by",
+        "created",
+        "produced_by",
+        "created_and_produced_by"
+      ]
+    },
+    {
+      "label": "recorded",
+      "frequencia": 5,
+      "membros": [
+        "recorded",
+        "recorded_in"
+      ]
+    },
+    {
+      "label": "release",
+      "frequencia": 4,
+      "membros": [
+        "release",
+        "released",
+        "released_on",
+        "released_by"
+      ]
+    }
+  ]
+}

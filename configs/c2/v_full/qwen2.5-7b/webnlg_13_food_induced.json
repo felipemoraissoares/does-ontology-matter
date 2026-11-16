@@ -1,0 +1,209 @@
+{
+  "metadata": {
+    "dataset": "webnlg",
+    "onto_id": "13_food",
+    "n_frases_treino": 50,
+    "seed": 42,
+    "threshold_agrupamento": 0.7,
+    "freq_min_frases": 3,
+    "normalizar_rotulo": true,
+    "use_definicoes": true,
+    "from_raw_jsonl": "/kaggle/working/does-ontology-matter/resultados/c2_inducao/v_full/qwen2.5-7b/raw_webnlg_13_food_treino.jsonl",
+    "modelo_llm": "(reprocessado sem LLM)",
+    "modelo_embs": "all-MiniLM-L6-v2",
+    "ids_frases": [
+      "ont_13_food_train_46",
+      "ont_13_food_train_114",
+      "ont_13_food_train_10",
+      "ont_13_food_train_86",
+      "ont_13_food_train_106",
+      "ont_13_food_train_201",
+      "ont_13_food_train_214",
+      "ont_13_food_train_133",
+      "ont_13_food_train_192",
+      "ont_13_food_train_45",
+      "ont_13_food_train_127",
+      "ont_13_food_train_197",
+      "ont_13_food_train_30",
+      "ont_13_food_train_79",
+      "ont_13_food_train_116",
+      "ont_13_food_train_141",
+      "ont_13_food_train_22",
+      "ont_13_food_train_124",
+      "ont_13_food_train_194",
+      "ont_13_food_train_211",
+      "ont_13_food_train_157",
+      "ont_13_food_train_160",
+      "ont_13_food_train_67",
+      "ont_13_food_train_123",
+      "ont_13_food_train_150",
+      "ont_13_food_train_227",
+      "ont_13_food_train_85",
+      "ont_13_food_train_193",
+      "ont_13_food_train_206",
+      "ont_13_food_train_120",
+      "ont_13_food_train_165",
+      "ont_13_food_train_62",
+      "ont_13_food_train_74",
+      "ont_13_food_train_239",
+      "ont_13_food_train_13",
+      "ont_13_food_train_166",
+      "ont_13_food_train_101",
+      "ont_13_food_train_28",
+      "ont_13_food_train_181",
+      "ont_13_food_train_110",
+      "ont_13_food_train_139",
+      "ont_13_food_train_11",
+      "ont_13_food_train_223",
+      "ont_13_food_train_31",
+      "ont_13_food_train_43",
+      "ont_13_food_train_219",
+      "ont_13_food_train_104",
+      "ont_13_food_train_90",
+      "ont_13_food_train_5",
+      "ont_13_food_train_185"
+    ],
+    "run_id": "20261116T075220Z"
+  },
+  "concepts": [],
+  "relations": [
+    {
+      "label": "comes_from",
+      "frequencia": 29,
+      "membros": [
+        "comes_from",
+        "from",
+        "is_from",
+        "come_from",
+        "originates_from",
+        "origin_is"
+      ]
+    },
+    {
+      "label": "ingredient",
+      "frequencia": 13,
+      "membros": [
+        "ingredient",
+        "is Ingredient_of",
+        "is_ingredient_of",
+        "has_ingredient",
+        "includes_ingredient",
+        "is_an_ingredient_in",
+        "is_an_ingredient"
+      ]
+    },
+    {
+      "label": "leader_of",
+      "frequencia": 13,
+      "membros": [
+        "is_leader_of",
+        "leader_of",
+        "is_a_leader_of",
+        "leaders_of",
+        "leader"
+      ]
+    },
+    {
+      "label": "found_in",
+      "frequencia": 9,
+      "membros": [
+        "found_in",
+        "is_found_in",
+        "foundin"
+      ]
+    },
+    {
+      "label": "hasIngredient",
+      "frequencia": 9,
+      "membros": [
+        "hasIngredient",
+        "isingredientof"
+      ]
+    },
+    {
+      "label": "part_of",
+      "frequencia": 7,
+      "membros": [
+        "part_of",
+        "is_part_of"
+      ]
+    },
+    {
+      "label": "ingredient_of",
+      "frequencia": 6,
+      "membros": [
+        "main_ingredients_of",
+        "main_ingredients",
+        "ingredient_of"
+      ]
+    },
+    {
+      "label": "spoken_in",
+      "frequencia": 6,
+      "membros": [
+        "language_spoken",
+        "language_spoken_in",
+        "spoken_in",
+        "spoken_language_is",
+        "spoken_language"
+      ]
+    },
+    {
+      "label": "origin_of",
+      "frequencia": 6,
+      "membros": [
+        "from_country",
+        "origin_of",
+        "from_region",
+        "country_of"
+      ]
+    },
+    {
+      "label": "ethnic_group",
+      "frequencia": 5,
+      "membros": [
+        "ethnic_group",
+        "is_an_ethnic_group_in"
+      ]
+    },
+    {
+      "label": "contains",
+      "frequencia": 5,
+      "membros": [
+        "contains"
+      ]
+    },
+    {
+      "label": "is_a",
+      "frequencia": 4,
+      "membros": [
+        "is_a",
+        "is_a_type_of"
+      ]
+    },
+    {
+      "label": "includes",
+      "frequencia": 3,
+      "membros": [
+        "includes"
+      ]
+    },
+    {
+      "label": "is_a_variant_of",
+      "frequencia": 3,
+      "membros": [
+        "is_a_variant_of",
+        "variant_of",
+        "variant"
+      ]
+    },
+    {
+      "label": "made_with",
+      "frequencia": 3,
+      "membros": [
+        "made_with",
+        "made_in"
+      ]
+    }
+  ]
+}
