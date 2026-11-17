@@ -109,9 +109,11 @@ llm-kg-ontology/
 │       ├── definicoes_*.json           # Pilot relation definitions (D-24)
 │       └── v_full/<slug>/              # Per-model induced ontologies + definitions (D-33)
 │
-├── app/
-│   ├── streamlit_app.py       # Fase 5: compare conditions side by side (colored triples)
-│   └── dados_piloto.py        # Pure data/classification logic (testable)
+├── app/                       # App Streamlit de exploração (Fases 4–5)
+│   ├── Inicio.py              # Entrypoint: st.navigation (python -m streamlit run app/Inicio.py)
+│   ├── dados/                 # Camada de dados (sem Streamlit, testável)
+│   ├── paginas/              # Início, Fases, Explorador, Ontologias, Grafo, Resultados, Chat
+│   └── componentes/          # CSS, grafo pyvis, chips, filtros, estado
 │
 ├── kaggle/
 │   └── lancador.ipynb         # Kaggle launcher with a single MODO switch
@@ -312,20 +314,28 @@ Graph model: `(:Frase)-[:MENCIONA]->(:Entidade)` and
 An example Cypher query ("C0 edges absent in C1 for the same sentence") is in
 [`src/t2kg/grafo/README.md`](src/t2kg/grafo/README.md).
 
-## Results App (Streamlit, Fase 5)
+## Exploration App (Streamlit, Fases 4–5)
 
-Explore the pilot results with no Neo4j required (reads only `resultados/`):
+A multipage Streamlit app to understand the whole project — what each phase did and, for any
+sentence, what went to the model and what came back. Reads only repository files; Neo4j not
+required. New result files (e.g., the ongoing `resultados/full/qwen2.5-7b/`) appear
+automatically without code changes.
 
 ```bash
-pip install -r requirements-app.txt
-streamlit run app/streamlit_app.py
+python -m pip install --user -r requirements-app.txt
+python -m streamlit run app/Inicio.py
 ```
 
-- **Comparar condições**: pick a dataset, ontology and sentence; see the sentence, the gold
-  triples and each condition's triples side by side, colored by status — acerto (green),
-  sobra (yellow), falta (red), erro de formato (gray). Projected relations are shown for
-  C0/C2/C3 on demand.
-- **Visão geral**: metrics-per-condition table from the piloto-v3 CSV.
+Pages (`st.navigation`): **Início** (key numbers), **Fases do projeto** (timeline with
+clickable D-xx decisions), **Explorador de frase** (prompt, raw response and triples
+classified as acerto/fora do gabarito/erro/erro de formato/falta, per condition, with an
+interactive graph and a "Comparar" view of the 7 conditions), **Ontologias** (reference vs
+induced-C2 vs top-3 vs C5 partners), **Grafo agregado**, **Resultados agregados** (Plotly
+charts/heatmap with the Vicuna-13B baseline), and **Chat com o grafo** (skeleton/GraphRAG).
+
+The data layer lives in `app/dados/` (no Streamlit, tested in `tests/test_app_dados.py`) and
+reuses `src/t2kg/` for parsing, evaluation, prompts and ontologies. Screenshots of every page
+are in [`docs/app_capturas/`](docs/app_capturas/).
 
 ## Experiment Configuration
 

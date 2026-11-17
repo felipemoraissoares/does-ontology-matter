@@ -28,7 +28,7 @@ def _numeros():
         for a in arqs:
             if a.endswith(".jsonl"):
                 ult = max(ult, os.path.getmtime(os.path.join(raiz, a)))
-    data = datetime.datetime.fromtimestamp(ult).strftime("%d/%m/%Y %H:%M") if ult else "—"
+    data = datetime.datetime.fromtimestamp(ult).strftime("%d/%m %H:%M") if ult else "—"
     return {"frases": total_frases, "ontos": n_ontos, "rodadas": len(descoberta.rodadas()),
             "full_feitos": full_feitos, "data": data}
 

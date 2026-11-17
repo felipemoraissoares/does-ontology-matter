@@ -17,7 +17,7 @@ st.set_page_config(page_title="Ontologia & LLM — explorador",
                    page_icon="🔎", layout="wide")
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def _preparar_nltk():
     try:
         import nltk
@@ -38,18 +38,24 @@ from componentes.estilo import injetar  # noqa: E402
 PAGINAS = {
     "Visão geral": [
         st.Page("paginas/inicio.py", title="Início", icon=":material/home:", default=True),
-        st.Page("paginas/fases.py", title="Fases do projeto", icon=":material/timeline:"),
+        st.Page("paginas/fases.py", title="Fases do projeto", icon=":material/timeline:",
+                url_path="fases"),
     ],
     "Explorar": [
-        st.Page("paginas/explorador.py", title="Explorador de frase", icon=":material/search:"),
-        st.Page("paginas/ontologias.py", title="Ontologias", icon=":material/account_tree:"),
-        st.Page("paginas/grafo_agregado.py", title="Grafo agregado", icon=":material/hub:"),
+        st.Page("paginas/explorador.py", title="Explorador de frase",
+                icon=":material/search:", url_path="explorador"),
+        st.Page("paginas/ontologias.py", title="Ontologias",
+                icon=":material/account_tree:", url_path="ontologias"),
+        st.Page("paginas/grafo_agregado.py", title="Grafo agregado",
+                icon=":material/hub:", url_path="grafo"),
     ],
     "Resultados": [
-        st.Page("paginas/resultados.py", title="Resultados agregados", icon=":material/bar_chart:"),
+        st.Page("paginas/resultados.py", title="Resultados agregados",
+                icon=":material/bar_chart:", url_path="resultados"),
     ],
     "Em breve": [
-        st.Page("paginas/em_breve.py", title="Chat com o grafo", icon=":material/chat:"),
+        st.Page("paginas/em_breve.py", title="Chat com o grafo",
+                icon=":material/chat:", url_path="chat"),
     ],
 }
 
