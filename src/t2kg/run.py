@@ -76,56 +76,42 @@ def _contar_registros_validos(caminho: str) -> int:
     return n
 
 
-def _push_resultado(repo_dir: str, exp_id: str, saida: str) -> None:
-    """git add + commit + push após um experimento concluído.
+def _push_resultado(repo_dir: str, exp_id: str, saida: str) -> bool:
+    """git add + commit + push SINCRONIZADO após um experimento. Retorna True se empurrado.
 
-    Verifica explicitamente que o arquivo JSONL de saída foi incluído no commit.
-    Se não foi (ex.: .gitignore bloqueando), imprime aviso claro e NÃO imprime
-    'Push OK' — evita a falsa confirmação do piloto Kaggle (D-17).
+    Verifica que o JSONL de saída entrou no commit (evita a falsa confirmação do D-17).
+    O push sincroniza (fetch + rebase) e retenta — resiste a um remoto que avançou (ex.:
+    outra máquina empurrando no meio do lote).
     """
     import subprocess
+    from t2kg.git_sync import sincronizar_e_push
 
-    # Stage
-    r_add = subprocess.run(
-        f'git -C "{repo_dir}" add -A', shell=True, capture_output=True, text=True
-    )
-    if r_add.returncode != 0:
-        print(f"    AVISO push — git add falhou: {r_add.stderr.strip()[:200]}", file=sys.stderr)
+    subprocess.run(["git", "-C", repo_dir, "add", "-A"], capture_output=True, text=True)
 
-    # Verifica se o JSONL alvo está no index (staged ou já commitado sem mudanças)
     saida_rel = os.path.relpath(saida, repo_dir).replace("\\", "/")
     r_status = subprocess.run(
-        f'git -C "{repo_dir}" status --porcelain -- "{saida_rel}"',
-        shell=True, capture_output=True, text=True,
-    )
+        ["git", "-C", repo_dir, "status", "--porcelain", "--", saida_rel],
+        capture_output=True, text=True)
     jsonl_staged = bool(r_status.stdout.strip())
 
-    # Commit
     r_commit = subprocess.run(
-        f'git -C "{repo_dir}" commit -m "auto: {exp_id}"',
-        shell=True, capture_output=True, text=True,
-    )
+        ["git", "-C", repo_dir, "commit", "-m", f"auto: {exp_id}"],
+        capture_output=True, text=True)
     commit_saida = r_commit.stdout + r_commit.stderr
     commit_ok = r_commit.returncode == 0 or "nothing to commit" in commit_saida
     if not commit_ok:
         print(f"    AVISO push — git commit falhou: {r_commit.stderr.strip()[:200]}", file=sys.stderr)
-        return
+        return False
+    if not jsonl_staged:
+        print(f"    AVISO: commit SEM o JSONL de resultado ({saida_rel}). "
+              f"Verifique .gitignore. Experimento: {exp_id}", file=sys.stderr)
 
-    # Push
-    r_push = subprocess.run(
-        f'git -C "{repo_dir}" push', shell=True, capture_output=True, text=True
-    )
-    if r_push.returncode != 0:
-        print(f"    AVISO push — git push falhou: {r_push.stderr.strip()[:200]}", file=sys.stderr)
-    elif jsonl_staged:
-        print(f"    Push OK (com JSONL): {exp_id}")
+    pushed = sincronizar_e_push(repo_dir)
+    if pushed:
+        print(f"    Push OK: {exp_id}")
     else:
-        print(
-            f"    AVISO: push enviou commit SEM o JSONL de resultado ({saida_rel}). "
-            "Verifique .gitignore — o arquivo pode estar bloqueado. "
-            f"Experimento: {exp_id}",
-            file=sys.stderr,
-        )
+        print(f"    AVISO: push de {exp_id} NÃO confirmado após as tentativas.", file=sys.stderr)
+    return pushed
 
 
 def main():
@@ -192,6 +178,7 @@ def main():
     from t2kg.pipeline.executar import executar
     from t2kg.pipeline.dados import carregar_frases
 
+    sem_push = []  # experimentos cujo push não foi confirmado
     for exp in experimentos:
         exp_id = exp.get("id", "?")
 
@@ -256,7 +243,23 @@ def main():
         print(f"    {n} frase(s) processada(s)  ->  {exp['saida']}")
 
         if args.auto_push:
-            _push_resultado(push_repo_dir, exp_id, exp["saida"])
+            if not _push_resultado(push_repo_dir, exp_id, exp["saida"]):
+                sem_push.append(exp_id)
+
+    if args.auto_push:
+        from t2kg.git_sync import sincronizar_e_push
+        # Push final de tudo o que ficou pendente no lote.
+        if sincronizar_e_push(push_repo_dir):
+            sem_push = []
+            print("\nPush final do lote OK — todos os resultados enviados.")
+        else:
+            print("\n" + "=" * 60, file=sys.stderr)
+            print("⚠️  PUSH FINAL DO LOTE FALHOU — resultados podem estar só locais.",
+                  file=sys.stderr)
+            print("=" * 60, file=sys.stderr)
+        if sem_push:
+            print(f"⚠️  {len(sem_push)} experimento(s) SEM push confirmado: "
+                  f"{', '.join(sem_push)}", file=sys.stderr)
 
     print("\nConcluído.")
 

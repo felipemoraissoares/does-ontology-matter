@@ -23,6 +23,7 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SCRIPTS = os.path.join(REPO, "scripts")
 sys.path.insert(0, os.path.join(REPO, "src"))
 from t2kg.modelos import slug_modelo  # noqa: E402
+from t2kg.git_sync import sincronizar_e_push  # noqa: E402
 
 # Módulos verificados no teste de import do modo congelar_ambiente.
 IMPORTS_TESTE = ["vllm", "torch", "transformers", "sentence_transformers", "nltk"]
@@ -175,11 +176,10 @@ def modo_congelar(args):
     git(["add"] + rels, args.repo_dir)
     if git(["status", "--porcelain"] + rels, args.repo_dir).stdout.strip():
         git(["commit", "-m", "auto: requirements-kaggle lock+freeze (congelar_ambiente)"], args.repo_dir)
-        r = git(["push"], args.repo_dir)
-        if r.returncode == 0:
+        if sincronizar_e_push(args.repo_dir):
             print("Push do lock+freeze OK.")
         else:
-            raise RuntimeError(f"Push falhou: {r.stderr[:200]}")
+            raise RuntimeError("Push do lock+freeze NÃO confirmado após as tentativas.")
     else:
         print("Lock/freeze inalterados — nada para commitar.")
 
@@ -212,8 +212,10 @@ def modo_inducao(args):
     git(["add"] + alvo, args.repo_dir)
     if git(["status", "--porcelain"] + alvo, args.repo_dir).stdout.strip():
         git(["commit", "-m", "auto: inducao C2 v_full (29 ontologias)"], args.repo_dir)
-        r = git(["push"], args.repo_dir)
-        print("Push indução OK." if r.returncode == 0 else f"AVISO push: {r.stderr[:200]}")
+        if sincronizar_e_push(args.repo_dir):
+            print("Push indução OK.")
+        else:
+            print("AVISO: push da indução NÃO confirmado após as tentativas.")
     else:
         print("Indução: nada novo para commitar.")
 
