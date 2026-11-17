@@ -1,0 +1,58 @@
+/* Estilo único do app — injetado uma vez por componentes/estilo.py */
+:root {
+  --cor-primaria: #2E5A8A;
+  --cor-acerto: #2E7D4F;
+  --cor-fora: #8a94a0;
+  --cor-erro: #B3261E;
+  --cor-fmt: #C99A00;
+  --borda: #e6eaf0;
+}
+
+.block-container { padding-top: 2.2rem; max-width: 1280px; }
+
+/* Cartões */
+.card {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, .06);
+  margin-bottom: 14px;
+}
+.card h4 { margin: 0 0 .4rem 0; font-size: .95rem; color: #46526180; letter-spacing: .02em; }
+
+/* Cartões de número-chave */
+.metrica { text-align: center; }
+.metrica .valor { font-size: 1.9rem; font-weight: 700; color: var(--cor-primaria); line-height: 1.1; }
+.metrica .rotulo { font-size: .82rem; color: #53606e; margin-top: .2rem; }
+
+/* Chips de tripla / classificação */
+.chip {
+  display: inline-block; padding: 3px 11px; margin: 3px; border-radius: 999px;
+  font-size: .85rem; border: 1px solid transparent; font-family: ui-monospace, Consolas, monospace;
+}
+.chip-acerto { background: #e7f3ec; color: #1e5e3a; border-color: #bfe0cc; }
+.chip-fora_do_gabarito { background: #eef1f4; color: #53606e; border-color: #d6dde4; }
+.chip-erro { background: #fbe9e7; color: #8f1d16; border-color: #f1c3bf; }
+.chip-erro_formato { background: #fdf4d8; color: #7a5d00; border-color: #ecdca0; }
+.chip-falta { background: #fff; color: #53606e; border: 1.5px dashed #9aa4b0; }
+
+/* Decisão D-xx */
+.chip-dec { background: #eaf1f9; color: #23527c; border: 1px solid #c4d7ec; font-family: inherit; cursor: default; }
+
+/* Blocos coloridos do prompt */
+.pp { padding: 10px 12px; border-radius: 10px; white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace;
+      font-size: .82rem; line-height: 1.45; border: 1px solid var(--borda); margin-bottom: 8px; }
+.pp-instrucao { background: #f7f9fc; }
+.pp-contexto { background: #eef4fb; border-color: #cfe0f2; }
+.pp-teste { background: #f6f7f4; }
+
+/* Linha do tempo das fases */
+.fase { border-left: 3px solid var(--cor-primaria); padding: 2px 0 14px 16px; margin-left: 8px; position: relative; }
+.fase::before { content: ""; position: absolute; left: -9px; top: 4px; width: 14px; height: 14px;
+                border-radius: 50%; background: var(--cor-primaria); }
+.fase h3 { margin: 0 0 .2rem 0; font-size: 1.05rem; }
+
+.legenda span { margin-right: 10px; font-size: .82rem; }
+.pilula { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:middle; }
+small.fonte { color: #8a94a0; }

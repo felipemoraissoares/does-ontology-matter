@@ -1,0 +1,65 @@
+# Conteúdo das fases do projeto. Cada afirmação aponta para D-xx (docs/DECISOES.md) ou
+# um documento de docs/. Não inventar — ajustar aqui quando as decisões mudarem.
+- id: 0
+  titulo: "Entender o Text2KGBench"
+  o_que_e: "Benchmark (ISWC 2023) de extração de triplas guiada por ontologia: 10 ontologias TekGen (Wikidata) e 19 DBpedia (WebNLG), com prompts, ground truth e baselines Vicuna/Alpaca-13B."
+  o_que_foi_feito: "Leitura da estrutura do benchmark e fixação do commit 50a3d25 como fonte única; definição do modo de avaliação (benchmark completo vs amostra)."
+  problemas: "Alguns arquivos de configuração do benchmark apontavam para caminhos inexistentes; a onto 1_university aparece duplicada na lista do WebNLG."
+  decisoes: ["D-04"]
+  fontes: ["README.md", "docs/auditoria_pre_experimento.md"]
+- id: 1
+  titulo: "Reproduzir avaliador e parser"
+  o_que_e: "Espelhar fielmente o run_eval.py original (P/R/F1, conformidade, alucinações) e converter respostas livres do LLM em triplas."
+  o_que_foi_feito: "Avaliador reproduz 6/6 cenários de baseline publicados; parser cobre as categorias A–J de formato."
+  problemas: "Encoding (cp1252 x UTF-8) e triplas com vírgula final / objetos com parênteses eram descartadas."
+  decisoes: ["D-15"]
+  fontes: ["docs/auditoria_pre_experimento.md"]
+- id: 2
+  titulo: "Condições e prompts"
+  o_que_e: "Sete condições que variam apenas o bloco de ontologia no prompt: C0, C1, C1 one-shot, C2, C3, C5 vizinho e C5 incongruente."
+  o_que_foi_feito: "Montagem dos prompts por condição, instrução de entidade e escolha pré-registrada do formato de saída (Variante D)."
+  problemas: "Sem a instrução de entidade, o modelo usava os nomes das classes como entidades; o formato ambíguo gerava erros de parse."
+  decisoes: ["D-01", "D-02", "D-03", "D-05", "D-12", "D-13", "D-18", "D-19", "D-20", "D-25"]
+  fontes: ["docs/DECISOES.md"]
+- id: 3
+  titulo: "Rodar a LLM no Kaggle"
+  o_que_e: "Inferência com vLLM e Qwen2.5-7B-Instruct-AWQ em 2×T4, orquestrada por um lançador com um único seletor de modo."
+  o_que_foi_feito: "Lançador com push verificado por experimento e retomada; modos congelar ambiente, indução C2 e experimento."
+  problemas: "No primeiro piloto o push subiu sem os resultados e a C2 saiu contaminada; travar todas as versões era irresolvível na imagem do Kaggle."
+  decisoes: ["D-17", "D-23", "D-35"]
+  fontes: ["docs/experimento_completo_kaggle.md", "docs/DECISOES.md"]
+- id: 4
+  titulo: "Do texto ao grafo"
+  o_que_e: "Transformar as respostas em triplas e carregá-las como grafo (entidades, frases e relações classificadas)."
+  o_que_foi_feito: "Parser ciente de profundidade de parênteses; carga por run no Neo4j com status acerto/sobra por aresta."
+  problemas: "Triplas em múltiplas linhas e objetos com parênteses aninhados quebravam a divisão ingênua."
+  decisoes: ["D-15", "D-19"]
+  fontes: ["src/t2kg/grafo/README.md", "docs/DECISOES.md"]
+- id: 5
+  titulo: "Métricas novas"
+  o_que_e: "Além das métricas do benchmark, medir erro de formato e de parse, conformidade sem respostas vazias, projeção de relações e redundância semântica (H1)."
+  o_que_foi_feito: "Implementação de avg_fmt_error, avg_parse_error, métricas sem-vazias e projeção com embeddings label+definição."
+  problemas: "O erro de formato subia quando a instrução citava domínio/alcance; o limiar de projeção precisou ser recalibrado."
+  decisoes: ["D-07", "D-18", "D-27", "D-28", "D-29", "D-30"]
+  fontes: ["docs/DECISOES.md", "docs/piloto_v3_resultados.md"]
+- id: 6
+  titulo: "Ontologia induzida (C2)"
+  o_que_e: "O próprio modelo induz uma ontologia a partir de 50 frases de treino, em modo livre, agrupando relações por similaridade."
+  o_que_foi_feito: "Extração livre + agrupamento + definições (EDC); indução por modelo em configs/c2/v_full/<slug>."
+  problemas: "Vazamento do gabarito no prompt de indução, placeholders copiados como relação, e a regra de agrupamento ficou inviável nas 29 ontologias."
+  decisoes: ["D-16", "D-21", "D-22", "D-24", "D-25", "D-32", "D-33", "D-37"]
+  fontes: ["docs/DECISOES.md"]
+- id: 7
+  titulo: "Pilotos"
+  o_que_e: "Validar o pipeline inteiro antes de comprometer horas de GPU na fase completa."
+  o_que_foi_feito: "Piloto v3: 28 experimentos, 4 ontologias, 100 frases por experimento, com todas as 7 condições."
+  problemas: "Detecção de modo amostra tinha de ser por ontologia; placeholders da Variante D precisaram virar erro de formato."
+  decisoes: ["D-26", "D-31", "D-32"]
+  fontes: ["docs/piloto_v3_resultados.md"]
+- id: 8
+  titulo: "Preparação e experimento completo"
+  o_que_e: "Auditoria pré-experimento e execução das 203 condições (29 ontologias × 7) do Qwen 7B."
+  o_que_foi_feito: "Correção dos itens críticos da auditoria, gerador de manifestos, indução C2 por modelo e recalibração do limiar de projeção (0.45)."
+  problemas: "Itens críticos: .gitignore ocultava resultados, retomada frágil, lock de dependências; agrupamento mantido em 0.70 como desvio documentado."
+  decisoes: ["D-33", "D-34", "D-35", "D-36", "D-37"]
+  fontes: ["docs/auditoria_pre_experimento.md", "docs/experimento_completo_kaggle.md"]
