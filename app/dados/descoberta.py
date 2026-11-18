@@ -58,7 +58,7 @@ def rodadas() -> List[Dict]:
                 out.append({
                     "id": f"full/{slug}", "rotulo": f"Completo · {slug}", "esquema": "full",
                     "modelo": slug, "slug": slug, "dir": d, "amostra": False,
-                    "avaliacao_dir": os.path.join(RESULTADOS, "avaliacao", slug),
+                    "avaliacao_dir": os.path.join(RESULTADOS, "avaliacao_full", slug),
                 })
     return out
 

@@ -26,13 +26,15 @@ def _mapa_induzida(rid, ds, onto):
     defs = od._definicoes(rid, onto)
     try:
         from t2kg.avaliacao.extended import projetar_relacoes, _normalizar_rotulo
+        from t2kg.avaliacao.limiares import limiar_projecao_por_rid
     except Exception:
         return {"erro": "sentence-transformers indisponível"}
+    limiar = limiar_projecao_por_rid(rid)
     out = []
     for g in ind["grupos"]:
         lab = g["label"]
         try:
-            proj, _ = projetar_relacoes([["a", lab, "b"]], ref, definicoes_ref=defs or None)
+            proj, _ = projetar_relacoes([["a", lab, "b"]], ref, threshold=limiar, definicoes_ref=defs or None)
         except Exception as e:
             return {"erro": str(e)[:120]}
         if not proj:

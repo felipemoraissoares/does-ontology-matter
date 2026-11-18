@@ -1250,6 +1250,43 @@ são vazias (modelo recusa), inflando `avg_onto_conf ≈ 0.87–0.98`. O valor c
 
 ---
 
+## Nota de interpretação da H3 — sobreposição de esquema na C5
+
+**Status:** NOTA DE INTERPRETAÇÃO (2026-11-17) · sem nova rodada.
+
+### Contexto
+
+A H3 lê a degradação sob ontologia incorreta (C5) pela distância de esquema: o desempenho deve
+cair mais na parceira incongruente do que na vizinha. Ao interpretar o F1 **residual** da C5,
+é preciso controlar um confundidor: parte das relações da ontologia parceira **coincide** com as
+da referência, de modo que o modelo pode acertar triplas "por acaso" mesmo recebendo o esquema
+errado. Esse acerto não é robustez à troca de ontologia — é sobreposição de vocabulário.
+
+### Medida (experimento completo Qwen 7B, `scripts/avaliar_full.py`)
+
+Sobreposição = fração das relações da referência que também existem na parceira. Média por dataset
+e tipo de C5, e F1 da C5 recalculado **apenas sobre triplas cujas relações do gabarito não estão
+na parceira** (tabela completa em `docs/resultados_7b_completo.md`):
+
+| Dataset | Tipo C5 | Sobreposição ref∩parceira | F1 C5 (todas) | F1 C5 (fora da parceira) |
+|---|---|---|---|---|
+| TekGen | vizinho | ~8% | 0,007 | 0,005 |
+| WebNLG (DBpedia) | vizinho | ~34% | 0,103 | 0,021 |
+
+### Interpretação
+
+- No **DBpedia/WebNLG** a sobreposição do vizinho é alta (~34%): ao remover do gabarito as relações
+  também presentes na parceira, o F1 da C5-vizinho cai de **0,103 para 0,021** — ou seja, a maior
+  parte do desempenho residual da C5-vizinho em WebNLG é **artefato de sobreposição de esquema**,
+  não robustez genuína à troca de ontologia.
+- No **TekGen** a sobreposição é baixa (~8%) e o F1 já é quase nulo (0,007 → 0,005): o efeito de
+  sobreposição é pequeno porque as ontologias TekGen são lexicalmente mais distintas entre si.
+- **Consequência para a H3:** a leitura "vizinho > incongruente" deve usar o F1 **fora da parceira**
+  (ou controlar a sobreposição) para separar robustez real de coincidência de vocabulário. A
+  diferença bruta vizinho-vs-incongruente em WebNLG está parcialmente inflada pela sobreposição.
+
+---
+
 ## D-29: Embeddings D-24 na projeção de relações (C0/C2/C3)
 
 **Status:** APROVADA

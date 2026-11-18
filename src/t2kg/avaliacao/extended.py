@@ -58,8 +58,11 @@ except ImportError:
 # D-30: limiares recalibrados com pares alinhados das 50 frases de treino do piloto-v3.
 # label-only: 0.50 (F-b0.5=0.644, prec=1.00 em 1_movie; prec baixa em 2_music)
 # label+def (D-24): 0.63 — menor limiar com precisão agregada >= 0.80 (prec=0.800, cob=36.7%)
+# O valor label+def (padrão do piloto) vem da fonte única configs/avaliacao.json via limiares.py;
+# as rodadas full passam explicitamente o limiar 0.45 (D-36).
+from t2kg.avaliacao.limiares import limiar_projecao as _limiar_projecao
 THRESHOLD_PROJ_LABEL = 0.50
-THRESHOLD_PROJ_DEF   = 0.63
+THRESHOLD_PROJ_DEF   = _limiar_projecao("piloto_v3")
 THRESHOLD_PROJECAO_PROVISORIO = THRESHOLD_PROJ_LABEL  # backward compat
 
 # Cache de embeddings de referência: evita recomputar para a mesma ontologia × sentença

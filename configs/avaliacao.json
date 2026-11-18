@@ -1,0 +1,9 @@
+{
+  "_doc": "Parâmetros da avaliação lidos de um único lugar (src/t2kg/avaliacao/limiares.py). Usado pelo script scripts/avaliar_full.py e pelo app.",
+  "limiar_projecao": {
+    "piloto_v3": 0.63,
+    "full": 0.45
+  },
+  "limiar_projecao_default": 0.45,
+  "limiar_redundancia": 0.80
+}

@@ -19,6 +19,9 @@ resultados/*
 !resultados/piloto_v3/**
 !resultados/avaliacao_piloto_v3/
 !resultados/avaliacao_piloto_v3/**
+# Avaliação das rodadas full (saída por frase lida pelo app) — scripts/avaliar_full.py
+!resultados/avaliacao_full/
+!resultados/avaliacao_full/**
 # Experimento completo (C-1): saída por modelo em resultados/7b/ e resultados/full/<slug>/
 !resultados/7b/
 !resultados/7b/**
